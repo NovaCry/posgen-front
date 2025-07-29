@@ -74,7 +74,7 @@ const systemTheme = theme.system;
       <p class="flex-col text-muted-foreground text-sm">
         Posgen KVKK doğrultusunda kullanıcılardan verileri işlemek için izin
         toplamak zorundadır. Sizin verdiğiniz izinler
-        <RouterLink to="/" class="underline"> KVKK metnince </RouterLink>
+        <NuxtLink to="/" class="underline"> KVKK metnince </NuxtLink>
         işlenir ve usülüne uygun bir şekilde paylaşılır.
       </p>
       <TooltipProvider>

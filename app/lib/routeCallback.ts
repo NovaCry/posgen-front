@@ -1,4 +1,4 @@
-import router from '@/router';
+const router = useRouter();
 
 export default async function routeCallback() {
   if (router.currentRoute.value.query.cb) {

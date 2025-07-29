@@ -80,9 +80,9 @@ import SectionHeading from './SectionHeading.vue';
           <span class="text-sm">
             Can sıkıcı işleri sizin yerinize bırakın o halletsin.
           </span>
-          <RouterLink to="/register" class="w-full mt-4">
+          <NuxtLink to="/register" class="w-full mt-4">
             <Button class="w-full"> Şimdi Başla <ArrowRight /> </Button>
-          </RouterLink>
+          </NuxtLink>
         </div>
       </div>
     </div>

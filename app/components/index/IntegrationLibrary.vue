@@ -65,9 +65,13 @@ function iterateViewport() {
 
 fillViewport();
 
-const interval = setInterval(() => {
-  iterateViewport();
-}, 1000);
+let interval: undefined | NodeJS.Timeout;
+
+onMounted(() => {
+  interval = setInterval(() => {
+    iterateViewport();
+  }, 1000);
+});
 
 onUnmounted(() => {
   clearInterval(interval);

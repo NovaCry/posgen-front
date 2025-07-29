@@ -46,38 +46,38 @@ const user = useUserStore();
     </DropdownMenuLabel>
     <DropdownMenuSeparator />
     <DropdownMenuGroup>
-      <RouterLink to="/dashboard/user">
+      <NuxtLink to="/dashboard/user">
         <DropdownMenuItem>
           <BadgeCheck />
           Hesap
         </DropdownMenuItem>
-      </RouterLink>
-      <RouterLink to="/dashboard/user/subscription">
+      </NuxtLink>
+      <NuxtLink to="/dashboard/user/subscription">
         <DropdownMenuItem>
           <Package />
           Abonelik
         </DropdownMenuItem>
-      </RouterLink>
-      <RouterLink to="/dashboard/user/notifications">
+      </NuxtLink>
+      <NuxtLink to="/dashboard/user/notifications">
         <DropdownMenuItem>
           <Bell />
           Bildirimler
         </DropdownMenuItem>
-      </RouterLink>
+      </NuxtLink>
     </DropdownMenuGroup>
     <DropdownMenuSeparator />
-    <RouterLink to="/dashboard/user/security">
+    <NuxtLink to="/dashboard/user/security">
       <DropdownMenuItem>
         <Shield />
         Güvenlik
       </DropdownMenuItem>
-    </RouterLink>
-    <RouterLink to="/dashboard/user/preferences">
+    </NuxtLink>
+    <NuxtLink to="/dashboard/user/preferences">
       <DropdownMenuItem>
         <Settings />
         Tercihler
       </DropdownMenuItem>
-    </RouterLink>
+    </NuxtLink>
     <DropdownMenuSeparator />
     <DropdownMenuItem @click="user.logout()">
       <LogOut />

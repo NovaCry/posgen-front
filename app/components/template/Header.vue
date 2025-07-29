@@ -29,15 +29,15 @@ import HeaderMobileContext from './HeaderMobileContext.vue';
         </div>
       </div>
       <div class="hidden items-center gap-2.5 lg:flex">
-        <RouterLink to="/login">
+        <NuxtLink to="/login">
           <Button variant="outline"> Oturum Aç </Button>
-        </RouterLink>
-        <RouterLink to="/register">
+        </NuxtLink>
+        <NuxtLink to="/register">
           <Button>
             Şimdi Başla
             <ArrowRight />
           </Button>
-        </RouterLink>
+        </NuxtLink>
       </div>
       <div class="flex lg:hidden items-center">
         <HeaderMobileContext />

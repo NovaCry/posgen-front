@@ -78,15 +78,12 @@ watch([page, search], () => {
         Sırala
       </Button>
     </div>
-    <RouterLink
-      v-if="!disableNew"
-      :to="create || router.currentRoute.value.path"
-    >
+    <NuxtLink v-if="!disableNew" :to="create || router.currentRoute.value.path">
       <Button :disabled="disableNew">
         Yeni Kayıt
         <ArrowRight />
       </Button>
-    </RouterLink>
+    </NuxtLink>
   </div>
   <DataTable :data="composedPagination?.data || []" />
   <PaginationSimplified

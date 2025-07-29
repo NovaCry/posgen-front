@@ -112,9 +112,7 @@
             </Button>
             <span class="md:ml-auto text-sm text-center"
               >Hesabınız mevcut mu?
-              <RouterLink to="/login" class="underline"
-                >Giriş Yapın!</RouterLink
-              >
+              <NuxtLink to="/login" class="underline">Giriş Yapın!</NuxtLink>
             </span>
           </div>
         </div>
@@ -136,8 +134,8 @@
     </div>
     <span class="text-xs md:text-sm mt-3 md:mt-4 text-center px-4">
       Kayıt olarak
-      <RouterLink class="underline" to="/">Kullanım Koşullarını</RouterLink> ve
-      <RouterLink class="underline" to="/">Gizlilik Sözleşmesini</RouterLink>
+      <NuxtLink class="underline" to="/">Kullanım Koşullarını</NuxtLink> ve
+      <NuxtLink class="underline" to="/">Gizlilik Sözleşmesini</NuxtLink>
       kabul edersiniz.
     </span>
   </div>

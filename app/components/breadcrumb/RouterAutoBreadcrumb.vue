@@ -51,12 +51,12 @@ const routerPathHistory = computed(() => {
   <Breadcrumb>
     <BreadcrumbList>
       <BreadcrumbItem>
-        <RouterLink
+        <NuxtLink
           class="hover:text-primary transition duration-150"
           :to="routerPathHistory.first?.path || ''"
         >
           {{ routerPathHistory.first?.name }}
-        </RouterLink>
+        </NuxtLink>
       </BreadcrumbItem>
       <BreadcrumbSeparator v-if="routerPathHistory.list.length >= 1" />
       <BreadcrumbItem v-if="routerPathHistory.list.length >= 1">

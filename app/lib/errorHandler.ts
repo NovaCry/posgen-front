@@ -1,8 +1,9 @@
-import router from '@/router';
 import type APIError from '@/types/api/APIError';
 import type { AxiosError } from 'axios';
 import { toast } from 'vue-sonner';
 import redirectProperly from './redirectProperly';
+
+const router = useRouter();
 
 interface HTTPErrorLocale {
   title: string;

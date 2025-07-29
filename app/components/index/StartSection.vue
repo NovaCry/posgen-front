@@ -9,11 +9,15 @@ let heroVerbIndex = 1;
 const heroVerbs = ['POS', 'Adisyon', 'Depo', 'Mutfak', 'Muhasebe'];
 const heroVerb = ref(heroVerbs[0]);
 
-const heroInterval = setInterval(() => {
-  heroVerb.value = heroVerbs[heroVerbIndex];
-  heroVerbIndex += 1;
-  heroVerbIndex = heroVerbIndex % heroVerbs.length;
-}, 2500);
+let heroInterval: undefined | NodeJS.Timeout;
+
+onMounted(() => {
+  heroInterval = setInterval(() => {
+    heroVerb.value = heroVerbs[heroVerbIndex];
+    heroVerbIndex += 1;
+    heroVerbIndex = heroVerbIndex % heroVerbs.length;
+  }, 2500);
+});
 
 onUnmounted(() => {
   clearInterval(heroInterval);
@@ -51,12 +55,12 @@ onUnmounted(() => {
         çözümü.
       </h1>
       <div class="flex items-center gap-4">
-        <RouterLink to="/register">
+        <NuxtLink to="/register">
           <Button>
             Şimdi Başla
             <ArrowRight />
           </Button>
-        </RouterLink>
+        </NuxtLink>
         <Button variant="outline"> İletişime Geç </Button>
       </div>
     </div>

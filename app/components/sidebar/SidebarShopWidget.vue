@@ -42,7 +42,7 @@ function setActiveTeam(shop: Shop) {
 
 <template>
   <SidebarMenuItem class="hover:bg-accent rounded-md transition duration-200">
-    <RouterLink
+    <NuxtLink
       v-if="user.user?.shops && user.user.shops.length == 0"
       to="/create"
     >
@@ -57,7 +57,7 @@ function setActiveTeam(shop: Shop) {
         </div>
         <div class="font-medium text-muted-foreground">Yeni Mağaza</div>
       </SidebarMenuButton>
-    </RouterLink>
+    </NuxtLink>
     <DropdownMenu v-else>
       <DropdownMenuTrigger as-child>
         <SidebarMenuButton
@@ -102,7 +102,7 @@ function setActiveTeam(shop: Shop) {
           <DropdownMenuShortcut>⌘{{ index + 1 }}</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <RouterLink to="/create">
+        <NuxtLink to="/create">
           <DropdownMenuItem class="gap-2 p-2">
             <div
               class="flex size-6 items-center justify-center rounded-md border bg-background"
@@ -111,7 +111,7 @@ function setActiveTeam(shop: Shop) {
             </div>
             <div class="font-medium text-muted-foreground">Yeni Mağaza</div>
           </DropdownMenuItem>
-        </RouterLink>
+        </NuxtLink>
       </DropdownMenuContent>
     </DropdownMenu>
   </SidebarMenuItem>

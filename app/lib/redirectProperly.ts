@@ -1,5 +1,6 @@
-import router from '@/router';
 import type { RouteLocationAsString, RouteLocationRaw } from 'vue-router';
+
+const router = useRouter();
 
 export default function redirectProperly(
   route: RouteLocationRaw,

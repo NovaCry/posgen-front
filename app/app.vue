@@ -1,6 +1,6 @@
 <template>
   <Toaster />
-  <RouterView />
+  <NuxtPage />
 </template>
 
 <script setup lang="ts">
@@ -11,11 +11,11 @@ import { useSelectedShopStore } from './store/shop';
 import { useSidebarStore } from './store/sidebar';
 useColorMode();
 
-const user = useUserStore();
-const selectedShop = useSelectedShopStore();
-const sidebar = useSidebarStore();
+// const user = useUserStore();
+// const selectedShop = useSelectedShopStore();
+// const sidebar = useSidebarStore();
 
-user.load();
-selectedShop.load();
-sidebar.load();
+// user.load();
+// selectedShop.load();
+// sidebar.load();
 </script>

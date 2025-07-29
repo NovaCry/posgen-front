@@ -71,13 +71,13 @@ const limits = [
             <span class="text-3xl">1600₺/<span class="text-xl">ay</span></span>
           </div>
           <div>
-            <RouterLink
+            <NuxtLink
               to="/pricing"
               class="flex gap-2 items-center text-sm hover:underline"
             >
               Abonelik Detayları
               <ArrowRight class="size-4" />
-            </RouterLink>
+            </NuxtLink>
           </div>
         </div>
         <div class="mt-auto">
@@ -103,13 +103,13 @@ const limits = [
             <h3 class="text-xl font-medium">
               {{ limit.name }}
             </h3>
-            <RouterLink
+            <NuxtLink
               :to="limit.link"
               class="text-sm ml-auto flex gap-2 items-center hover:underline"
             >
               Daha Fazla
               <ArrowRight class="size-4" />
-            </RouterLink>
+            </NuxtLink>
           </div>
         </CardHeader>
         <CardContent>

@@ -25,9 +25,9 @@
           <div class="flex flex-col gap-2">
             <Label for="pass" class="flex w-full"
               >Şifre
-              <RouterLink class="ml-auto underline text-sm" to="/forgot"
+              <NuxtLink class="ml-auto underline text-sm" to="/forgot"
                 >Şifrenizi mi unuttunuz?
-              </RouterLink>
+              </NuxtLink>
             </Label>
             <div class="relative">
               <Input
@@ -88,8 +88,8 @@
         </div>
         <span class="mx-auto mt-4 md:mt-6 text-sm text-center"
           >Hesabınız yok mu?
-          <RouterLink to="/register" class="underline" tabindex="5"
-            >Kayıt olun!</RouterLink
+          <NuxtLink to="/register" class="underline" tabindex="5"
+            >Kayıt olun!</NuxtLink
           >
         </span>
       </div>
@@ -123,7 +123,7 @@ import { Icon } from '@iconify/vue';
 import { onBeforeMount, ref } from 'vue';
 import type Shop from '@/types/api/Shop';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowRight, Eye, EyeOff  } from 'lucide-vue-next';
+import { ArrowRight, Eye, EyeOff } from 'lucide-vue-next';
 import { Separator } from '@/components/ui/separator';
 import { useUserStore } from '@/store/user';
 import createProtectedApiInterface from '@/api/protected';

@@ -134,7 +134,7 @@ const colorMode = useColorMode();
           class="flex flex-col a:text-lg"
         >
           <span class="text-muted-foreground text-sm">{{ group.title }}</span>
-          <RouterLink
+          <NuxtLink
             v-for="item of group.items"
             :key="item.name"
             :to="item.path"
@@ -142,7 +142,7 @@ const colorMode = useColorMode();
             ><CardNextButton>
               {{ item.name }} <CardNextButtonArrow />
             </CardNextButton>
-          </RouterLink>
+          </NuxtLink>
         </div>
       </div>
     </div>

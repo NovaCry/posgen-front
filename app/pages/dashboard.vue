@@ -19,7 +19,7 @@
               >
                 <SidebarMenuItem>
                   <div class="flex items-center gap-2">
-                    <RouterLink :to="item.url" class="w-full">
+                    <NuxtLink :to="item.url" class="w-full">
                       <SidebarMenuButton
                         :data-active="
                           item.url == router.currentRoute.value.path
@@ -29,7 +29,7 @@
                         <component :is="item.icon" />
                         <span>{{ item.title }}</span>
                       </SidebarMenuButton>
-                    </RouterLink>
+                    </NuxtLink>
                     <Separator class="h-4!" orientation="vertical" />
                     <CollapsibleTrigger as-child class="">
                       <Button variant="ghost" size="sm">
@@ -47,14 +47,14 @@
                         class="hover:bg-accent rounded-md transition duration-200"
                       >
                         <SidebarMenuSubButton as-child>
-                          <RouterLink
+                          <NuxtLink
                             :to="subItem.url"
                             :data-active="
                               subItem.url == router.currentRoute.value.path
                             "
                           >
                             <span>{{ subItem.title }}</span>
-                          </RouterLink>
+                          </NuxtLink>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     </SidebarMenuSub>
@@ -62,7 +62,7 @@
                 </SidebarMenuItem>
               </Collapsible>
               <SidebarMenuItem v-if="item.type == 'direct'" :key="item.title">
-                <RouterLink :to="item.url" class="w-full">
+                <NuxtLink :to="item.url" class="w-full">
                   <SidebarMenuButton
                     :data-active="item.url == router.currentRoute.value.path"
                     :tooltip="item.title"
@@ -70,7 +70,7 @@
                     <component :is="item.icon" />
                     <span>{{ item.title }}</span>
                   </SidebarMenuButton>
-                </RouterLink>
+                </NuxtLink>
               </SidebarMenuItem>
               <SidebarMenuItem v-if="item.type == 'action'" :key="item.title">
                 <SidebarMenuButton :tooltip="item.title" @click="item.action">
@@ -111,7 +111,7 @@
           </motion.div>
         </AnimatePresence>
         <SidebarInsetHeader />
-        <RouterView />
+        <NuxtPage />
       </ScrollArea>
     </SidebarInset>
   </SidebarProvider>
