@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { useUserStore } from '@/store/user';
-import { Avatar, AvatarFallback } from '../ui/avatar';
-import { Button } from '../ui/button';
-import { DropdownMenu, DropdownMenuTrigger } from '../ui/dropdown-menu';
-import DropdownContentUser from '../dropdown/DropdownContentUser.vue';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import DropdownContentUser from '@/components/dropdown/DropdownContentUser.vue';
 import { LogIn } from 'lucide-vue-next';
 
 const user = useUserStore();

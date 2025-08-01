@@ -8,15 +8,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 import type Shop from '@/types/api/Shop';
 import { useUserStore } from '@/store/user';
 import { useSelectedShopStore } from '@/store/shop';
 import { useMagicKeys } from '@vueuse/core';
 import { watch, nextTick, onMounted } from 'vue';
-import { openInDashboard } from '@/lib/openInDashboard';
 import createProtectedApiInterface from '@/api/protected';
-import errorHandler from '@/lib/errorHandler';
 
 const user = useUserStore();
 const selectedShop = useSelectedShopStore();
@@ -38,7 +36,7 @@ async function fetchShopDetails(shopId: string): Promise<Shop | null> {
   const response = await protectedApiInterface({
     url: `shop/${shopId}`,
     method: 'GET',
-  }).catch(errorHandler);
+  }).catch(useErrorHandler);
 
   if (!response) return null;
   return response.data.shop;
@@ -146,7 +144,7 @@ async function setActiveTeam(shop: Shop, e: Event) {
         <DropdownMenuShortcut>⌘{{ index + 1 }}</DropdownMenuShortcut>
       </DropdownMenuItem>
       <DropdownMenuSeparator />
-      <button class="w-full" @click="openInDashboard('create', true)">
+      <button class="w-full" @click="$router.push('/create')">
         <DropdownMenuItem class="gap-2 p-2">
           <div
             class="flex size-6 items-center justify-center rounded-md border bg-background"

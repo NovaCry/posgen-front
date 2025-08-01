@@ -130,7 +130,6 @@ onUnmounted(() => {
           <button
             v-for="app of apps"
             :key="app.name"
-            :disabled="user.requireToLogin"
             :data-selected="router.currentRoute.value.path == app.path"
             :class="[
               app.bg,
@@ -146,7 +145,6 @@ onUnmounted(() => {
         </div>
 
         <button
-          :disabled="user.requireToLogin"
           :title="isFullscreen ? 'Tam ekrandan çık (F11)' : 'Tam ekran (F11)'"
           class="p-1 sm:p-1.5 outline-none disabled:opacity-60 disabled:cursor-not-allowed focus-visible:ring-2 transition hover:scale-105 rounded-md active:scale-95 bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300"
           @click="toggleFullscreen"
@@ -156,7 +154,7 @@ onUnmounted(() => {
         </button>
 
         <div class="shrink-0">
-          <UserWidget :disabled="user.requireToLogin" />
+          <UserWidget />
         </div>
       </div>
     </div>
