@@ -7,14 +7,14 @@ import { Input } from '@/components/ui/input';
 import Label from '@/components/ui/label/Label.vue';
 
 import { ArrowLeft, Loader2, Plus } from 'lucide-vue-next';
-import TooltipSimplified from '@/components/tooltip/TooltipSimplified.vue';
+import TooltipSimplified from '@/components/TooltipSimplified.vue';
 import { computed, ref } from 'vue';
 import NumberFieldSimplified from '@/components/input/NumberFieldSimplified.vue';
 import { useSelectedShopStore } from '@/store/shop';
 import { toast } from 'vue-sonner';
 import Section from '@/components/layout/Section.vue';
 import ResourceCard from '@/components/card/ResourceCard.vue';
-import SeatRenderer from '@/components/seatrenderer/SeatRenderer.vue';
+import SeatRenderer from '@/components/SeatRenderer.vue';
 import createProtectedApiInterface from '@/api/protected';
 
 const router = useRouter();

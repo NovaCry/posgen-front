@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import UpgradeSubscription from '@/components/banners/UpgradeSubscription.vue';
+import UpgradeSubscription from '@/components/UpgradeSubscription.vue';
 import Section from '@/components/layout/Section.vue';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';

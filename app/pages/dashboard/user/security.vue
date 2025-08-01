@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Section from '@/components/layout/Section.vue';
-import TooltipSimplified from '@/components/tooltip/TooltipSimplified.vue';
+import TooltipSimplified from '@/components/TooltipSimplified.vue';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';

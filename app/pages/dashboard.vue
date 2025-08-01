@@ -147,7 +147,7 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar';
 import { ChevronRight, Loader2 } from 'lucide-vue-next';
-import SidebarInsetHeader from '@/components/sidebar/SidebarInsetHeader.vue';
+import SidebarInsetHeader from '@/components/header/sidebar/SidebarInsetHeader.vue';
 import { useUserStore } from '@/store/user';
 import { onBeforeMount, ref, watch } from 'vue';
 import { ScrollArea } from '@/components/ui/scroll-area';

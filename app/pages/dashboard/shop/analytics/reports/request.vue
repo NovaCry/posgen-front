@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import DataTable from '@/components/datatable/DataTable.vue';
-import PaginationSimplified from '@/components/pagination/PaginationSimplified.vue';
+import DataTable from '@/components/DataTable.vue';
+import PaginationSimplified from '@/components/PaginationSimplified.vue';
 import { toLocaleDate } from '@/lib/toLocaleDate';
 import type { TableData } from '@/types/DataTable';
 import { Ban, Edit, History } from 'lucide-vue-next';

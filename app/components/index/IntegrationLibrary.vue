@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onUnmounted, ref } from 'vue';
-import Section from './Section.vue';
-import SectionHeading from './SectionHeading.vue';
+import Section from '@/components/section/Section.vue';
+import SectionHeading from '@/components/section/SectionHeading.vue';
 import { AnimatePresence, motion } from 'motion-v';
 import { Separator } from '../ui/separator';
 import { ArrowRight } from 'lucide-vue-next';

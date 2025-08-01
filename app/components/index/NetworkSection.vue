@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import SectionHeading from '@/components/index/SectionHeading.vue';
+import SectionHeading from '@/components/section/SectionHeading.vue';
 import { useScroll } from 'motion-v';
 import { ref } from 'vue';
 import Card from '../index-card/Card.vue';
 import CardContent from '../index-card/CardContent.vue';
 import CardHeading from '../index-card/CardHeading.vue';
 import CardDescription from '../index-card/CardDescription.vue';
-import Section from './Section.vue';
+import Section from '@/components/section/Section.vue';
 
 const sectionAnimationTarget = ref<HTMLDivElement | null>(null);
 

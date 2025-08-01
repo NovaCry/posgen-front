@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { motion, useScroll } from 'motion-v';
-import Section from './Section.vue';
-import SectionHeading from './SectionHeading.vue';
+import Section from '@/components/section/Section.vue';
+import SectionHeading from '@/components/section/SectionHeading.vue';
 import { ref } from 'vue';
 import { Skeleton } from '../ui/skeleton';
 import { AreaChart } from '../ui/chart-area';

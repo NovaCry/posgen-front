@@ -154,7 +154,7 @@ import type { AxiosError } from 'axios';
 import { ArrowRight, Eye, EyeOff } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
-import Header from '@/components/template/Header.vue';
+import Header from '@/components/header/index/IndexHeader.vue';
 
 const router = useRouter();
 

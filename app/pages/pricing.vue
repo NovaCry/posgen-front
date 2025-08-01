@@ -309,7 +309,7 @@
 
 <script setup lang="ts">
 import { Check } from 'lucide-vue-next';
-import Header from '@/components/template/Header.vue';
+import Header from '@/components/header/index/IndexHeader.vue';
 import { ref } from 'vue';
 
 interface Subscription {

@@ -65,7 +65,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
-import Header from '@/components/template/Header.vue';
+import Header from '@/components/header/index/IndexHeader.vue';
 
 definePageMeta({
   name: 'Mağaza Dosyaları Yükleyin',

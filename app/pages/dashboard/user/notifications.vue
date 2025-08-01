@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DataTable from '@/components/datatable/DataTable.vue';
+import DataTable from '@/components/DataTable.vue';
 import Section from '@/components/layout/Section.vue';
 import type { TableData } from '@/types/DataTable';
 import { ArrowUpFromLine, Eye, Trash } from 'lucide-vue-next';

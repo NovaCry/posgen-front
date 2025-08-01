@@ -1,7 +1,7 @@
 <script setup lang="ts" generic="T">
 import createProtectedApiInterface from '@/api/protected';
-import DataTable from '@/components/datatable/DataTable.vue';
-import PaginationSimplified from '@/components/pagination/PaginationSimplified.vue';
+import DataTable from '@/components/DataTable.vue';
+import PaginationSimplified from '@/components/PaginationSimplified.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import type Pagination from '@/types/api/Pagination';

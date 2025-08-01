@@ -2,8 +2,8 @@
 import { ArrowRight } from 'lucide-vue-next';
 import MessageBubble from '../template/MessageBubble.vue';
 import { Button } from '../ui/button';
-import Section from './Section.vue';
-import SectionHeading from './SectionHeading.vue';
+import Section from '@/components/section/Section.vue';
+import SectionHeading from '@/components/section/SectionHeading.vue';
 </script>
 
 <template>

@@ -4,7 +4,7 @@ import Skeleton from '@/components/ui/skeleton/Skeleton.vue';
 import { ArrowRight, ArrowUpRight } from 'lucide-vue-next';
 
 import { application } from '@/app.conf.json';
-import Header from '@/components/template/Header.vue';
+import Header from '@/components/header/index/IndexHeader.vue';
 
 definePageMeta({
   name: 'Mağaza Oluşturuldu',

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import Header from '@/components/template/BasicHeader.vue';
+import Header from '@/components/header/index/IndexHeader.vue';
 import Button from '@/components/ui/button/Button.vue';
 
 const router = useRouter();

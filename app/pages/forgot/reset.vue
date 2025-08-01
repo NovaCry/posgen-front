@@ -63,7 +63,7 @@ import type User from '@/types/api/User';
 import type { AxiosError } from 'axios';
 import { ref } from 'vue';
 import { useUserStore } from '@/store/user';
-import Header from '@/components/template/Header.vue';
+import Header from '@/components/header/index/IndexHeader.vue';
 
 const router = useRouter();
 

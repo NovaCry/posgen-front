@@ -4,10 +4,10 @@ import AnalyticsSection from '@/components/index/AnalyticsSection.vue';
 import APISection from '@/components/index/APISection.vue';
 import IntegrationLibrary from '@/components/index/IntegrationLibrary.vue';
 import NetworkSection from '@/components/index/NetworkSection.vue';
-import QuickStartSection from '@/components/index/QuickStartSection.vue';
+import QuickStartSection from '@/components/index/quick-start/QuickStartSection.vue';
 import StartSection from '@/components/index/StartSection.vue';
 import Footer from '@/components/template/Footer.vue';
-import Header from '@/components/template/Header.vue';
+import Header from '@/components/header/index/IndexHeader.vue';
 
 definePageMeta({
   name: 'Ana Sayfa',

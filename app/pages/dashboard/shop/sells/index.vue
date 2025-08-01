@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import DataTable from '@/components/datatable/DataTable.vue';
-import PaginationSimplified from '@/components/pagination/PaginationSimplified.vue';
+import DataTable from '@/components/DataTable.vue';
+import PaginationSimplified from '@/components/PaginationSimplified.vue';
 import { toLocaleDate } from '@/lib/toLocaleDate';
 import type { Cell, TableData } from '@/types/DataTable';
 import { Receipt, Filter, Eye } from 'lucide-vue-next';

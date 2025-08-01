@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { Endpoint } from '@/types/Endpoint';
 import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel';
-import EndpointCard from '../endpoint/EndpointCard.vue';
-import Section from './Section.vue';
-import SectionHeading from './SectionHeading.vue';
+import EndpointCard from '@/components/EndpointCard.vue';
+import Section from '@/components/section/Section.vue';
+import SectionHeading from '@/components/section/SectionHeading.vue';
 import Autoscroll from 'embla-carousel-auto-scroll';
 import { ArrowRight } from 'lucide-vue-next';
 import { Button } from '../ui/button';
