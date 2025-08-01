@@ -33,7 +33,7 @@
         <Button :disabled="Processing" @click="Login()">
           <Icon
             v-if="Processing"
-            icon="lucide:loader-circle"
+            name="lucide:loader-circle"
             class="animate-spin duration-1000"
           />
           Sıfırla
@@ -61,10 +61,8 @@ import Label from '@/components/ui/label/Label.vue';
 import type APIError from '@/types/api/APIError';
 import type User from '@/types/api/User';
 import type { AxiosError } from 'axios';
-import { Icon } from '@iconify/vue';
 import { ref } from 'vue';
 import { useUserStore } from '@/store/user';
-import errorHandler from '@/lib/errorHandler';
 import Header from '@/components/template/Header.vue';
 
 const router = useRouter();
@@ -83,7 +81,7 @@ const ApiMessage = ref('');
 const user = useUserStore();
 
 const customizedErrorHandler = (err: AxiosError<APIError>) =>
-  errorHandler(err, {
+  useErrorHandler(err, {
     afterAll(err, locale) {
       if (locale) ApiMessage.value = locale.reason;
     },

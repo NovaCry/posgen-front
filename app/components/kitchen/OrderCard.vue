@@ -12,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
-import { Icon } from '@iconify/vue';
 </script>
 
 <template>
@@ -58,7 +57,7 @@ import { Icon } from '@iconify/vue';
         </Select>
       </div>
       <Button class="w-full" variant="destructive">
-        <Icon icon="material-symbols:close" /> Reddet
+        <Icon name="material-symbols:close" /> Reddet
       </Button>
       <Button class="w-full"> <Check /> Kabul Et </Button>
     </div>

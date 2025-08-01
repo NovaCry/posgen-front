@@ -16,7 +16,6 @@ import Section from '@/components/layout/Section.vue';
 import ResourceCard from '@/components/card/ResourceCard.vue';
 import SeatRenderer from '@/components/seatrenderer/SeatRenderer.vue';
 import createProtectedApiInterface from '@/api/protected';
-import errorHandler from '@/lib/errorHandler';
 
 const router = useRouter();
 
@@ -52,7 +51,7 @@ async function CreateTable() {
       name: tableName.value,
       seatSize: seatSize.value,
     },
-  }).catch(errorHandler);
+  }).catch(useErrorHandler);
 
   if (!res) return (isLoading.value = false);
 

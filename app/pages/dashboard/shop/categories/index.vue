@@ -2,13 +2,11 @@
 import createProtectedApiInterface from '@/api/protected';
 import Resource from '@/components/layout/Resource.vue';
 import Section from '@/components/layout/Section.vue';
-import errorHandler from '@/lib/errorHandler';
 import { useSelectedShopStore } from '@/store/shop';
 import type { Category } from '@/types/api/Category';
 import type { MenuCell, TableData } from '@/types/DataTable';
-import { Icon } from '@iconify/vue';
 import { Trash } from 'lucide-vue-next';
-import { h, ref  } from 'vue';
+import { h, ref } from 'vue';
 import { toast } from 'vue-sonner';
 
 definePageMeta({
@@ -49,7 +47,7 @@ function makeActionsForCategory(category: Category): MenuCell {
                 url: `shop/categories/${category.shopId}/${category.id}/delete`,
                 method: 'DELETE',
               })
-                .catch(errorHandler)
+                .catch(useErrorHandler)
                 .then((res) => {
                   if (!res) return;
                   resourceVersion.value += 1;

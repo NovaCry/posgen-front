@@ -1,10 +1,9 @@
-import type { FunctionalComponent } from 'vue';
 import type { RouteLocationRaw } from 'vue-router';
 
 export interface CommandRaw {
   id: string;
   name: string;
-  icon?: FunctionalComponent;
+  icon?: string;
 }
 
 export interface LinkCommand extends CommandRaw {

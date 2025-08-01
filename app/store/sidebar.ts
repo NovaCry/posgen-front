@@ -1,31 +1,12 @@
-import type { SidebarDataGroup } from '@/types/Sidebar';
+import type { SidebarDataGroup } from '~/types/Sidebar';
 
-import {
-  ArrowUpRight,
-  BadgePercent,
-  BoxIcon,
-  Brain,
-  CakeSlice,
-  ChartLine,
-  FileBarChart,
-  FileClock,
-  GalleryVertical,
-  GalleryVerticalEnd,
-  Hash,
-  Library,
-  Puzzle,
-  QrCode,
-  ReceiptText,
-  Settings2,
-  ShoppingBasket,
-  UsersRound,
-} from 'lucide-vue-next';
-import { defineStore } from 'pinia';
-
-import { application } from '@/app.conf.json';
+interface SidebarStore {
+  open: boolean;
+  data: SidebarDataGroup[];
+}
 
 export const useSidebarStore = defineStore('sidebar', {
-  state: () => ({
+  state: (): SidebarStore => ({
     open: true,
     data: [
       {
@@ -35,15 +16,13 @@ export const useSidebarStore = defineStore('sidebar', {
             type: 'direct',
             title: 'Posgen AI',
             url: '/dashboard/',
-            icon: Brain,
+            icon: 'lucide:brain',
           },
           {
-            type: 'action',
+            type: 'direct',
             title: 'Uygulamaya Git',
-            action() {
-              window.open(application.dev);
-            },
-            icon: ArrowUpRight,
+            url: '/app/',
+            icon: 'lucide:arrow-up-right',
           },
         ],
       },
@@ -54,17 +33,17 @@ export const useSidebarStore = defineStore('sidebar', {
             type: 'collapsible',
             title: 'Analizler',
             url: '/dashboard/shop/analytics',
-            icon: ChartLine,
+            icon: 'lucide:chart-line',
             isActive: false,
             items: [
               {
                 title: 'Raporlar',
-                icon: FileBarChart,
+                icon: 'lucide:file-bar-chart',
                 url: '/dashboard/shop/analytics/reports',
               },
               {
                 title: 'Rapor İste',
-                icon: FileClock,
+                icon: 'lucide:file-clock',
                 url: '/dashboard/shop/analytics/reports/request',
               },
             ],
@@ -74,18 +53,13 @@ export const useSidebarStore = defineStore('sidebar', {
             title: 'Kütüphane',
             url: '/dashboard/shop/library',
             isActive: false,
-            icon: Library,
+            icon: 'lucide:library',
             items: [
               {
                 title: 'Entegrasyonlar',
-                icon: Puzzle,
+                icon: 'lucide:puzzle',
                 url: '/dashboard/shop/library/integrations',
               },
-              //   {
-              //     title: "Topluluk",
-              //    icon: UsersRound,
-              //   url: "/dashboard/shop/library/community",
-              // },
             ],
           },
           {
@@ -93,16 +67,16 @@ export const useSidebarStore = defineStore('sidebar', {
             title: 'Ayarlar',
             url: '/dashboard/shop/settings',
             isActive: false,
-            icon: Settings2,
+            icon: 'lucide:settings-2',
             items: [
               {
                 title: 'Çalışanlar',
-                icon: UsersRound,
+                icon: 'lucide:users-round',
                 url: '/dashboard/shop/settings/employees',
               },
               {
                 title: 'Roller',
-                icon: Hash,
+                icon: 'lucide:hash',
                 url: '/dashboard/shop/settings/roles',
               },
             ],
@@ -116,43 +90,37 @@ export const useSidebarStore = defineStore('sidebar', {
             type: 'direct',
             title: 'Satışlar',
             url: '/dashboard/shop/sells',
-            isActive: false,
-            icon: ShoppingBasket,
+            icon: 'lucide:shopping-basket',
           },
           {
             type: 'direct',
             title: 'Adisyonlar',
             url: '/dashboard/shop/admissions',
-            isActive: false,
-            icon: ReceiptText,
+            icon: 'lucide:receipt-text',
           },
           {
             type: 'direct',
             title: 'Masalar',
             url: '/dashboard/shop/tables',
-            isActive: false,
-            icon: GalleryVertical,
+            icon: 'lucide:gallery-vertical',
           },
           {
             type: 'direct',
             title: 'Kategoriler',
             url: '/dashboard/shop/categories',
-            isActive: false,
-            icon: GalleryVerticalEnd,
+            icon: 'lucide:gallery-vertical-end',
           },
           {
             type: 'direct',
             title: 'Ürünler',
             url: '/dashboard/shop/product',
-            isActive: false,
-            icon: BoxIcon,
+            icon: 'lucide:box',
           },
           {
             type: 'direct',
             title: 'İndirimler',
             url: '/dashboard/shop/discounts',
-            isActive: false,
-            icon: BadgePercent,
+            icon: 'lucide:badge-percent',
           },
         ],
       },
@@ -163,54 +131,25 @@ export const useSidebarStore = defineStore('sidebar', {
             type: 'direct',
             title: 'Mutfak',
             url: '/dashboard/shop/modules/kitchen',
-            icon: CakeSlice,
-            isActive: false,
+            icon: 'lucide:cake-slice',
           },
           {
             type: 'direct',
             title: 'QR Menü',
             url: '/dashboard/shop/modules/qr',
-            icon: QrCode,
-            isActive: false,
+            icon: 'lucide:qr-code',
           },
         ],
       },
-      /*{
-        name: "Entegrasyonlar",
-        data: [
-          {
-            type: "direct",
-            title: "YemekSepeti",
-            url: "#",
-            icon: BoxIcon,
-          },
-          {
-            type: "direct",
-            title: "Getir",
-            url: "#",
-            icon: BoxIcon,
-          },
-          {
-            type: "direct",
-            title: "Trendyol GO",
-            url: "#",
-            icon: BoxIcon,
-          },
-        ],
-      },*/
-    ] as SidebarDataGroup[],
+    ],
   }),
   actions: {
-    async save() {
-      // const saveableData = { ...this.$state, data: undefined };
-      // localStorage.setItem('sidebar', JSON.stringify(saveableData));
+    load() {
+      this.$state.open =
+        localStorage.getItem('sidebar') == 'true' ? true : false;
     },
-
-    async load() {
-      // const sidebar = localStorage.getItem('sidebar');
-      // if (sidebar) {
-      // this.$patch(JSON.parse(sidebar));
-      // }
+    save() {
+      localStorage.setItem('sidebar', this.$state.open + '');
     },
   },
 });

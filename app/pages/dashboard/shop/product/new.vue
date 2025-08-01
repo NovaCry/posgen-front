@@ -17,7 +17,10 @@ import {
   UploadCloud,
   X,
   Check,
-  ChevronDown, Tag, Package, Settings 
+  ChevronDown,
+  Tag,
+  Package,
+  Settings,
 } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import {
@@ -43,7 +46,6 @@ import type { Category } from '@/types/api/Category';
 import { toast } from 'vue-sonner';
 import createProtectedApiInterface from '@/api/protected';
 import Section from '@/components/layout/Section.vue';
-import errorHandler from '@/lib/errorHandler';
 import { Separator } from '@/components/ui/separator';
 
 const router = useRouter();
@@ -79,7 +81,7 @@ const categories = computedAsync(async () => {
   const res = await protectedApiInterface<Pagination<Category>>({
     url: `shop/categories/${selectedShop.id}/list`,
     method: 'GET',
-  }).catch(errorHandler);
+  }).catch(useErrorHandler);
 
   if (!res) return [];
   return res.data.data;
@@ -145,7 +147,7 @@ async function CreateProduct(): Promise<void> {
         maxQuantity: String(stockItem.maxQuantity),
       })),
     },
-  }).catch(errorHandler);
+  }).catch(useErrorHandler);
 
   if (!res) {
     isLoading.value = false;

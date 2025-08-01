@@ -141,8 +141,6 @@ import { useUserStore } from '@/store/user';
 import { useSelectedShopStore } from '@/store/shop';
 import createProtectedApiInterface from '@/api/protected';
 import type { RefreshTokenResponse } from '@/types/api/User';
-import redirectProperly from '@/lib/redirectProperly';
-import errorHandler from '@/lib/errorHandler';
 
 const router = useRouter();
 
@@ -185,16 +183,16 @@ const app = ref<Application>();
 onBeforeMount(async () => {
   await router.isReady();
 
-  if (await user.requireToLogin()) redirectProperly('/login', '/authorize');
+  if (await user.requireToLogin()) useRedirect('/login', '/authorize');
 
   const app_id = router.currentRoute.value.query.id;
 
-  if (!app_id) return redirectProperly('/dashboard/user');
+  if (!app_id) return useRedirect('/dashboard/user');
 
   const application = await protectedApiInterface<Application>({
     method: 'GET',
     url: `auth/app/${app_id}`,
-  }).catch(errorHandler);
+  }).catch(useErrorHandler);
 
   if (!application) return;
 
@@ -214,10 +212,10 @@ async function GrantAuthorization() {
       application_id: app.value?.id,
     },
   }).catch((err) =>
-    errorHandler(err, {
+    useErrorHandler(err, {
       locales: {
         '404': () => {
-          redirectProperly('/dashboard/user');
+          useRedirect('/dashboard/user');
           return {
             title: 'Bulunamadı.',
             reason: 'Oturum açma talebi istenen uygulama, mevcut değil.',

@@ -10,34 +10,34 @@ export interface SidebarDataAction {
   type: 'action';
   title: string;
   action: () => void;
-  icon: FunctionalComponent;
+  icon: string;
 }
 
 export interface SidebarDataDirect {
   type: 'direct';
   title: string;
   url: RouteLocationRaw;
-  icon: FunctionalComponent;
+  icon: string;
 }
 
 export interface SidebarDataCollapsible {
   type: 'collapsible';
   url: RouteLocationRaw;
   title: string;
-  icon: FunctionalComponent;
+  icon: string;
   isActive: boolean;
   items: SidebarDataCollapsibleItem[];
 }
 
 export interface SidebarDataCollapsible {
   title: string;
-  icon: FunctionalComponent;
+  icon: string;
   isActive: boolean;
   items: SidebarDataCollapsibleItem[];
 }
 
 export interface SidebarDataCollapsibleItem {
   title: string;
-  icon?: FunctionalComponent;
+  icon?: string;
   url: RouteLocationRaw;
 }

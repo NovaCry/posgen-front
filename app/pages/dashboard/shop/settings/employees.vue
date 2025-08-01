@@ -4,7 +4,7 @@ import DataTable from '@/components/datatable/DataTable.vue';
 import PaginationSimplified from '@/components/pagination/PaginationSimplified.vue';
 import { toLocaleDate } from '@/lib/toLocaleDate';
 import type { Cell, TableData } from '@/types/DataTable';
-import { Ban, Edit, History, Plus, Delete, ArrowRight  } from 'lucide-vue-next';
+import { Ban, Edit, History, Plus, Delete, ArrowRight } from 'lucide-vue-next';
 import {
   Dialog,
   DialogContent,
@@ -18,7 +18,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Section from '@/components/layout/Section.vue';
 import DatePicker from '@/components/calendar/DatePicker.vue';
-import { Icon } from '@iconify/vue';
 import createProtectedApiInterface from '@/api/protected';
 import { toast } from 'vue-sonner';
 import { useSelectedShopStore } from '@/store/shop';
@@ -307,7 +306,7 @@ const addEmployee = async () => {
             >
               <Icon
                 v-if="Processing"
-                icon="lucide:loader-circle"
+                name="lucide:loader-circle"
                 class="animate-spin duration-1000"
               />
               Çalışan Ekle

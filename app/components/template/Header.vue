@@ -18,8 +18,8 @@ import HeaderMobileContext from './HeaderMobileContext.vue';
             alt="posgen-logo"
             class="size-8"
           />
-          <a href="/"
-            ><span class="font-bold text-xl font-header">POSGEN</span></a
+          <NuxtLink to="/"
+            ><span class="font-bold text-xl font-header">POSGEN</span></NuxtLink
           >
         </div>
         <div class="hidden gap-2.5 md:flex">

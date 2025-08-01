@@ -1,11 +1,10 @@
 import type { RouteLocationAsString, RouteLocationRaw } from 'vue-router';
 
-const router = useRouter();
-
-export default function redirectProperly(
+export default function useRedirect(
   route: RouteLocationRaw,
   callback?: RouteLocationAsString
 ) {
+  const router = useRouter();
   if (typeof route == 'string') {
     router.push({
       path: route,

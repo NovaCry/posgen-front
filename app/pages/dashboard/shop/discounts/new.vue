@@ -26,7 +26,6 @@ import { useSelectedShopStore } from '@/store/shop';
 import { toast } from 'vue-sonner';
 import createProtectedApiInterface from '@/api/protected';
 import Section from '@/components/layout/Section.vue';
-import errorHandler from '@/lib/errorHandler';
 
 const router = useRouter();
 
@@ -113,7 +112,7 @@ async function CreateDiscount() {
       endDate: endDate.value || undefined,
       maxUses: maxUses.value,
     },
-  }).catch(errorHandler);
+  }).catch(useErrorHandler);
 
   if (!res) {
     isLoading.value = false;

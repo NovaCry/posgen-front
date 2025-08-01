@@ -7,9 +7,8 @@ import type { APIv2CollectionResponse } from '@/types/IconifyAPI';
 import axios from 'axios';
 import Slider from '../slider/Slider.vue';
 import { ScrollArea } from '../ui/scroll-area';
-import { Icon } from '@iconify/vue';
 import SliderItem from '../slider/SliderItem.vue';
-import errorHandler from '@/lib/errorHandler';
+// import errorHandler from '@/lib/errorHandler';
 
 defineProps<{
   modelValue?: string;
@@ -34,7 +33,7 @@ async function GetIcons() {
     method: 'GET',
     url: 'collection?prefix=solar',
     baseURL: 'https://api.iconify.design',
-  }).catch(errorHandler);
+  }).catch(useErrorHandler);
 
   if (!res) return;
 
@@ -81,7 +80,7 @@ watch(selectedIcon, (n) => {
           )
         "
       >
-        <Icon v-if="selectedIcon" :icon="selectedIcon" />
+        <Icon v-if="selectedIcon" :name="selectedIcon" />
         {{ selectedIcon ? 'Ikon Seçildi' : 'Ikon Seçiniz' }}
       </Button>
     </PopoverTrigger>
@@ -110,7 +109,7 @@ watch(selectedIcon, (n) => {
               >
                 <Icon
                   class="size-8 hover:bg-secondary rounded-sm"
-                  :icon="`${iconifyResponse?.prefix}:${icon}`"
+                  :name="`${iconifyResponse?.prefix}:${icon}`"
                 />
               </figure>
               <!-- <Skeleton class="size-10" v-for="n in 134" /> -->

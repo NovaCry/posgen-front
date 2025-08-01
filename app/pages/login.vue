@@ -72,7 +72,7 @@
         >
           <Icon
             v-if="Processing"
-            icon="lucide:loader-circle"
+            name="lucide:loader-circle"
             class="animate-spin duration-1000"
           />
           Giriş Yap
@@ -82,7 +82,7 @@
           <Separator class="mb-2 w-[75%] mx-auto" label="veya" />
           <div class="flex flex-col gap-2">
             <Button variant="outline" tabindex="4">
-              <Icon icon="cib:google" /> Google ile devam et
+              <Icon name="cib:google" /> Google ile devam et
             </Button>
           </div>
         </div>
@@ -119,7 +119,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import type APIError from '@/types/api/APIError';
 import type User from '@/types/api/User';
 import type { AxiosError } from 'axios';
-import { Icon } from '@iconify/vue';
 import { onBeforeMount, ref } from 'vue';
 import type Shop from '@/types/api/Shop';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -127,7 +126,6 @@ import { ArrowRight, Eye, EyeOff } from 'lucide-vue-next';
 import { Separator } from '@/components/ui/separator';
 import { useUserStore } from '@/store/user';
 import createProtectedApiInterface from '@/api/protected';
-import errorHandler from '@/lib/errorHandler';
 import { toast } from 'vue-sonner';
 import Header from '@/components/template/Header.vue';
 import { useRouter } from 'vue-router';
@@ -152,7 +150,7 @@ const ApiMessage = ref('');
 const user = useUserStore();
 
 const customizedErrorHandler = (err: AxiosError<APIError>) =>
-  errorHandler(err, {
+  useErrorHandler(err, {
     afterAll(_, locale) {
       if (locale) ApiMessage.value = locale.reason;
     },

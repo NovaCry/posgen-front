@@ -104,7 +104,7 @@
             >
               <Icon
                 v-if="Processing"
-                icon="lucide:loader-circle"
+                name="lucide:loader-circle"
                 class="animate-spin duration-1000"
               />
               Kayıt Ol
@@ -150,11 +150,9 @@ import Label from '@/components/ui/label/Label.vue';
 import { Skeleton } from '@/components/ui/skeleton';
 import type APIError from '@/types/api/APIError';
 import type User from '@/types/api/User';
-import { Icon } from '@iconify/vue';
 import type { AxiosError } from 'axios';
 import { ArrowRight, Eye, EyeOff } from 'lucide-vue-next';
 import { ref } from 'vue';
-import errorHandler from '@/lib/errorHandler';
 import { toast } from 'vue-sonner';
 import Header from '@/components/template/Header.vue';
 
@@ -180,7 +178,7 @@ const showPassword = ref(false);
 const ApiMessage = ref('');
 
 const customizedErrorHandler = (err: AxiosError<APIError>) =>
-  errorHandler(err, {
+  useErrorHandler(err, {
     afterAll(err, locale) {
       if (locale) ApiMessage.value = locale.reason;
     },

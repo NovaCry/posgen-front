@@ -8,14 +8,13 @@ import { useColorMode } from '@vueuse/core';
 import { Toaster } from './components/ui/sonner';
 import { useUserStore } from './store/user';
 import { useSelectedShopStore } from './store/shop';
-import { useSidebarStore } from './store/sidebar';
 useColorMode();
 
-// const user = useUserStore();
-// const selectedShop = useSelectedShopStore();
-// const sidebar = useSidebarStore();
+const user = useUserStore();
+const selectedShop = useSelectedShopStore();
 
-// user.load();
-// selectedShop.load();
-// sidebar.load();
+onMounted(() => {
+  user.load();
+  selectedShop.load();
+});
 </script>

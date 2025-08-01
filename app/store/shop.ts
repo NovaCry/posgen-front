@@ -17,14 +17,15 @@ export const useSelectedShopStore = defineStore('selectedShop', {
   }),
   actions: {
     async save() {
-      // localStorage.setItem('selectedShop', JSON.stringify(this.$state));
+      localStorage.setItem('selectedShop', JSON.stringify(this.$state));
     },
 
     async load() {
-      // const user = localStorage.getItem('selectedShop');
-      // if (user) {
-      // this.$patch(JSON.parse(user));
-      // }
+      console.log('analsex');
+      const user = localStorage.getItem('selectedShop');
+      if (user) {
+        this.$patch(JSON.parse(user));
+      }
     },
 
     flush() {

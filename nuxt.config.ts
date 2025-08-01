@@ -14,6 +14,9 @@ export default defineNuxtConfig({
   css: ['~/assets/css/tailwind.css'],
   vite: {
     plugins: [tailwindcss()],
+    ssr: {
+      noExternal: ['form-data'],
+    },
   },
 
   modules: [
@@ -36,5 +39,9 @@ export default defineNuxtConfig({
      * @default "./components/ui"
      */
     componentDir: './app/components/ui',
+  },
+
+  pinia: {
+    storesDirs: ['./app/store/**'],
   },
 });

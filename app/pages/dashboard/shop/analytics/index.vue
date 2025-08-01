@@ -824,14 +824,15 @@ definePageMeta({
               </div>
             </div>
           </div>
-          <AreaChart
-            v-else
-            :key="chartKey"
-            :data="widget.data"
-            index="name"
-            :categories="widget.categories"
-            class="flex-1 h-[300px]"
-          />
+          <ClientOnly v-else>
+            <AreaChart
+              :key="chartKey"
+              :data="widget.data"
+              index="name"
+              :categories="widget.categories"
+              class="flex-1 h-[300px]"
+            />
+          </ClientOnly>
         </template>
 
         <div

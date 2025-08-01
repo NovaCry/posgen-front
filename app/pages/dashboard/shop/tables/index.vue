@@ -2,7 +2,6 @@
 import createProtectedApiInterface from '@/api/protected';
 import Resource from '@/components/layout/Resource.vue';
 import Section from '@/components/layout/Section.vue';
-import errorHandler from '@/lib/errorHandler';
 import { useSelectedShopStore } from '@/store/shop';
 import type Table from '@/types/api/Table';
 import type { MenuCell, TableData } from '@/types/DataTable';
@@ -51,7 +50,7 @@ function makeActionsForAdmission(table: Table): MenuCell {
                 url: `shop/tables/${table.shopId}/${table.id}/delete`,
                 method: 'DELETE',
               })
-                .catch(errorHandler)
+                .catch(useErrorHandler)
                 .then((res) => {
                   if (!res) return;
                   resourceVersion.value += 1;

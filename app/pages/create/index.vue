@@ -124,7 +124,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowRight, Loader2 } from 'lucide-vue-next';
 import { useUserStore } from '@/store/user';
 import createProtectedApiInterface from '@/api/protected';
-import errorHandler from '@/lib/errorHandler';
 import { toast } from 'vue-sonner';
 
 const router = useRouter();
@@ -155,7 +154,7 @@ async function Create() {
       name: Name.value,
     },
   }).catch((err) =>
-    errorHandler(err, {
+    useErrorHandler(err, {
       afterAll() {
         Processing.value = false;
       },
@@ -165,7 +164,7 @@ async function Create() {
   const listResponse = await protectedApiInterface<Shop[]>({
     url: 'shop/list',
     method: 'GET',
-  }).catch(errorHandler);
+  }).catch(useErrorHandler);
 
   if (!listResponse) {
     Processing.value = false;

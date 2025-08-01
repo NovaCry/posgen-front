@@ -4,7 +4,6 @@ import DataTable from '@/components/datatable/DataTable.vue';
 import PaginationSimplified from '@/components/pagination/PaginationSimplified.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import errorHandler from '@/lib/errorHandler';
 import type Pagination from '@/types/api/Pagination';
 import type { TableData } from '@/types/DataTable';
 import { ArrowRight, ListFilter } from 'lucide-vue-next';
@@ -37,7 +36,7 @@ async function getData() {
       page.value
     }&limit=${ITEMS_PER_PAGE}&search=${encodeURIComponent(search.value)}`,
     method: 'GET',
-  }).catch(errorHandler);
+  }).catch(useErrorHandler);
   if (!res || !res.data || !Array.isArray(res.data.data)) {
     composedPagination.value = {
       data: [],

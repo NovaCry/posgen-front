@@ -1,6 +1,5 @@
-const router = useRouter();
-
 export default async function routeCallback() {
+  const router = useRouter();
   if (router.currentRoute.value.query.cb) {
     const queryWithoutCallback = {
       ...router.currentRoute.value.query,

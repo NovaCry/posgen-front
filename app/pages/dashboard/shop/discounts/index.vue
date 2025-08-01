@@ -2,7 +2,6 @@
 import createProtectedApiInterface from '@/api/protected';
 import Resource from '@/components/layout/Resource.vue';
 import Section from '@/components/layout/Section.vue';
-import errorHandler from '@/lib/errorHandler';
 import { toLocaleDate } from '@/lib/toLocaleDate';
 import { useSelectedShopStore } from '@/store/shop';
 import type { Discount } from '@/types/api/Discount';
@@ -53,7 +52,7 @@ function makeActionsForDiscount(discount: Discount): MenuCell {
                 url: `shop/discounts/${discount.shopId}/${discount.id}/delete`,
                 method: 'DELETE',
               })
-                .catch(errorHandler)
+                .catch(useErrorHandler)
                 .then((res) => {
                   if (!res) return;
                   resourceVersion.value += 1;

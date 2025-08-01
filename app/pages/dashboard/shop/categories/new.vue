@@ -7,8 +7,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import IconifyIconSelect from '@/components/input/IconifyIconSelect.vue';
 import Label from '@/components/ui/label/Label.vue';
 
-import { Icon } from '@iconify/vue';
-
 import { computed, ref } from 'vue';
 import {
   Card,
@@ -32,7 +30,6 @@ import { useSelectedShopStore } from '@/store/shop';
 import { toast } from 'vue-sonner';
 import createProtectedApiInterface from '@/api/protected';
 import Section from '@/components/layout/Section.vue';
-import errorHandler from '@/lib/errorHandler';
 
 const router = useRouter();
 const selectedShop = useSelectedShopStore(); // Move hook call to top level
@@ -71,7 +68,7 @@ async function CreateCategory() {
       isHidden: isHidden.value,
       isStockless: isStockless.value,
     },
-  }).catch(errorHandler);
+  }).catch(useErrorHandler);
 
   if (!res) return (isLoading.value = false);
 
@@ -159,7 +156,7 @@ async function CreateCategory() {
               >
                 <Icon
                   v-if="categoryIcon"
-                  :icon="categoryIcon"
+                  :name="categoryIcon"
                   class="w-6 h-6"
                 />
                 <Tag v-else class="w-6 h-6 text-muted-foreground" />
@@ -184,7 +181,7 @@ async function CreateCategory() {
                     variant="outline"
                     class="text-xs bg-green-50 text-green-700 border-green-200"
                   >
-                    <Icon icon="mdi:infinity" class="w-3 h-3 mr-1" />
+                    <Icon name="mdi:infinity" class="w-3 h-3 mr-1" />
                     Stoksuz
                   </Badge>
                 </div>
@@ -268,7 +265,7 @@ async function CreateCategory() {
                   for="stockless"
                   class="flex items-center gap-2 cursor-pointer"
                 >
-                  <Icon icon="mdi:infinity" class="w-4 h-4" />
+                  <Icon name="mdi:infinity" class="w-4 h-4" />
                   Stoksuz Kategori
                   <Badge
                     v-if="isStockless"

@@ -26,7 +26,7 @@
                         "
                         :tooltip="item.title"
                       >
-                        <component :is="item.icon" />
+                        <Icon :name="item.icon" />
                         <span>{{ item.title }}</span>
                       </SidebarMenuButton>
                     </NuxtLink>
@@ -67,14 +67,14 @@
                     :data-active="item.url == router.currentRoute.value.path"
                     :tooltip="item.title"
                   >
-                    <component :is="item.icon" />
+                    <Icon :name="item.icon" />
                     <span>{{ item.title }}</span>
                   </SidebarMenuButton>
                 </NuxtLink>
               </SidebarMenuItem>
               <SidebarMenuItem v-if="item.type == 'action'" :key="item.title">
                 <SidebarMenuButton :tooltip="item.title" @click="item.action">
-                  <component :is="item.icon" />
+                  <Icon :name="item.icon" />
                   <span>{{ item.title }}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -148,7 +148,6 @@ import {
 } from '@/components/ui/sidebar';
 import { ChevronRight, Loader2 } from 'lucide-vue-next';
 import SidebarInsetHeader from '@/components/sidebar/SidebarInsetHeader.vue';
-import { useSidebarStore } from '@/store/sidebar';
 import { useUserStore } from '@/store/user';
 import { onBeforeMount, ref, watch } from 'vue';
 import { ScrollArea } from '@/components/ui/scroll-area';

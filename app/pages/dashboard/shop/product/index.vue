@@ -2,7 +2,6 @@
 import createProtectedApiInterface from '@/api/protected';
 import Resource from '@/components/layout/Resource.vue';
 import Section from '@/components/layout/Section.vue';
-import errorHandler from '@/lib/errorHandler';
 import { useSelectedShopStore } from '@/store/shop';
 import type { Product } from '@/types/api/Product';
 import type { MenuCell, TableData } from '@/types/DataTable';
@@ -60,7 +59,7 @@ function makeActionsForProduct(product: Product): MenuCell {
                 url: `shop/products/${product.shopId}/${product.id}/delete`,
                 method: 'DELETE',
               })
-                .catch(errorHandler)
+                .catch(useErrorHandler)
                 .then((res) => {
                   if (!res) return;
                 });

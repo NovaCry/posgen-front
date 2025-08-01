@@ -9,18 +9,10 @@ import {
   CommandItem,
   CommandList,
 } from '../ui/command';
-import {
-  ArrowRight,
-  BadgeCheck,
-  Bell,
-  LogOut,
-  Search,
-  Settings,
-  Shield,
-} from 'lucide-vue-next';
-import { useSidebarStore } from '@/store/sidebar';
+import { ArrowRight, Search } from 'lucide-vue-next';
 import type { Command, CommandGroup as ICommandGroup } from '@/types/Palette';
 import { useUserStore } from '@/store/user';
+import { useSidebarStore } from '~/store/sidebar';
 
 const router = useRouter();
 
@@ -53,14 +45,14 @@ const addionalGroups: ICommandGroup[] = [
       {
         type: 'link',
         id: 'security',
-        icon: Shield,
+        icon: 'lucide:shield',
         name: 'Güvenlik',
         href: '/dashboard/user/security',
       },
       {
         type: 'link',
         id: 'account',
-        icon: Settings,
+        icon: 'lucide:settings',
         name: 'Tercihler',
         href: '/dashboard/user/preferences',
       },
@@ -72,21 +64,21 @@ const addionalGroups: ICommandGroup[] = [
       {
         type: 'link',
         id: 'account',
-        icon: BadgeCheck,
+        icon: 'lucide:badge-check',
         name: 'Hesap',
         href: '/dashboard/user',
       },
       {
         type: 'link',
         id: 'notifications',
-        icon: Bell,
+        icon: 'lucide:bell',
         name: 'Bildirimler',
         href: '/dashboard/user/notifications',
       },
       {
         type: 'action',
         id: 'logout',
-        icon: LogOut,
+        icon: 'lucide:log-out',
         name: 'Çıkış Yap',
         action: user.logout,
       },
@@ -201,7 +193,8 @@ function HandleSelection(command: Command) {
           :value="command.id"
           @select="HandleSelection(command)"
         >
-          <component :is="command.icon" v-if="command.icon" class="size-4" />
+          <Icon v-if="command.icon" :name="command.icon" class="size-4" />
+          <!-- <component :is="command.icon" v-if="command.icon" class="size-4" /> -->
           {{ command.name }}
           <ArrowRight
             class="size-4 ml-auto fill-mode-forwards group-data-highlighted:animate-in animate-out fade-in fade-out duration-100"
