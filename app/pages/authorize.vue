@@ -1,34 +1,19 @@
 <template>
-  <div
-    class="min-h-screen flex items-center justify-center bg-background px-2 py-6"
-  >
+  <div class="min-h-screen flex items-center justify-center bg-background px-2 py-6">
     <Card class="w-full max-w-2xl sm:max-w-3xl md:max-w-4xl mx-auto shadow-lg">
       <CardHeader>
         <div class="flex flex-col items-center gap-2 mb-2">
           <div class="flex flex-row items-center gap-6 justify-center">
-            <figure
-              class="size-16 p-2 rounded-xl border bg-white shadow flex items-center justify-center"
-            >
-              <img
-                src="/public/resources/black/512x512-mono-black.svg"
-                alt="posgenweb"
-                class="w-full h-full object-contain"
-              />
+            <figure class="size-16 p-2 rounded-xl border bg-white shadow flex items-center justify-center">
+              <img src="/resources/black/512x512-mono-black.svg" alt="posgenweb" class="w-full h-full object-contain" />
             </figure>
             <div class="flex items-center relative">
-              <span
-                class="inline-block w-8 h-1 rounded-full bg-green-500 mx-2 animate-pulse"
-              ></span>
+              <span class="inline-block w-8 h-1 rounded-full bg-green-500 mx-2 animate-pulse"></span>
               <ArrowRightLeft
-                class="size-6 text-green-500 transition-transform duration-500 motion-safe:animate-pulse"
-              />
-              <span
-                class="inline-block w-8 h-1 rounded-full bg-green-500 mx-2 animate-pulse"
-              ></span>
+                class="size-6 text-green-500 transition-transform duration-500 motion-safe:animate-pulse" />
+              <span class="inline-block w-8 h-1 rounded-full bg-green-500 mx-2 animate-pulse"></span>
             </div>
-            <figure
-              class="size-16 rounded-full bg-primary flex items-center justify-center shadow"
-            >
+            <figure class="size-16 rounded-full bg-primary flex items-center justify-center shadow">
               <User2 class="size-8 text-primary-foreground" />
             </figure>
           </div>
@@ -43,46 +28,26 @@
       <CardContent>
         <div class="flex flex-col sm:flex-row gap-8 w-full">
           <div class="flex-1 flex flex-col gap-2 min-w-0">
-            <h3
-              class="text-base sm:text-lg font-semibold mb-2 text-center sm:text-left"
-            >
+            <h3 class="text-base sm:text-lg font-semibold mb-2 text-center sm:text-left">
               {{ app?.name }} neleri görüntüleyebilecek?
             </h3>
-            <ul
-              class="list-none p-0 text-sm text-white-700 divide-y divide-muted-foreground/20 bg-muted/40 rounded-lg"
-            >
-              <li
-                v-for="(scope, index) in read"
-                :key="`view-${index}`"
-                class="flex gap-2 p-3 items-center transition-all duration-200"
-              >
-                <component
-                  :is="scope[0]"
-                  class="text-muted-foreground size-4"
-                />
+            <ul class="list-none p-0 text-sm text-white-700 divide-y divide-muted-foreground/20 bg-muted/40 rounded-lg">
+              <li v-for="(scope, index) in read" :key="`view-${index}`"
+                class="flex gap-2 p-3 items-center transition-all duration-200">
+                <component :is="scope[0]" class="text-muted-foreground size-4" />
                 <span class="flex-grow">{{ scope[1] }}</span>
                 <ChevronRight class="text-muted-foreground size-4" />
               </li>
             </ul>
           </div>
           <div class="flex-1 flex flex-col gap-2 min-w-0">
-            <h3
-              class="text-base sm:text-lg font-semibold mb-2 text-center sm:text-left"
-            >
+            <h3 class="text-base sm:text-lg font-semibold mb-2 text-center sm:text-left">
               {{ app?.name }} neler yapabilecek?
             </h3>
-            <ul
-              class="list-none p-0 text-sm text-white-700 divide-y divide-muted-foreground/20 bg-muted/40 rounded-lg"
-            >
-              <li
-                v-for="(scope, index) in write"
-                :key="`write-${index}`"
-                class="flex gap-2 p-3 items-center transition-all duration-200"
-              >
-                <component
-                  :is="scope[0]"
-                  class="text-muted-foreground size-4"
-                />
+            <ul class="list-none p-0 text-sm text-white-700 divide-y divide-muted-foreground/20 bg-muted/40 rounded-lg">
+              <li v-for="(scope, index) in write" :key="`write-${index}`"
+                class="flex gap-2 p-3 items-center transition-all duration-200">
+                <component :is="scope[0]" class="text-muted-foreground size-4" />
                 <span class="flex-grow">{{ scope[1] }}</span>
                 <ChevronRight class="text-muted-foreground size-4" />
               </li>
@@ -94,11 +59,8 @@
             <Button variant="outline" :disabled="Processing" class="w-32">
               Reddet
             </Button>
-            <Button
-              class="w-32 flex items-center justify-center gap-2"
-              :disabled="Processing"
-              @click="GrantAuthorization"
-            >
+            <Button class="w-32 flex items-center justify-center gap-2" :disabled="Processing"
+              @click="GrantAuthorization">
               <span>İzin Ver</span>
             </Button>
           </div>
