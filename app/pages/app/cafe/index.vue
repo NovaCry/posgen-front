@@ -136,7 +136,7 @@ onMounted(async () => {
           <RouterLink
             v-for="table in tables"
             :key="table.id"
-            :to="`/cafe/${table.id}/open`"
+            :to="`/app/cafe/${table.id}/open`"
           >
             <motion.div
               class="relative"

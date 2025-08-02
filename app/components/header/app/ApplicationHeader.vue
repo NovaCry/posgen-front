@@ -2,7 +2,6 @@
 import Palette from '@/components/CommandPalette.vue';
 import UserWidget from './UserWidget.vue';
 import ShopWidget from './ShopWidget.vue';
-import { useCommandsStore } from '@/store/commands';
 import {
   ArrowLeft,
   CakeSlice,
@@ -23,7 +22,6 @@ import { useUserStore } from '@/store/user';
 import { Button } from '@/components/ui/button';
 import { motion } from 'motion-v';
 
-const commands = useCommandsStore();
 const user = useUserStore();
 const router = useRouter();
 
@@ -121,7 +119,6 @@ onUnmounted(() => {
 
       <Palette
         :disabled="user.requireToLogin"
-        :groups="commands.$state"
         class="hidden lg:block absolute left-1/2 -translate-x-1/2 max-w-xs xl:max-w-sm"
       />
 

@@ -12,6 +12,7 @@ defineProps<{
 }>();
 
 const collapsibleOpen = defineModel('open', {
+  type: Boolean,
   default: true,
 });
 </script>

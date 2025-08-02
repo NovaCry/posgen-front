@@ -25,8 +25,10 @@ const shopKeys =
   user.user?.shops?.map((_, index) => keys[`Ctrl+${index + 1}`]) || [];
 
 shopKeys.forEach((key, index) => {
+  if (!user.user || user.user.shops || !Array.isArray(user.user.shops)) return;
+  if (!key) return;
   watch(key, () => {
-    if (key.value && user.user?.shops) {
+    if (key.value && user.user?.shops && user.user) {
       setActiveTeam(user.user.shops[index], new Event('keyboard'));
     }
   });

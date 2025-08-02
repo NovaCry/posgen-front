@@ -3,8 +3,7 @@ import type { RouteLocationRaw } from 'vue-router';
 import CardNextButton from '../index-card/CardNextButton.vue';
 import CardNextButtonArrow from '../index-card/CardNextButtonArrow.vue';
 import { useColorMode } from '@vueuse/core';
-import { Monitor, Moon, Sun } from 'lucide-vue-next';
-import FooterColorModeButton from './FooterColorModeButton.vue';
+import FooterColorMode from './FooterColorMode.vue';
 
 interface FooterContentGroup {
   title: string;
@@ -114,18 +113,20 @@ const colorMode = useColorMode();
   <footer class="border-t flex flex-col items-center">
     <div class="max-w-[1200px] mx-auto w-full flex flex-col gap-4 py-12 px-8">
       <div class="flex items-center gap-4">
-        <img
-          v-if="colorMode == 'dark'"
-          src="/resources/white/64x64-mono-white.svg"
-          alt="64x64-mono-white.svg"
-          class="size-14"
-        />
-        <img
-          v-else
-          src="/resources/black/64x64-mono-black.svg"
-          alt="64x64-mono-black.svg"
-          class="size-14"
-        />
+        <ClientOnly>
+          <img
+            v-if="colorMode == 'dark'"
+            src="/resources/white/64x64-mono-white.svg"
+            alt="64x64-mono-white.svg"
+            class="size-14"
+          />
+          <img
+            v-else
+            src="/resources/black/64x64-mono-black.svg"
+            alt="64x64-mono-black.svg"
+            class="size-14"
+          />
+        </ClientOnly>
       </div>
       <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 my-8 md:grid-cols-4">
         <div
@@ -134,15 +135,13 @@ const colorMode = useColorMode();
           class="flex flex-col a:text-lg"
         >
           <span class="text-muted-foreground text-sm">{{ group.title }}</span>
-          <NuxtLink
+          <CardNextButton
             v-for="item of group.items"
             :key="item.name"
             :to="item.path"
-            class="group/card"
-            ><CardNextButton>
-              {{ item.name }} <CardNextButtonArrow />
-            </CardNextButton>
-          </NuxtLink>
+          >
+            {{ item.name }} <CardNextButtonArrow />
+          </CardNextButton>
         </div>
       </div>
     </div>
@@ -153,29 +152,7 @@ const colorMode = useColorMode();
         <span>
           Posgen, {{ new Date().getFullYear() }} tüm telif hakları saklıdır.
         </span>
-        <div
-          :data-mode="colorMode"
-          class="ml-auto group/selector flex border w-fit p-1 rounded-full"
-        >
-          <FooterColorModeButton
-            :data-active="colorMode == 'dark'"
-            @click="colorMode = 'dark'"
-          >
-            <Moon />
-          </FooterColorModeButton>
-          <FooterColorModeButton
-            :data-active="colorMode == 'light'"
-            @click="colorMode = 'light'"
-          >
-            <Sun />
-          </FooterColorModeButton>
-          <FooterColorModeButton
-            :data-active="colorMode == 'auto'"
-            @click="colorMode = 'auto'"
-          >
-            <Monitor />
-          </FooterColorModeButton>
-        </div>
+        <FooterColorMode />
       </div>
     </div>
   </footer>

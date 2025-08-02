@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import AISection from '@/components/index/AISection.vue';
-import AnalyticsSection from '@/components/index/AnalyticsSection.vue';
 import APISection from '@/components/index/APISection.vue';
 import IntegrationLibrary from '@/components/index/IntegrationLibrary.vue';
 import NetworkSection from '@/components/index/NetworkSection.vue';

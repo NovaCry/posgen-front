@@ -1,4 +1,3 @@
-import type { FunctionalComponent } from 'vue';
 import type { RouteLocationRaw } from 'vue-router';
 
 export interface SidebarDataGroup {

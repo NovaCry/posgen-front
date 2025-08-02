@@ -9,9 +9,11 @@ defineProps<{
 }>();
 
 const selectedModel = defineModel('selected', {
+  type: Boolean,
   default: false,
 });
 const quantityModel = defineModel('quantity', {
+  type: Number,
   default: 1,
 });
 

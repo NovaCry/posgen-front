@@ -49,9 +49,9 @@ const productList = ref<CartCategory[]>([
 ]);
 
 const selectedItemsList = computed(() => {
-  let res: CartItem[] = [];
-  for (let cat of productList.value) {
-    for (let itm of cat.items) {
+  const res: CartItem[] = [];
+  for (const cat of productList.value) {
+    for (const itm of cat.items) {
       if (itm.state.selected) res.push(itm);
     }
   }

@@ -32,7 +32,8 @@
               {{ app?.name }} neleri görüntüleyebilecek?
             </h3>
             <ul class="list-none p-0 text-sm text-white-700 divide-y divide-muted-foreground/20 bg-muted/40 rounded-lg">
-              <li v-for="(scope, index) in read" :key="`view-${index}`"
+              <li
+v-for="(scope, index) in read" :key="`view-${index}`"
                 class="flex gap-2 p-3 items-center transition-all duration-200">
                 <component :is="scope[0]" class="text-muted-foreground size-4" />
                 <span class="flex-grow">{{ scope[1] }}</span>
@@ -45,7 +46,8 @@
               {{ app?.name }} neler yapabilecek?
             </h3>
             <ul class="list-none p-0 text-sm text-white-700 divide-y divide-muted-foreground/20 bg-muted/40 rounded-lg">
-              <li v-for="(scope, index) in write" :key="`write-${index}`"
+              <li
+v-for="(scope, index) in write" :key="`write-${index}`"
                 class="flex gap-2 p-3 items-center transition-all duration-200">
                 <component :is="scope[0]" class="text-muted-foreground size-4" />
                 <span class="flex-grow">{{ scope[1] }}</span>
@@ -59,7 +61,8 @@
             <Button variant="outline" :disabled="Processing" class="w-32">
               Reddet
             </Button>
-            <Button class="w-32 flex items-center justify-center gap-2" :disabled="Processing"
+            <Button
+class="w-32 flex items-center justify-center gap-2" :disabled="Processing"
               @click="GrantAuthorization">
               <span>İzin Ver</span>
             </Button>

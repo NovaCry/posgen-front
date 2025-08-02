@@ -17,7 +17,7 @@ const size = ref(props.rendererSize || 'medium');
 const rendererMaxSeat = size.value == 'extrasmall' ? 4 : 12;
 
 const seatRendererArray = computed(() => {
-  let rendererArray = new Uint8Array(4);
+  const rendererArray = new Uint8Array(4);
   for (let i = 0; i < Math.min(rendererMaxSeat, props.seatSize); i++) {
     rendererArray[i % 4] += 1;
   }
