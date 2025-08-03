@@ -10,29 +10,29 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type Shop from '@/types/api/Shop';
-import { useUserStore } from '@/store/user';
 import { useSelectedShopStore } from '@/store/shop';
 import { useMagicKeys } from '@vueuse/core';
 import { watch, nextTick, onMounted } from 'vue';
 import createProtectedApiInterface from '@/api/protected';
 
-const user = useUserStore();
+const user = useUser();
 const selectedShop = useSelectedShopStore();
 const keys = useMagicKeys();
 const protectedApiInterface = createProtectedApiInterface();
 
-const shopKeys =
-  user.user?.shops?.map((_, index) => keys[`Ctrl+${index + 1}`]) || [];
+if (user.data) {
+  const shopKeys =
+    user.data.shops.map((_, index) => keys[`Ctrl+${index + 1}`]) || [];
 
-shopKeys.forEach((key, index) => {
-  if (!user.user || user.user.shops || !Array.isArray(user.user.shops)) return;
-  if (!key) return;
-  watch(key, () => {
-    if (key.value && user.user?.shops && user.user) {
-      setActiveTeam(user.user.shops[index], new Event('keyboard'));
-    }
+  shopKeys.forEach((key, index) => {
+    if (!key || !user.data) return;
+    watch(key, () => {
+      if (key.value && user.data && user.data.shops[index]) {
+        setActiveTeam(user.data.shops[index], new Event('keyboard'));
+      }
+    });
   });
-});
+}
 
 async function fetchShopDetails(shopId: string): Promise<Shop | null> {
   const response = await protectedApiInterface({
@@ -47,10 +47,10 @@ async function fetchShopDetails(shopId: string): Promise<Shop | null> {
 onMounted(async () => {
   await selectedShop.load();
 
-  if (!selectedShop.id) {
+  if (!selectedShop.id && user.data) {
     // For employees, fetch and use their working shop
-    if (user.user?.role === 'EMPLOYEE' && user.user?.workingId) {
-      const shopDetails = await fetchShopDetails(user.user.workingId);
+    if (user.data.role === 'EMPLOYEE' && user.data.workingId) {
+      const shopDetails = await fetchShopDetails(user.data.workingId);
       if (shopDetails) {
         await setActiveTeam(shopDetails, new Event('init'));
         // Save the shop selection immediately for employees
@@ -58,8 +58,8 @@ onMounted(async () => {
       }
     }
     // For business owners, use their first shop
-    else if ((user.user?.shops?.length ?? 0) > 0) {
-      const firstShop = user.user?.shops?.[0];
+    else if ((user.data.shops?.length ?? 0) > 0) {
+      const firstShop = user.data.shops?.[0];
       if (firstShop) {
         await setActiveTeam(firstShop, new Event('init'));
       }
@@ -122,6 +122,7 @@ async function setActiveTeam(shop: Shop, e: Event) {
       </button>
     </DropdownMenuTrigger>
     <DropdownMenuContent
+      v-if="user.data"
       class="w-(--reka-dropdown-menu-trigger-width) min-w-56 rounded-lg"
       align="start"
       side="bottom"
@@ -131,7 +132,7 @@ async function setActiveTeam(shop: Shop, e: Event) {
         Mağazalar
       </DropdownMenuLabel>
       <DropdownMenuItem
-        v-for="(shop, index) in user.user?.shops"
+        v-for="(shop, index) in user.data.shops"
         :key="shop.id"
         class="gap-2 p-2 cursor-pointer"
         :class="{ 'bg-accent': selectedShop.id === shop.id }"

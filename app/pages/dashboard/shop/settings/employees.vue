@@ -21,7 +21,6 @@ import DatePicker from '@/components/calendar/DatePicker.vue';
 import createProtectedApiInterface from '@/api/protected';
 import { toast } from 'vue-sonner';
 import { useSelectedShopStore } from '@/store/shop';
-import { useUserStore } from '@/store/user';
 
 const router = useRouter();
 
@@ -30,16 +29,21 @@ definePageMeta({
 });
 
 const selectedShop = useSelectedShopStore();
-const user = useUserStore();
+const user = useUser();
 const protectedApiInterface = createProtectedApiInterface();
 
 // Load shop data
 onMounted(async () => {
   await selectedShop.load();
   if (selectedShop.id === '') {
-    if (!user.user || !user.user.shops || user.user.shops.length < 0)
+    if (
+      !user.data ||
+      !user.data.shops ||
+      user.data.shops.length < 0 ||
+      !user.data.shops[0]
+    )
       return router.push('/create');
-    selectedShop.$state = user.user.shops[0];
+    selectedShop.$state = user.data.shops[0];
     await selectedShop.save();
   }
   // Only fetch employees after shop is loaded

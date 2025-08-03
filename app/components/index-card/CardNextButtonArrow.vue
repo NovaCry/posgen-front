@@ -6,7 +6,7 @@ defineProps<{
 }>();
 
 const classNames =
-  'size-4 relative group-hover/card:opacity-100 opacity-0 group-hover/card:left-0 -left-1.5 transition-all duration-100 delay-100';
+  'size-4 relative group-hover/card:opacity-100 group-hover/button:opacity-100 opacity-0 group-hover/card:left-0 group-hover/button:left-0 -left-1.5 transition-all duration-100 delay-100';
 </script>
 
 <template>

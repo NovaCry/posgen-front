@@ -76,6 +76,8 @@ const showNextMessage = () => {
   if (currentMessageIndex.value < paiMessages.value.length) {
     const message = paiMessages.value[currentMessageIndex.value];
 
+    if (!message) return;
+
     setTimeout(() => {
       isTyping.value = true;
 

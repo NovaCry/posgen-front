@@ -18,11 +18,10 @@ import {
   onMounted,
   onUnmounted,
 } from 'vue';
-import { useUserStore } from '@/store/user';
 import { Button } from '@/components/ui/button';
 import { motion } from 'motion-v';
 
-const user = useUserStore();
+const user = useUser();
 const router = useRouter();
 
 const isFullscreen = ref(false);

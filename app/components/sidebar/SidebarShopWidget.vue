@@ -11,23 +11,22 @@ import {
 } from '../ui/dropdown-menu';
 import { SidebarMenuButton, SidebarMenuItem } from '../ui/sidebar';
 import type Shop from '@/types/api/Shop';
-import { useUserStore } from '@/store/user';
 import { useSelectedShopStore } from '@/store/shop';
 import { onBeforeMount } from 'vue';
 
 const router = useRouter();
-const user = useUserStore();
+const user = useUser();
 const selectedShop = useSelectedShopStore();
 
 const emit = defineEmits(['update']);
 
 onBeforeMount(() => {
-  if (!user.user || !user.accessToken) return router.push('/login');
-  if (!user.user.shops || user.user.shops.length === 0)
+  if (!user.data || !user.session) return router.push('/login');
+  if (!user.data.shops || user.data.shops.length === 0 || !user.data.shops[0])
     return router.push('/create');
 
   if (selectedShop.id === '') {
-    selectedShop.$state = user.user.shops[0];
+    selectedShop.$state = user.data.shops[0];
     selectedShop.save();
     emit('update');
   }
@@ -41,11 +40,11 @@ function setActiveTeam(shop: Shop) {
 </script>
 
 <template>
-  <SidebarMenuItem class="hover:bg-accent rounded-md transition duration-200">
-    <NuxtLink
-      v-if="user.user?.shops && user.user.shops.length == 0"
-      to="/create"
-    >
+  <SidebarMenuItem
+    v-if="user.data"
+    class="hover:bg-accent rounded-md transition duration-200"
+  >
+    <NuxtLink v-if="user.data.shops.length == 0" to="/create">
       <SidebarMenuButton
         size="lg"
         class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
@@ -86,7 +85,7 @@ function setActiveTeam(shop: Shop) {
           Mağazalar
         </DropdownMenuLabel>
         <DropdownMenuItem
-          v-for="(team, index) in user.user?.shops"
+          v-for="(team, index) in user.data.shops"
           :key="team.name"
           class="gap-2 p-2"
           @click="setActiveTeam(team)"

@@ -148,8 +148,7 @@ import {
 } from '@/components/ui/sidebar';
 import { ChevronRight, Loader2 } from 'lucide-vue-next';
 import SidebarInsetHeader from '@/components/header/sidebar/SidebarInsetHeader.vue';
-import { useUserStore } from '@/store/user';
-import { onBeforeMount, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { Button } from '@/components/ui/button';
@@ -160,9 +159,10 @@ definePageMeta({
   meta: {
     hideInBreadcrumb: true,
   },
+  middleware: ['auth'],
 });
 
-const user = useUserStore();
+const user = useUser();
 const sidebarState = useSidebarStore();
 
 const blurViewport = ref(false);
@@ -172,10 +172,6 @@ const sidebarOpenState = ref(sidebarState.open);
 router.beforeResolve(async (to, from, next) => {
   if ((await user.requireToLogin()) && !to.meta.dontAuthorize) next('/login');
   else next();
-});
-
-onBeforeMount(async () => {
-  if (await user.requireToLogin()) router.push('/login');
 });
 
 watch(sidebarOpenState, (n) => {

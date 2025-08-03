@@ -21,7 +21,6 @@ export const useSelectedShopStore = defineStore('selectedShop', {
     },
 
     async load() {
-      console.log('analsex');
       const user = localStorage.getItem('selectedShop');
       if (user) {
         this.$patch(JSON.parse(user));

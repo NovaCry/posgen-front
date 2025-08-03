@@ -50,7 +50,7 @@
             </div>
           </div>
           <div class="flex items-center space-x-2 mt-2">
-            <Checkbox id="remember" v-model="RememberMe" />
+            <Switch id="remember" v-model="RememberMe" />
             <label
               for="remember"
               class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -115,7 +115,6 @@ import defaultApiInterface from '@/api/default';
 import Button from '@/components/ui/button/Button.vue';
 import Input from '@/components/ui/input/Input.vue';
 import Label from '@/components/ui/label/Label.vue';
-import { Checkbox } from '@/components/ui/checkbox';
 import type APIError from '@/types/api/APIError';
 import type User from '@/types/api/User';
 import type { AxiosError } from 'axios';

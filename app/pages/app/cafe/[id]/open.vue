@@ -231,7 +231,7 @@ async function completeOrder() {
       url: `shop/orders/${selectedShop.id}/orders`,
       method: 'POST',
       data: orderData,
-    }).catch(errorHandler);
+    }).catch(useErrorHandler);
 
     if (!response) return;
 
@@ -407,8 +407,8 @@ onMounted(async () => {
               splitPayment
                 ? Split
                 : paymentMethod === 'cash'
-                ? Banknote
-                : CreditCard
+                  ? Banknote
+                  : CreditCard
             "
             class="ml-2 h-4 w-4"
           />

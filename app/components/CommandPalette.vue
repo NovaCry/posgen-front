@@ -11,12 +11,11 @@ import {
 } from '@/components/ui/command';
 import { ArrowRight, Search } from 'lucide-vue-next';
 import type { Command, CommandGroup as ICommandGroup } from '@/types/Palette';
-import { useUserStore } from '@/store/user';
 import { useSidebarStore } from '~/store/sidebar';
 
 const router = useRouter();
 
-const user = useUserStore();
+const user = useUser();
 const open = ref(false);
 
 const { Meta_K, Ctrl_K } = useMagicKeys({
