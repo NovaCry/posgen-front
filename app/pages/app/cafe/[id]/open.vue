@@ -223,7 +223,7 @@ async function completeOrder() {
     const orderData = {
       tableId: tableId.value,
       items: orderItems,
-      paymentMethod: paymentMethod.value === 'cash' ? 'CASH' : 'CREDIT_CARD',
+      paymentMethod: paymentMethod.value === 'cash' ? 'CASH' : 'CARD',
       note: '',
     };
 

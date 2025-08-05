@@ -11,6 +11,10 @@ export default defineNuxtConfig({
     },
   },
 
+  experimental: {
+    typedPages: true
+  },
+
   css: ['~/assets/css/tailwind.css'],
   vite: {
     plugins: [tailwindcss()],
@@ -44,4 +48,8 @@ export default defineNuxtConfig({
   pinia: {
     storesDirs: ['./app/store/**'],
   },
+
+  icon: {
+    mode: 'svg'
+  }
 });

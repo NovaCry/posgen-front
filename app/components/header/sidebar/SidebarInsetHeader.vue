@@ -4,7 +4,7 @@ import Palette from '@/components/CommandPalette.vue';
 import ReportErrorsShortcut from '@/components/dialogs/ReportErrorsDialog.vue';
 import RouterAutoBreadcrumb from '@/components/RouterAutoBreadcrumb.vue';
 import { Separator } from '@/components/ui/separator';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AlertCircle, Loader2, WifiOff, Wifi } from 'lucide-vue-next';
@@ -137,12 +137,13 @@ onMounted(() => {
 onUnmounted(() => {
   stopHealthCheck();
 });
+
+const sidebar = useSidebar();
 </script>
 
 <template>
-  <header
-    class="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
-  >
+  <header :data-collapsible="sidebar.state.value"
+    class="sticky top-0 z-50 w-full border-b h-16 flex items-center p-2 px-4 transition-all duration-150 data-[collapsible=collapsed]:h-12 data-[collapsible=collapsed]:px-2 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
     <div class="container flex h-14 max-w-screen-2xl items-center">
       <div class="flex items-center space-x-2 lg:space-x-4">
         <SidebarTrigger class="h-8 w-8" />
@@ -154,50 +155,33 @@ onUnmounted(() => {
 
       <div class="flex flex-1 items-center justify-end space-x-1 sm:space-x-2">
         <!-- Desktop: Badge with text -->
-        <Badge
-          :variant="syncInfo.variant"
+        <Badge :variant="syncInfo.variant"
           class="hidden sm:flex items-center gap-1.5 text-xs font-medium cursor-pointer hover:opacity-80 transition-opacity"
-          :title="
-            lastSyncTime
-              ? `Son kontrol: ${lastSyncTime.toLocaleTimeString()}`
-              : 'Durum kontrolü'
-          "
-          @click="fetchHealthStatus"
-        >
-          <component
-            :is="syncInfo.icon"
-            :class="['h-3 w-3', syncInfo.iconClass]"
-          />
+          :title="lastSyncTime
+            ? `Son kontrol: ${lastSyncTime.toLocaleTimeString()}`
+            : 'Durum kontrolü'
+            " @click="fetchHealthStatus">
+          <component :is="syncInfo.icon" :class="['h-3 w-3', syncInfo.iconClass]" />
           <span>{{ syncInfo.text }}</span>
         </Badge>
 
         <!-- Mobile: Just icon button -->
-        <Button
-          variant="ghost"
-          size="sm"
-          :title="
-            syncInfo.text +
-            (lastSyncTime
-              ? ` - Son kontrol: ${lastSyncTime.toLocaleTimeString()}`
-              : '')
-          "
-          class="sm:hidden h-8 w-8 p-0"
-          @click="fetchHealthStatus"
-        >
-          <component
-            :is="syncInfo.icon"
-            :class="[
-              'h-4 w-4',
-              syncInfo.iconClass,
-              {
-                'text-green-600': isSynchronized && !isLoading,
-                'text-red-600': error !== null && !isLoading,
-                'text-yellow-600':
-                  !isSynchronized && error === null && !isLoading,
-                'text-muted-foreground': isLoading,
-              },
-            ]"
-          />
+        <Button variant="ghost" size="sm" :title="syncInfo.text +
+          (lastSyncTime
+            ? ` - Son kontrol: ${lastSyncTime.toLocaleTimeString()}`
+            : '')
+          " class="sm:hidden h-8 w-8 p-0" @click="fetchHealthStatus">
+          <component :is="syncInfo.icon" :class="[
+            'h-4 w-4',
+            syncInfo.iconClass,
+            {
+              'text-green-600': isSynchronized && !isLoading,
+              'text-red-600': error !== null && !isLoading,
+              'text-yellow-600':
+                !isSynchronized && error === null && !isLoading,
+              'text-muted-foreground': isLoading,
+            },
+          ]" />
         </Button>
 
         <ReportErrorsShortcut />

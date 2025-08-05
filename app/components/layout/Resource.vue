@@ -32,9 +32,8 @@ const ITEMS_PER_PAGE = 10;
 
 async function getData() {
   const res = await protectedApiInterface<Pagination<T>>({
-    url: `${props.fetch}?page=${
-      page.value
-    }&limit=${ITEMS_PER_PAGE}&search=${encodeURIComponent(search.value)}`,
+    url: `${props.fetch}?page=${page.value
+      }&limit=${ITEMS_PER_PAGE}&search=${encodeURIComponent(search.value)}`,
     method: 'GET',
   }).catch(useErrorHandler);
   if (!res || !res.data || !Array.isArray(res.data.data)) {
@@ -59,13 +58,15 @@ async function getData() {
   };
 }
 
-watchEffect(() => {
-  getData();
-});
+onBeforeMount(() => {
+  watchEffect(() => {
+    getData();
+  });
 
-watch([page, search], () => {
-  getData();
-});
+  watch([page, search], () => {
+    getData();
+  });
+})
 </script>
 
 <template>
@@ -85,10 +86,6 @@ watch([page, search], () => {
     </NuxtLink>
   </div>
   <DataTable :data="composedPagination?.data || []" />
-  <PaginationSimplified
-    v-model="page"
-    class="my-4 w-full flex justify-center"
-    :items-per-page="ITEMS_PER_PAGE"
-    :total-items="composedPagination?.meta.totalCount"
-  />
+  <PaginationSimplified v-model="page" class="my-4 w-full flex justify-center" :items-per-page="ITEMS_PER_PAGE"
+    :total-items="composedPagination?.meta.totalCount" />
 </template>
