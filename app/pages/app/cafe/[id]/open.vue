@@ -231,7 +231,7 @@ async function completeOrder() {
       url: `shop/orders/${selectedShop.id}/orders`,
       method: 'POST',
       data: orderData,
-    }).catch(errorHandler);
+    }).catch(useErrorHandler);
 
     if (!response) return;
 
