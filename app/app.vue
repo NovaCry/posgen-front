@@ -6,15 +6,14 @@
 <script setup lang="ts">
 import { useColorMode } from '@vueuse/core';
 import { Toaster } from './components/ui/sonner';
-import { useUserStore } from './store/user';
 import { useSelectedShopStore } from './store/shop';
 useColorMode();
 
-const user = useUserStore();
+const userStore = useUserStore();
 const selectedShop = useSelectedShopStore();
 
 onMounted(() => {
-  user.load();
+  userStore.load();
   selectedShop.load();
 });
 </script>

@@ -17,7 +17,6 @@ import DatePicker from '@/components/calendar/DatePicker.vue';
 import ShopCard from '@/components/card/ShopCard.vue';
 import { Label } from '@/components/ui/label';
 
-import { application } from '@/app.conf.json';
 import Section from '@/components/layout/Section.vue';
 
 definePageMeta({
@@ -66,12 +65,12 @@ definePageMeta({
               </p>
             </div>
           </div>
-          <a :href="application.dev" target="_blank" class="mt-auto w-full">
+          <NuxtLink to="/app" target="_blank" class="mt-auto w-full">
             <Button class="w-full">
               Uygulamaya Git
               <ArrowUpRight />
             </Button>
-          </a>
+          </NuxtLink>
         </div>
       </div>
     </div>

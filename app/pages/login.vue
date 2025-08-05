@@ -2,7 +2,7 @@
   <div class="w-screen h-screen flex items-center justify-center p-4">
     <Header />
     <div
-      class="grid grid-cols-1 md:grid-cols-2 w-full max-w-sm md:min-w-[60%] md:max-w-[60%] border min-h-[40%] rounded-lg overflow-hidden"
+      class="grid grid-cols-1 md:grid-cols-2 w-full max-w-sm max-h-auto md:max-w-[720px] border md:min-h-[520px] rounded-lg overflow-hidden"
     >
       <div class="border-r-0 md:border-r p-4 md:p-6 relative flex flex-col">
         <h1 class="text-xl md:text-2xl font-semibold">Tekrar Hoşgeldin</h1>
@@ -123,7 +123,6 @@ import type Shop from '@/types/api/Shop';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowRight, Eye, EyeOff } from 'lucide-vue-next';
 import { Separator } from '@/components/ui/separator';
-import { useUserStore } from '@/store/user';
 import createProtectedApiInterface from '@/api/protected';
 import { toast } from 'vue-sonner';
 import Header from '@/components/header/index/IndexHeader.vue';
@@ -146,7 +145,7 @@ const showPassword = ref(false);
 
 const ApiMessage = ref('');
 
-const user = useUserStore();
+const user = useUser();
 
 const customizedErrorHandler = (err: AxiosError<APIError>) =>
   useErrorHandler(err, {
@@ -181,11 +180,14 @@ async function Login() {
 
   if (!response) return;
 
-  user.$patch({
+  const expiration = new Date();
+  expiration.setFullYear(2026);
+
+  user.patch({
     user: response.data.user,
     accessToken: response.data.access_token,
     refreshToken: response.data.refresh_token,
-    expiresIn: new Date(response.data.expires_in * 1000) + '',
+    expiresIn: expiration + '',
   });
   user.save();
 
@@ -201,7 +203,15 @@ async function Login() {
     return;
   }
 
-  if (user.$state.user) user.$state.user.shops = listResponse.data;
+  user.patch({
+    user: {
+      ...response.data.user,
+      shops: listResponse.data,
+    },
+    accessToken: response.data.access_token,
+    refreshToken: response.data.refresh_token,
+    expiresIn: expiration + '',
+  });
   user.save();
 
   const greetingsVerb = (() => {

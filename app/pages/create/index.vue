@@ -122,7 +122,6 @@ import {
 import type Shop from '@/types/api/Shop';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowRight, Loader2 } from 'lucide-vue-next';
-import { useUserStore } from '@/store/user';
 import createProtectedApiInterface from '@/api/protected';
 import { toast } from 'vue-sonner';
 
@@ -138,7 +137,7 @@ const Processing = ref(false);
 
 const Name = ref('');
 
-const user = useUserStore();
+const user = useUser();
 
 async function Create() {
   if (!Name.value.trim()) {
@@ -173,7 +172,7 @@ async function Create() {
 
   if (!listResponse) return;
 
-  if (user.$state.user) user.$state.user.shops = listResponse.data;
+  if (user.data) user.data.shops = listResponse.data;
   user.save();
 
   Processing.value = false;

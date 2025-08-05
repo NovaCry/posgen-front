@@ -33,3 +33,9 @@ export interface RefreshTokenResponse {
   token_type: 'Bearer';
   expires_in: number;
 }
+
+export interface Session {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: string;
+}

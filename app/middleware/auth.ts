@@ -1,5 +1,9 @@
 export default defineNuxtRouteMiddleware(() => {
-  const user = useUser();
+  // skip middleware on server
+  if (import.meta.server) return;
 
-  if (user.requireToLogin()) return navigateTo('/login');
+  const userStore = useUserStore();
+  userStore.load();
+
+  if (!useUser().isLoggedIn()) return navigateTo('/login');
 });

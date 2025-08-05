@@ -3,7 +3,7 @@
     <Header />
     <div class="flex-1 flex items-center justify-center w-full pt-8 md:pt-0">
       <div
-        class="mt-10 grid grid-cols-1 md:grid-cols-10 w-full max-w-xs md:min-w-[55%] md:max-w-[55%] border min-h-[35%] md:min-h-[40%] rounded-lg overflow-hidden"
+        class="mt-10 grid grid-cols-1 md:grid-cols-10 w-full max-w-sm max-h-auto md:max-w-[720px] border md:min-h-[520px] rounded-lg overflow-hidden"
       >
         <div
           class="md:col-span-6 border-r-0 md:border-r p-4 md:p-6 relative flex flex-col"

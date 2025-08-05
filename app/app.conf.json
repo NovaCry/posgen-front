@@ -1,9 +1,6 @@
 {
   "api": {
     "dev": "http://localhost:3000/",
-    "prod": "https://api.zhao.uno/"
-  },
-  "application": {
-    "dev": "http://localhost:5050/"
+    "prod": "https://backend.posgen.tr"
   }
 }

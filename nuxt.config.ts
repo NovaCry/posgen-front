@@ -12,7 +12,11 @@ export default defineNuxtConfig({
   },
 
   experimental: {
-    typedPages: true
+    typedPages: true,
+  },
+
+  devServer: {
+    port: 8080,
   },
 
   css: ['~/assets/css/tailwind.css'],
@@ -50,6 +54,6 @@ export default defineNuxtConfig({
   },
 
   icon: {
-    mode: 'svg'
-  }
+    mode: 'svg',
+  },
 });

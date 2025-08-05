@@ -2,7 +2,8 @@
   <SidebarProvider v-model:open="sidebarOpenState">
     <Sidebar collapsible="icon" class="z-[5]">
       <SidebarHeader
-        class="border-b h-16 group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 transition-[width,height]">
+        class="border-b h-16 group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 transition-[width,height]"
+      >
         <SidebarMenu>
           <SidebarShopWidget @update="onSelectedUpdate" />
         </SidebarMenu>
@@ -12,12 +13,19 @@
           <SidebarGroup v-for="group of sidebarState.data" :key="group.name">
             <SidebarGroupLabel>{{ group.name }}</SidebarGroupLabel>
             <SidebarMenu v-for="item in group.data" :key="item.title">
-              <Collapsible v-if="item.type == 'collapsible'" class="group/collapsible">
+              <Collapsible
+                v-if="item.type == 'collapsible'"
+                class="group/collapsible"
+              >
                 <SidebarMenuItem>
                   <div class="flex items-center gap-2">
                     <NuxtLink :to="item.url" class="w-full">
-                      <SidebarMenuButton :data-active="item.url == router.currentRoute.value.path
-                        " :tooltip="item.title">
+                      <SidebarMenuButton
+                        :data-active="
+                          item.url == router.currentRoute.value.path
+                        "
+                        :tooltip="item.title"
+                      >
                         <Icon :name="item.icon" />
                         <span>{{ item.title }}</span>
                       </SidebarMenuButton>
@@ -26,17 +34,25 @@
                     <CollapsibleTrigger as-child class="">
                       <Button variant="ghost" size="sm">
                         <ChevronRight
-                          class="transition-transform size-4 group-data-[state=open]/collapsible:rotate-90" />
+                          class="transition-transform size-4 group-data-[state=open]/collapsible:rotate-90"
+                        />
                       </Button>
                     </CollapsibleTrigger>
                   </div>
                   <CollapsibleContent>
                     <SidebarMenuSub>
-                      <SidebarMenuSubItem v-for="subItem in item.items" :key="subItem.title"
-                        class="hover:bg-accent rounded-md transition duration-200">
+                      <SidebarMenuSubItem
+                        v-for="subItem in item.items"
+                        :key="subItem.title"
+                        class="hover:bg-accent rounded-md transition duration-200"
+                      >
                         <SidebarMenuSubButton as-child>
-                          <NuxtLink :to="subItem.url" :data-active="subItem.url == router.currentRoute.value.path
-                            ">
+                          <NuxtLink
+                            :to="subItem.url"
+                            :data-active="
+                              subItem.url == router.currentRoute.value.path
+                            "
+                          >
                             <span>{{ subItem.title }}</span>
                           </NuxtLink>
                         </SidebarMenuSubButton>
@@ -47,7 +63,10 @@
               </Collapsible>
               <SidebarMenuItem v-if="item.type == 'direct'" :key="item.title">
                 <NuxtLink :to="item.url" class="w-full">
-                  <SidebarMenuButton :data-active="item.url == router.currentRoute.value.path" :tooltip="item.title">
+                  <SidebarMenuButton
+                    :data-active="item.url == router.currentRoute.value.path"
+                    :tooltip="item.title"
+                  >
                     <Icon :name="item.icon" />
                     <span>{{ item.title }}</span>
                   </SidebarMenuButton>
@@ -65,7 +84,9 @@
       </SidebarContent>
       <SidebarFooter class="border-t">
         <SidebarMenu>
-          <SidebarMenuItem class="hover:bg-accent rounded-md transition duration-200">
+          <SidebarMenuItem
+            class="hover:bg-accent rounded-md transition duration-200"
+          >
             <SidebarUserWidget />
           </SidebarMenuItem>
         </SidebarMenu>
@@ -73,11 +94,19 @@
       <SidebarRail />
     </Sidebar>
     <SidebarInset>
-      <ScrollArea :no-scroll="blurViewport" class="max-h-screen min-h-screen relative">
+      <ScrollArea
+        :no-scroll="blurViewport"
+        class="max-h-screen min-h-screen relative"
+      >
         <AnimatePresence :initial="false">
-          <motion.div v-if="blurViewport" :initial="{ opacity: 0 }" :animate="{ opacity: 1 }" :exit="{ opacity: 0 }"
+          <motion.div
+            v-if="blurViewport"
+            :initial="{ opacity: 0 }"
+            :animate="{ opacity: 1 }"
+            :exit="{ opacity: 0 }"
             :transition="{ duration: 0.2, bounce: 0 }"
-            class="absolute pointer-events-none top-1/2 left-1/2 z-50 backdrop-blur-sm w-full h-full flex items-center justify-center -translate-x-1/2 -translate-y-1/2">
+            class="absolute pointer-events-none top-1/2 left-1/2 z-50 backdrop-blur-sm w-full h-full flex items-center justify-center -translate-x-1/2 -translate-y-1/2"
+          >
             <Loader2 class="animate-spin size-8" />
           </motion.div>
         </AnimatePresence>

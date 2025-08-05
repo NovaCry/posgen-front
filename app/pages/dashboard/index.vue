@@ -2,13 +2,16 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { Button } from '@/components/ui/button';
-import { application } from '@/app.conf.json';
-import { useUserStore } from '@/store/user';
-import { BarChart3, ShoppingCart, Users, MessageCircle } from 'lucide-vue-next';
-import { motion } from 'motion-v';
+import {
+  BarChart3,
+  ShoppingCart,
+  Users,
+  MessageCircle,
+  ArrowRight,
+} from 'lucide-vue-next';
 
 const router = useRouter();
-const userStore = useUserStore();
+const user = useUser();
 
 const isTyping = ref(false);
 const currentMessageIndex = ref(0);
@@ -36,7 +39,7 @@ const quickActions = ref([
     title: 'POSGEN Uygulamasına Git',
     description: 'Ana yönetim paneli',
     icon: ShoppingCart,
-    route: application.dev,
+    route: '/app',
   },
   {
     title: 'Adisyon Yönetimi',
@@ -55,7 +58,8 @@ const navigateToPage = (route: string) => {
 };
 
 onMounted(() => {
-  firstName.value = userStore.user?.firstName || '{ÜyelikAdı}';
+  if (!user.data) return;
+  firstName.value = user.data.firstName;
 
   paiMessages.value = [
     {
@@ -126,25 +130,41 @@ definePageMeta({
       </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto" style="max-height: calc(100vh - 120px)">
+    <main
+      class="flex-1 overflow-y-auto"
+      style="max-height: calc(100vh - 120px)"
+    >
       <div class="max-w-3xl mx-auto p-3 pb-24 px-4 sm:px-6">
         <div class="space-y-3">
-          <div v-for="(message, index) in displayedMessages" :key="index" class="flex items-start gap-2"
-            :initial="{ opacity: 0, x: -20 }" :enter="{
+          <div
+            v-for="(message, index) in displayedMessages"
+            :key="index"
+            class="flex items-start gap-2"
+            :initial="{ opacity: 0, x: -20 }"
+            :enter="{
               opacity: 1,
               x: 0,
               transition: { duration: 0.5, ease: 'easeOut' },
-            }">
+            }"
+          >
             <div
-              class="w-7 h-7 rounded-full flex items-center justify-center border border-gray-500 flex-shrink-0 bg-black/50">
-              <img src="/resources/infill/512x512-infill.svg" width="18" height="18" alt="Pai" />
+              class="w-7 h-7 rounded-full flex items-center justify-center border border-gray-500 flex-shrink-0 bg-black/50"
+            >
+              <img
+                src="/resources/infill/512x512-infill.svg"
+                width="18"
+                height="18"
+                alt="Pai"
+              />
             </div>
 
             <div class="flex-1 min-w-0">
               <div class="rounded-2xl rounded-tl-md p-2 border">
                 <div class="flex items-center gap-2 mb-1">
                   <span class="font-medium text-xs">Pai</span>
-                  <span class="text-xs text-muted-foreground flex-shrink-0">şimdi</span>
+                  <span class="text-xs text-muted-foreground flex-shrink-0"
+                    >şimdi</span
+                  >
                 </div>
                 <div class="text-sm leading-relaxed break-words">
                   {{ message }}
@@ -152,14 +172,25 @@ definePageMeta({
               </div>
             </div>
           </div>
-          <div v-if="isTyping" class="flex items-start gap-2" :initial="{ opacity: 0, x: -20 }" :enter="{
-            opacity: 1,
-            x: 0,
-            transition: { duration: 0.5, ease: 'easeOut' },
-          }">
+          <div
+            v-if="isTyping"
+            class="flex items-start gap-2"
+            :initial="{ opacity: 0, x: -20 }"
+            :enter="{
+              opacity: 1,
+              x: 0,
+              transition: { duration: 0.5, ease: 'easeOut' },
+            }"
+          >
             <div
-              class="w-7 h-7 rounded-full flex items-center justify-center border border-gray-500 flex-shrink-0 bg-black/50">
-              <img src="/resources/infill/512x512-infill.svg" width="18" height="18" alt="Pai" />
+              class="w-7 h-7 rounded-full flex items-center justify-center border border-gray-500 flex-shrink-0 bg-black/50"
+            >
+              <img
+                src="/resources/infill/512x512-infill.svg"
+                width="18"
+                height="18"
+                alt="Pai"
+              />
             </div>
             <div class="flex-1 min-w-0">
               <div class="rounded-2xl rounded-tl-md p-2 border">
@@ -172,29 +203,51 @@ definePageMeta({
           </div>
         </div>
 
-        <div v-if="showButtons" class="mt-3" :initial="{ opacity: 0, y: 20 }" :enter="{
-          opacity: 1,
-          y: 0,
-          transition: { duration: 0.6, ease: 'easeOut' },
-        }">
+        <div
+          v-if="showButtons"
+          class="mt-3"
+          :initial="{ opacity: 0, y: 20 }"
+          :enter="{
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.6, ease: 'easeOut' },
+          }"
+        >
           <div class="flex items-start gap-2">
             <div
-              class="w-7 h-7 rounded-full flex items-center justify-center border border-gray-500 flex-shrink-0 bg-black/50">
-              <img src="/resources/infill/512x512-infill.svg" width="18" height="18" alt="Pai" />
+              class="w-7 h-7 rounded-full flex items-center justify-center border border-gray-500 flex-shrink-0 bg-black/50"
+            >
+              <img
+                src="/resources/infill/512x512-infill.svg"
+                width="18"
+                height="18"
+                alt="Pai"
+              />
             </div>
             <div class="flex-1 min-w-0">
               <div class="rounded-2xl rounded-tl-md p-2 border">
                 <div class="flex items-center gap-2 mb-2">
                   <span class="font-medium text-xs">Pai</span>
-                  <span class="text-xs text-muted-foreground flex-shrink-0">şimdi</span>
+                  <span class="text-xs text-muted-foreground flex-shrink-0"
+                    >şimdi</span
+                  >
                 </div>
                 <div class="space-y-4">
-                  <Button v-for="action in quickActions" :key="action.title"
+                  <Button
+                    v-for="action in quickActions"
+                    :key="action.title"
                     class="w-full justify-between h-auto py-3 px-4 text-left text-sm hover:bg-muted/50 transition-colors"
-                    variant="outline" @click="navigateToPage(action.route)">
+                    variant="outline"
+                    @click="navigateToPage(action.route)"
+                  >
                     <div class="flex items-center gap-3 flex-1">
-                      <div class="w-6 h-6 rounded-lg items-center justify-center flex-shrink-0 hidden sm:flex">
-                        <component :is="action.icon" class="w-4 h-4 text-primary" />
+                      <div
+                        class="w-6 h-6 rounded-lg items-center justify-center flex-shrink-0 hidden sm:flex"
+                      >
+                        <component
+                          :is="action.icon"
+                          class="w-4 h-4 text-primary"
+                        />
                       </div>
                       <div class="flex-1 min-w-0">
                         <p class="font-medium text-sm break-words">
@@ -205,7 +258,9 @@ definePageMeta({
                         </p>
                       </div>
                     </div>
-                    <ArrowRight class="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                    <ArrowRight
+                      class="w-4 h-4 text-muted-foreground flex-shrink-0"
+                    />
                   </Button>
                 </div>
               </div>

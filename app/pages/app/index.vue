@@ -11,12 +11,12 @@ import {
 import { motion, MotionConfig } from 'motion-v';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import shortenName from '~/lib/shortenName';
-import { useUserStore } from '@/store/user';
-const userStore = useUserStore();
 import { toLocaleDate } from '~/lib/toLocaleDate';
 import { toLocaleTime } from '~/lib/toLocaleTime';
 import { cn } from '~/lib/utils';
 import { api } from '@/app.conf.json';
+
+const user = useUser();
 
 const localTime = ref('');
 
@@ -189,37 +189,37 @@ const applications = [
 </script>
 
 <template>
-  <div
-    class="fixed top-16 right-0 mr-2 z-30 flex items-center gap-2 px-3 py-1 rounded-lg shadow-lg backdrop-blur border min-w-[180px] bg-white/80 border-gray-200 dark:bg-zinc-900/80 dark:border-zinc-700"
-  >
-    <component
-      :is="syncInfo.icon"
-      :class="[
-        'h-4 w-4',
-        syncInfo.iconClass,
-        syncInfo.variant === 'destructive'
-          ? 'text-red-500'
-          : syncInfo.variant === 'secondary'
-            ? 'text-yellow-500'
-            : 'text-green-500',
-      ]"
-    />
-    <span
-      class="text-xs font-medium truncate"
-      :class="
-        syncInfo.variant === 'destructive'
-          ? 'text-red-500'
-          : syncInfo.variant === 'secondary'
-            ? 'text-yellow-500'
-            : 'text-green-500'
-      "
-    >
-      {{ syncInfo.text }}
-    </span>
-  </div>
   <main
     class="h-[calc(100vh-3rem)] grid grid-cols-1 md:grid-cols-5 xl:w-[1000px] mx-auto px-2 md:px-0"
   >
+    <div
+      class="fixed top-16 right-0 mr-2 z-30 flex items-center gap-2 px-3 py-1 rounded-lg shadow-lg backdrop-blur border min-w-[180px] bg-white/80 border-gray-200 dark:bg-zinc-900/80 dark:border-zinc-700"
+    >
+      <component
+        :is="syncInfo.icon"
+        :class="[
+          'h-4 w-4',
+          syncInfo.iconClass,
+          syncInfo.variant === 'destructive'
+            ? 'text-red-500'
+            : syncInfo.variant === 'secondary'
+              ? 'text-yellow-500'
+              : 'text-green-500',
+        ]"
+      />
+      <span
+        class="text-xs font-medium truncate"
+        :class="
+          syncInfo.variant === 'destructive'
+            ? 'text-red-500'
+            : syncInfo.variant === 'secondary'
+              ? 'text-yellow-500'
+              : 'text-green-500'
+        "
+      >
+        {{ syncInfo.text }}
+      </span>
+    </div>
     <div
       class="col-span-1 md:col-span-2 min-w-[200px] md:min-w-[300px] mx-auto flex my-auto h-fit flex-col min-h-[240px] md:min-h-[340px] w-full"
     >
@@ -243,6 +243,7 @@ const applications = [
           </motion.h1>
         </ClientOnly>
         <motion.div
+          v-if="user.data"
           :initial="{ filter: 'blur(10px)', scale: 0.8 }"
           :animate="{ filter: 'blur(0px)', scale: 1 }"
           :transition="{ delay: 0.2 }"
@@ -251,20 +252,11 @@ const applications = [
           <Avatar class="size-10">
             <AvatarImage src="" />
             <AvatarFallback>
-              {{
-                shortenName(
-                  (userStore.user?.firstName || '') +
-                    ' ' +
-                    (userStore.user?.lastName || '')
-                )
-              }}
+              {{ shortenName(user.data.name) }}
             </AvatarFallback>
           </Avatar>
           <div>
-            <span
-              >Günaydın, {{ userStore.user?.firstName || '' }}
-              {{ userStore.user?.lastName || '' }}.</span
-            >
+            <span>Günaydın, {{ user.data.name }}.</span>
           </div>
         </motion.div>
       </MotionConfig>

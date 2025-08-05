@@ -62,7 +62,6 @@ import type APIError from '@/types/api/APIError';
 import type User from '@/types/api/User';
 import type { AxiosError } from 'axios';
 import { ref } from 'vue';
-import { useUserStore } from '@/store/user';
 import Header from '@/components/header/index/IndexHeader.vue';
 
 const router = useRouter();
@@ -77,8 +76,6 @@ const Password = ref('');
 const PasswordAgain = ref('');
 
 const ApiMessage = ref('');
-
-const user = useUserStore();
 
 const customizedErrorHandler = (err: AxiosError<APIError>) =>
   useErrorHandler(err, {
@@ -102,9 +99,6 @@ async function Login() {
   if (!response) return;
 
   console.log(response.data);
-
-  user.$patch(response.data);
-  user.save();
 
   router.push('/dashboard/user');
 }

@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import Skeleton from '@/components/ui/skeleton/Skeleton.vue';
 import { ArrowRight, ArrowUpRight } from 'lucide-vue-next';
 
-import { application } from '@/app.conf.json';
 import Header from '@/components/header/index/IndexHeader.vue';
 
 definePageMeta({
@@ -42,12 +41,12 @@ definePageMeta({
           Yönetim Paneline Git
           <ArrowRight />
         </Button>
-        <a :href="application.dev" target="_blank">
+        <NuxtLink to="/app" target="_blank">
           <Button size="lg" variant="outline">
             Uygulamaya Git
             <ArrowUpRight />
           </Button>
-        </a>
+        </NuxtLink>
       </div>
     </div>
   </div>

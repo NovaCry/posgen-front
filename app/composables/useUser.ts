@@ -1,5 +1,6 @@
 import defaultApiInterface from '~/api/default';
-import type { RefreshTokenResponse } from '~/types/api/User';
+import type User from '~/types/api/User';
+import type { RefreshTokenResponse, Session } from '~/types/api/User';
 
 export default function useUser() {
   const userStore = useUserStore();
@@ -12,10 +13,18 @@ export default function useUser() {
       userStore.save();
       router.push('/login');
     },
-    save() {},
+    patch(data: Partial<UserStore>) {
+      userStore.$state = { ...data };
+    },
+    load() {
+      userStore.load();
+    },
+    save() {
+      userStore.save();
+    },
     async refreshToken() {
       if (!this.session) return;
-      return await defaultApiInterface
+      const res = await defaultApiInterface
         .post<RefreshTokenResponse>('auth/token', {
           data: {
             grant_type: 'refresh_token',
@@ -26,19 +35,20 @@ export default function useUser() {
           console.error(err);
           return;
         });
-    },
-    async isLoggedIn() {
-      if (!this.data || !this.session) return false;
-      if (new Date() > new Date(this.session.expiresIn)) {
-        const res = await this.refreshToken();
-        if (!res) return false;
-        userStore.$patch({
-          accessToken: res.data.access_token,
-          expiresIn: new Date(res.data.expires_in * 1000) + '',
-        });
 
-        userStore.save();
-      }
+      if (!res) return false;
+      userStore.$patch({
+        accessToken: res.data.access_token,
+        expiresIn: new Date(res.data.expires_in * 1000) + '',
+      });
+
+      userStore.save();
+    },
+    isLoggedIn() {
+      if (!this.data || !this.session) return false;
+      console.log(new Date(this.session.expiresIn));
+      if (new Date() > new Date(this.session.expiresIn)) return false;
+      return true;
     },
     async requireToLogin() {
       if (!this.data || !this.session) return true;
@@ -67,14 +77,14 @@ export default function useUser() {
 
       return false;
     },
-    data: (() => {
+    data: ((): (User & { name: string }) | undefined => {
       if (!userStore.user || !userStore.user.id) return undefined;
       return {
         ...userStore.user,
         name: `${userStore.user.firstName} ${userStore.user.lastName}`,
       };
     })(),
-    session: (() => {
+    session: ((): Session | undefined => {
       if (
         !userStore.expiresIn ||
         !userStore.refreshToken ||
