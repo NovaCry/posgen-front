@@ -48,4 +48,8 @@ export default defineNuxtConfig({
   pinia: {
     storesDirs: ['./app/store/**'],
   },
+
+  icon: {
+    mode: 'svg'
+  }
 });
