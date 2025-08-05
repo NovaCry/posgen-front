@@ -181,9 +181,9 @@ const applications = [
 </script>
 
 <template>
-  <div
-    class="fixed top-16 right-0 mr-2 z-30 flex items-center gap-2 px-3 py-1 rounded-lg shadow bg-white/80 backdrop-blur border border-gray-200"
-    style="min-width: 180px;">
+  <div class="fixed top-16 right-0 mr-2 z-30 flex items-center gap-2 px-3 py-1 rounded-lg shadow-lg backdrop-blur border min-w-[180px]
+      bg-white/80 border-gray-200
+      dark:bg-zinc-900/80 dark:border-zinc-700">
     <component :is="syncInfo.icon"
       :class="['h-4 w-4', syncInfo.iconClass,
         syncInfo.variant === 'destructive' ? 'text-red-500' : syncInfo.variant === 'secondary' ? 'text-yellow-500' : 'text-green-500']" />
