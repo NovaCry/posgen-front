@@ -11,6 +11,10 @@ export default defineNuxtConfig({
     },
   },
 
+  experimental: {
+    typedPages: true
+  },
+
   css: ['~/assets/css/tailwind.css'],
   vite: {
     plugins: [tailwindcss()],

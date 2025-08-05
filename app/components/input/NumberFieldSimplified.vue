@@ -21,17 +21,14 @@ const props = defineProps<{
   class?: HTMLAttributes['class'];
 }>();
 
-const emit = defineEmits(['update:modelValue']);
-
-const val = ref(props.modelValue);
-
-watch(val, (n) => {
-  emit('update:modelValue', n);
-});
+const modelValue = defineModel({
+  type: Number,
+  default: 0
+})
 </script>
 
 <template>
-  <NumberField v-model="val" :min="min" :max="max" :disabled="disabled">
+  <NumberField v-model="modelValue" :min="min" :max="max" :disabled="disabled">
     <Label>{{ label }}</Label>
     <NumberFieldContent>
       <NumberFieldDecrement v-if="!disableDecrement" />

@@ -8,6 +8,7 @@ import type { MenuCell, TableData } from '@/types/DataTable';
 import { Trash } from 'lucide-vue-next';
 import { h, ref } from 'vue';
 import { toast } from 'vue-sonner';
+import { Icon } from '@iconify/vue';
 
 definePageMeta({
   name: 'Kategoriler',
@@ -68,11 +69,7 @@ function makeActionsForCategory(category: Category): MenuCell {
 <template>
   <Section>
     <h1 class="text-3xl font-semibold">Kategoriler</h1>
-    <Resource
-      :key="resourceVersion"
-      create="/dashboard/shop/categories/new"
-      :fetch="`shop/categories/${selectedShop.id}/list`"
-      @populate="populateData"
-    />
+    <Resource :key="resourceVersion" create="/dashboard/shop/categories/new"
+      :fetch="`shop/categories/${selectedShop.id}/list`" @populate="populateData" />
   </Section>
 </template>

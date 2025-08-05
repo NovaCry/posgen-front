@@ -165,14 +165,16 @@ const applications = [
   },
   {
     name: 'Mutfak',
-    path: '/app/kitchen',
+    // path: '/app/kitchen',
+    path: '',
     icon: ChefHat,
     color: 'from-amber-400/10 hover:from-amber-400/30',
     disabled: true,
   },
   {
     name: 'Market',
-    path: '/app/market',
+    // path: '/app/market',
+    path: '',
     icon: ShoppingBasket,
     color: 'from-green-400/10 hover:from-green-400/30 ',
     disabled: true,

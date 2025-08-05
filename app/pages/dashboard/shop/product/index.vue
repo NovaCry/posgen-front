@@ -5,13 +5,14 @@ import Section from '@/components/layout/Section.vue';
 import { useSelectedShopStore } from '@/store/shop';
 import type { Product } from '@/types/api/Product';
 import type { MenuCell, TableData } from '@/types/DataTable';
-import { Trash } from 'lucide-vue-next';
+import { Copy, Edit, Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 definePageMeta({
   name: 'Ürünler',
 });
 
+const router = useRouter();
 const protectedApiInterface = createProtectedApiInterface();
 const selectedShop = useSelectedShopStore();
 const resourceVersion = ref(0);
@@ -52,6 +53,28 @@ function makeActionsForProduct(product: Product): MenuCell {
         items: [
           {
             type: 'item',
+            text: 'Düzenle',
+            icon: Edit,
+            async action() {
+              router.push({
+                path: "/dashboard/shop/product/new",
+                query: {
+                  edit: "true",
+                  id: product.id
+                }
+              })
+            },
+          },
+          {
+            type: 'item',
+            text: 'Çoğalt',
+            icon: Copy,
+            async action() {
+              // TODO: Implement product duplication logic
+            },
+          },
+          {
+            type: 'item',
             text: 'Sil',
             icon: Trash,
             async action() {
@@ -66,6 +89,7 @@ function makeActionsForProduct(product: Product): MenuCell {
               resourceVersion.value += 1;
             },
           },
+
         ],
       },
     ],
@@ -77,11 +101,7 @@ function makeActionsForProduct(product: Product): MenuCell {
 <template>
   <Section>
     <h1 class="text-3xl font-semibold">Ürünler</h1>
-    <Resource
-      :key="resourceVersion"
-      create="/dashboard/shop/product/new"
-      :fetch="`shop/products/${selectedShop.id}/list`"
-      @populate="populateData"
-    />
+    <Resource :key="resourceVersion" create="/dashboard/shop/product/new"
+      :fetch="`shop/products/${selectedShop.id}/list`" @populate="populateData" />
   </Section>
 </template>

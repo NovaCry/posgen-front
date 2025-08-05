@@ -35,24 +35,27 @@ interface Application {
   iconColor: string;
 }
 
+
 const apps: Application[] = [
   {
     name: 'Market',
-    path: '/market',
+    //path: 'market',
+    path: '',
     icon: ShoppingBasket,
     bg: 'bg-emerald-100 dark:bg-emerald-900/30',
     iconColor: 'text-emerald-600 dark:text-emerald-300',
   },
   {
     name: 'Kafe',
-    path: '/cafe',
+    path: 'cafe',
     icon: CakeSlice,
     bg: 'bg-rose-100 dark:bg-rose-900/30',
     iconColor: 'text-rose-600 dark:text-rose-300',
   },
   {
     name: 'Mutfak',
-    path: '/kitchen',
+    //path: 'kitchen',
+    path: '',
     icon: ChefHat,
     bg: 'bg-amber-100 dark:bg-amber-800/30',
     iconColor: 'text-amber-600 dark:text-amber-300',
@@ -112,7 +115,7 @@ onUnmounted(() => {
             <ArrowLeft class="h-4 w-4" />
           </Button>
         </motion.div>
-        <motion.div layout class="shrink-0">
+        <motion.div layout class="shrink-0 flex">
           <ShopWidget />
         </motion.div>
       </motion.div>
