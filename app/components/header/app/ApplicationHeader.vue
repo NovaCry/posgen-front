@@ -21,7 +21,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { motion } from 'motion-v';
 
-const user = useUser();
 const router = useRouter();
 
 const isFullscreen = ref(false);
@@ -33,7 +32,6 @@ interface Application {
   bg: string;
   iconColor: string;
 }
-
 
 const apps: Application[] = [
   {
@@ -115,12 +113,13 @@ onUnmounted(() => {
           </Button>
         </motion.div>
         <motion.div layout class="shrink-0 flex">
-          <ShopWidget />
+          <ClientOnly>
+            <ShopWidget />
+          </ClientOnly>
         </motion.div>
       </motion.div>
 
       <Palette
-        :disabled="user.requireToLogin"
         class="hidden lg:block absolute left-1/2 -translate-x-1/2 max-w-xs xl:max-w-sm"
       />
 
@@ -153,7 +152,9 @@ onUnmounted(() => {
         </button>
 
         <div class="shrink-0">
-          <UserWidget />
+          <ClientOnly>
+            <UserWidget />
+          </ClientOnly>
         </div>
       </div>
     </div>
