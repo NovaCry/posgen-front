@@ -5,14 +5,16 @@ import Section from '@/components/layout/Section.vue';
 import { useSelectedShopStore } from '@/store/shop';
 import type Table from '@/types/api/Table';
 import type { MenuCell, TableData } from '@/types/DataTable';
-import { Trash } from 'lucide-vue-next';
+import { Trash, Edit } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
+
 
 definePageMeta({
   name: 'Masalar',
 });
 
+const router = useRouter();
 const protectedApiInterface = createProtectedApiInterface();
 const selectedShop = useSelectedShopStore();
 const resourceVersion = ref(0);
@@ -41,6 +43,20 @@ function makeActionsForAdmission(table: Table): MenuCell {
         type: 'group',
         title: 'İşlemler',
         items: [
+          {
+            type: 'item',
+            text: 'Düzenle',
+            icon: Edit,
+            async action() {
+              router.push({
+                path: "/dashboard/shop/tables/new",
+                query: {
+                  edit: "true",
+                  id: table.id
+                }
+              })
+            },
+          },
           {
             type: 'item',
             text: 'Sil',
