@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
 import type { HTMLAttributes } from 'vue';
 import { Label } from '../ui/label';
 import {
@@ -11,10 +10,9 @@ import {
 } from '../ui/number-field';
 
 const props = defineProps<{
-  label: string;
+  label?: string;
   disableDecrement?: boolean;
   disableIncrement?: boolean;
-  modelValue?: number;
   min?: number;
   max?: number;
   disabled?: boolean;
@@ -23,13 +21,13 @@ const props = defineProps<{
 
 const modelValue = defineModel({
   type: Number,
-  default: 0
-})
+  default: 0,
+});
 </script>
 
 <template>
   <NumberField v-model="modelValue" :min="min" :max="max" :disabled="disabled">
-    <Label>{{ label }}</Label>
+    <Label v-if="label">{{ label }}</Label>
     <NumberFieldContent>
       <NumberFieldDecrement v-if="!disableDecrement" />
       <NumberFieldInput :class="props.class" />
