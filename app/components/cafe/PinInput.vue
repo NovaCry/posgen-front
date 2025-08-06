@@ -16,12 +16,9 @@ const handleComplete = (e: string[]) => alert(e.join(""))
 <template>
     <div>
         <PinInput id="pin-input" v-model="value" placeholder="○" @complete="handleComplete">
-            <PinInputGroup class="gap-1">
+            <PinInputGroup class="gap-3">
                 <template v-for="(id, index) in 6" :key="id">
                     <PinInputSlot class="rounded-md border" :index="index" />
-                    <template v-if="index !== 5">
-                        <PinInputSeparator />
-                    </template>
                 </template>
             </PinInputGroup>
         </PinInput>

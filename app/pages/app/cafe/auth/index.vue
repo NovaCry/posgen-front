@@ -25,7 +25,7 @@ onUnmounted(() => {
 
 <template>
     <main class="h-[calc(100vh-3rem)] flex items-start justify-center min-h-[80vh] pt-45 px-2 md:px-0">
-        <div class="flex flex-col items-center text-center w-full max-w-md">
+        <div class="flex flex-col items-center text-center w-full max-w-md gap-2">
             <MotionConfig :transition="{ type: 'tween', duration: 0.3, ease: 'anticipate' }">
                 <ClientOnly>
                     <div class="flex flex-col items-center mb-2">
@@ -37,10 +37,11 @@ onUnmounted(() => {
                         </Avatar>
                     </div>
                     <motion.span :initial="{ filter: 'blur(10px)', scale: 0.8 }"
-                        :animate="{ filter: 'blur(0px)', scale: 1 }" class="font-header">{{ toLocaleDate(new Date(),
-                            true) }}</motion.span>
+                        :animate="{ filter: 'blur(0px)', scale: 1 }" class="font-header mb-0.5">{{ toLocaleDate(new
+                            Date(),
+                        true) }}</motion.span>
                     <motion.h1 :initial="{ filter: 'blur(10px)', scale: 0.8 }"
-                        :animate="{ filter: 'blur(0px)', scale: 1 }" :transition="{ delay: 0.1 }" class="text-5xl">
+                        :animate="{ filter: 'blur(0px)', scale: 1 }" :transition="{ delay: 0.1 }" class="text-5xl mb-2">
                         {{ localTime }}
                     </motion.h1>
                 </ClientOnly>
@@ -51,7 +52,7 @@ onUnmounted(() => {
                     <CafePinInput />
                 </motion.div>
                 <motion.div :initial="{ filter: 'blur(10px)', scale: 0.8 }" :animate="{ filter: 'blur(0px)', scale: 1 }"
-                    :transition="{ delay: 0.18 }" class="mt-25 w-full flex justify-start">
+                    :transition="{ delay: 0.18 }" class="mt-5 w-full flex justify-start">
                     <Alert class="text-left">
                         <Shield class="h-4 w-4 inline-block mr-2 align-top" />
                         <AlertTitle class="text-left inline-block align-top">Güvenli Kal!</AlertTitle>
@@ -61,7 +62,7 @@ onUnmounted(() => {
                     </Alert>
                 </motion.div>
                 <motion.div :initial="{ filter: 'blur(10px)', scale: 0.8 }" :animate="{ filter: 'blur(0px)', scale: 1 }"
-                    :transition="{ delay: 0.2 }" class="py-6 flex items-center gap-2 justify-center">
+                    :transition="{ delay: 0.2 }" class="py-3 flex items-center gap-2 justify-center">
                 </motion.div>
             </MotionConfig>
         </div>
