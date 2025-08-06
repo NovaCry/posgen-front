@@ -105,7 +105,9 @@ const stock = ref<Stock[]>([
 const productName = ref('');
 const hideProduct = ref(false);
 const isLoading = ref(false);
-const selectedTaxType = ref<TaxType>(taxTypes[0] ?? { id: '', name: '', rate: 0, label: '' });  //fck mcrsft
+const selectedTaxType = ref<TaxType>(
+  taxTypes[0] ?? { id: '', name: '', rate: 0, label: '' }
+);
 const isEditing = ref(route.query.edit === 'true' && route.query.id);
 
 function selectTaxType(taxType: TaxType): void {
@@ -212,32 +214,35 @@ onMounted(async () => {
   const route = useRoute();
 
   if (isEditing.value) {
-    const product = await protectedApiInterface.get<{ data: Product }>(`/shop/products/${selectedShop.id}/${route.query.id}/get`);
-    productName.value = product.data.data.name
+    const product = await protectedApiInterface.get<{ data: Product }>(
+      `/shop/products/${selectedShop.id}/${route.query.id}/get`
+    );
+    productName.value = product.data.data.name;
     if (product.data.data.isPricePerUnit && product.data.data.pricePerUnit) {
       PricePerUnit.value = true;
       price.value = +product.data.data.pricePerUnit;
-    }
-    else {
+    } else {
       price.value = +product.data.data.price;
     }
-    selectedCategoryId.value = product.data.data.categoryId
-    product.data.data.stocks.forEach(stockItem => {
+    selectedCategoryId.value = product.data.data.categoryId;
+    product.data.data.stocks.forEach((stockItem) => {
       stock.value.push({
         id: +stockItem.id,
         barcode: stockItem.barcode || '',
         quantity: Number(stockItem.quantity),
         maxQuantity: Number(stockItem.maxQuantity),
       });
-    })
+    });
   }
-})
+});
 </script>
 
 <template>
   <Section>
     <div class="flex flex-col space-y-4 mb-6 sm:mb-8 lg:mb-10">
-      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+      <div
+        class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
+      >
         <div class="space-y-1 flex-1">
           <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight">
             Yeni Ürün Oluştur
@@ -246,9 +251,12 @@ onMounted(async () => {
             Mağazanıza yeni bir ürün ekleyin
           </p>
         </div>
-        <Button size="lg" :disabled="isLoading || !isAcceptable"
+        <Button
+          size="lg"
+          :disabled="isLoading || !isAcceptable"
           class="border-0 shadow-md w-full sm:w-auto sm:min-w-[160px] h-11 sm:h-12"
-          @click="isEditing ? EditProduct() : CreateProduct()">
+          @click="isEditing ? EditProduct() : CreateProduct()"
+        >
           <Loader2 v-if="isLoading" class="animate-spin mr-2 h-4 w-4" />
           <template v-else>
             <Edit v-if="isEditing" class="mr-2 h-4 w-4" />
@@ -256,12 +264,8 @@ onMounted(async () => {
           </template>
 
           <span class="text-sm sm:text-base">
-            <template v-if="isEditing">
-              Ürünü Düzenle
-            </template>
-            <template else>
-              Ürünü Oluştur
-            </template>
+            <template v-if="isEditing"> Ürünü Düzenle </template>
+            <template v-else> Ürünü Oluştur </template>
           </span>
         </Button>
       </div>
@@ -288,13 +292,23 @@ onMounted(async () => {
               <Label for="brand" class="text-sm font-medium">
                 Ürün Markası
               </Label>
-              <Input id="brand" disabled class="h-10 sm:h-11 text-sm sm:text-base" placeholder="Marka Adı" />
+              <Input
+                id="brand"
+                disabled
+                class="h-10 sm:h-11 text-sm sm:text-base"
+                placeholder="Marka Adı"
+              />
               <p class="text-xs text-muted-foreground">Ürünün marka bilgisi</p>
             </div>
             <div class="space-y-2">
               <Label for="name" class="text-sm font-medium"> Ürün Adı </Label>
-              <Input id="name" v-model="productName" :disabled="isLoading" class="h-10 sm:h-11 text-sm sm:text-base"
-                placeholder="Ürün Adı" />
+              <Input
+                id="name"
+                v-model="productName"
+                :disabled="isLoading"
+                class="h-10 sm:h-11 text-sm sm:text-base"
+                placeholder="Ürün Adı"
+              />
               <p class="text-xs text-muted-foreground">Ürünün görünecek adı</p>
             </div>
           </CardContent>
@@ -315,30 +329,51 @@ onMounted(async () => {
             </div>
           </CardHeader>
           <CardContent class="space-y-4 sm:space-y-6 px-4 sm:px-6">
-            <div v-for="(stockField, i) in stock" :key="stockField.id" class="space-y-4">
+            <div
+              v-for="(stockField, i) in stock"
+              :key="stockField.id"
+              class="space-y-4"
+            >
               <div class="block sm:hidden space-y-3">
                 <template v-if="i > 0">
                   <div class="flex items-center gap-2">
                     <div class="flex-1 flex items-center gap-2">
                       <Label class="text-sm font-medium">Barkod</Label>
-                      <Input v-model="stockField.barcode" class="h-10 text-sm mt-1 flex-1"
-                        :disabled="isLimitless || isLoading" placeholder="978020137962" />
+                      <Input
+                        v-model="stockField.barcode"
+                        class="h-10 text-sm mt-1 flex-1"
+                        :disabled="isLimitless || isLoading"
+                        placeholder="978020137962"
+                      />
                     </div>
-                    <Button class="h-9 w-9 shrink-0" :disabled="isLimitless || isLoading" size="icon" variant="outline"
-                      @click="deleteStock(i)">
+                    <Button
+                      class="h-9 w-9 shrink-0"
+                      :disabled="isLimitless || isLoading"
+                      size="icon"
+                      variant="outline"
+                      @click="deleteStock(i)"
+                    >
                       <X class="h-4 w-4" />
                     </Button>
                   </div>
                   <div class="grid grid-cols-2 gap-3">
                     <div>
                       <Label class="text-sm font-medium">Stok</Label>
-                      <NumberFieldSimplified v-model="stockField.quantity" class="h-10 text-sm mt-1"
-                        :disabled="isLimitless || isLoading" label="" />
+                      <NumberFieldSimplified
+                        v-model="stockField.quantity"
+                        class="h-10 text-sm mt-1"
+                        :disabled="isLimitless || isLoading"
+                        label=""
+                      />
                     </div>
                     <div>
                       <Label class="text-sm font-medium">Maksimum</Label>
-                      <NumberFieldSimplified v-model="stockField.maxQuantity" class="h-10 text-sm mt-1"
-                        :disabled="isLimitless || isLoading" label="" />
+                      <NumberFieldSimplified
+                        v-model="stockField.maxQuantity"
+                        class="h-10 text-sm mt-1"
+                        :disabled="isLimitless || isLoading"
+                        label=""
+                      />
                     </div>
                   </div>
                 </template>
@@ -346,30 +381,51 @@ onMounted(async () => {
               <div class="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <template v-if="i > 0">
                   <div class="flex items-end gap-2 lg:col-span-2">
-                    <Button class="h-11 w-11 shrink-0" :disabled="isLimitless || isLoading" size="icon"
-                      variant="outline" @click="deleteStock(i)">
+                    <Button
+                      class="h-11 w-11 shrink-0"
+                      :disabled="isLimitless || isLoading"
+                      size="icon"
+                      variant="outline"
+                      @click="deleteStock(i)"
+                    >
                       <X class="h-4 w-4" />
                     </Button>
                     <div class="flex-1">
                       <Label class="text-sm font-medium">Barkod</Label>
-                      <Input v-model="stockField.barcode" class="h-11 text-base" :disabled="isLimitless || isLoading"
-                        placeholder="978020137962" />
+                      <Input
+                        v-model="stockField.barcode"
+                        class="h-11 text-base"
+                        :disabled="isLimitless || isLoading"
+                        placeholder="978020137962"
+                      />
                     </div>
                   </div>
                   <div>
                     <Label class="text-sm font-medium">Stok</Label>
-                    <NumberFieldSimplified v-model="stockField.quantity" class="h-11 text-base"
-                      :disabled="isLimitless || isLoading" label="" />
+                    <NumberFieldSimplified
+                      v-model="stockField.quantity"
+                      class="h-11 text-base"
+                      :disabled="isLimitless || isLoading"
+                      label=""
+                    />
                   </div>
                   <div>
                     <Label class="text-sm font-medium">Maksimum</Label>
-                    <NumberFieldSimplified v-model="stockField.maxQuantity" class="h-11 text-base"
-                      :disabled="isLimitless || isLoading" label="" />
+                    <NumberFieldSimplified
+                      v-model="stockField.maxQuantity"
+                      class="h-11 text-base"
+                      :disabled="isLimitless || isLoading"
+                      label=""
+                    />
                   </div>
                 </template>
               </div>
             </div>
-            <Button :disabled="isLimitless || isLoading" class="w-full h-10 sm:h-11" @click="newStock()">
+            <Button
+              :disabled="isLimitless || isLoading"
+              class="w-full h-10 sm:h-11"
+              @click="newStock()"
+            >
               <Plus class="mr-2 h-4 w-4" />
               <span class="text-sm sm:text-base">Yeni Stok</span>
             </Button>
@@ -394,13 +450,20 @@ onMounted(async () => {
           <CardContent class="px-4 sm:px-6">
             <Carousel class="w-full">
               <CarouselContent class="-ml-2 sm:-ml-4">
-                <CarouselItem v-for="category of categories" :key="category.id"
+                <CarouselItem
+                  v-for="category of categories"
+                  :key="category.id"
                   :data-selected="category.id == selectedCategoryId"
-                  class="group basis-[120px] sm:basis-[140px] lg:basis-[160px] pl-2 sm:pl-4">
+                  class="group basis-[120px] sm:basis-[140px] lg:basis-[160px] pl-2 sm:pl-4"
+                >
                   <div
                     class="group-data-[selected=true]:bg-primary group-data-[selected=true]:text-primary-foreground hover:bg-secondary transition-colors cursor-pointer flex w-full items-center justify-center gap-2 border p-2 sm:p-3 rounded-md min-h-[40px] sm:min-h-[44px]"
-                    @click="selectCategory(category.id)">
-                    <span class="text-xs sm:text-sm text-center leading-tight">{{ category.name }}</span>
+                    @click="selectCategory(category.id)"
+                  >
+                    <span
+                      class="text-xs sm:text-sm text-center leading-tight"
+                      >{{ category.name }}</span
+                    >
                   </div>
                 </CarouselItem>
               </CarouselContent>
@@ -428,7 +491,11 @@ onMounted(async () => {
               <div class="space-y-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger as-child>
-                    <Button variant="outline" class="w-full justify-between" :disabled="isLoading">
+                    <Button
+                      variant="outline"
+                      class="w-full justify-between"
+                      :disabled="isLoading"
+                    >
                       <span>Vergi Türü: {{ selectedTaxType.label }}</span>
                       <ChevronDown class="h-4 w-4 opacity-50" />
                     </Button>
@@ -436,18 +503,30 @@ onMounted(async () => {
                   <DropdownMenuContent class="w-56">
                     <DropdownMenuLabel>Vergi Türleri</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem v-for="taxType in taxTypes" :key="taxType.id"
-                      class="flex items-center justify-between cursor-pointer" @click="selectTaxType(taxType)">
+                    <DropdownMenuItem
+                      v-for="taxType in taxTypes"
+                      :key="taxType.id"
+                      class="flex items-center justify-between cursor-pointer"
+                      @click="selectTaxType(taxType)"
+                    >
                       <span>{{ taxType.label }}</span>
-                      <Check v-if="selectedTaxType.id === taxType.id" class="h-4 w-4 text-primary" />
+                      <Check
+                        v-if="selectedTaxType.id === taxType.id"
+                        class="h-4 w-4 text-primary"
+                      />
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
               <div class="space-y-2">
                 <Label class="text-sm font-medium">Fiyat (₺)</Label>
-                <NumberFieldSimplified v-model="price" :disabled="isLoading" class="h-10 sm:h-11 text-sm sm:text-base"
-                  :min="0" label="" />
+                <NumberFieldSimplified
+                  v-model="price"
+                  :disabled="isLoading"
+                  class="h-10 sm:h-11 text-sm sm:text-base"
+                  :min="0"
+                  label=""
+                />
               </div>
             </div>
             <Separator class="my-4" />
@@ -459,7 +538,11 @@ onMounted(async () => {
                     Listelerden gizler
                   </p>
                 </div>
-                <Checkbox v-model="hideProduct" :disabled="isLoading" class="shrink-0" />
+                <Checkbox
+                  v-model="hideProduct"
+                  :disabled="isLoading"
+                  class="shrink-0"
+                />
               </div>
               <div class="flex items-center justify-between py-2">
                 <div class="flex-1">
@@ -468,7 +551,11 @@ onMounted(async () => {
                     Stok kontrolü yapılmaz
                   </p>
                 </div>
-                <Checkbox v-model="isLimitless" :disabled="isLoading" class="shrink-0" />
+                <Checkbox
+                  v-model="isLimitless"
+                  :disabled="isLoading"
+                  class="shrink-0"
+                />
               </div>
               <div class="flex items-center justify-between py-2">
                 <div class="flex-1">
@@ -477,7 +564,11 @@ onMounted(async () => {
                     Fiyat ağırlığa göre hesaplanır
                   </p>
                 </div>
-                <Checkbox v-model="PricePerUnit" :disabled="isLoading" class="shrink-0" />
+                <Checkbox
+                  v-model="PricePerUnit"
+                  :disabled="isLoading"
+                  class="shrink-0"
+                />
               </div>
             </div>
           </CardContent>
@@ -499,15 +590,27 @@ onMounted(async () => {
           <CardContent class="px-4 sm:px-6">
             <Carousel class="w-full">
               <CarouselContent class="-ml-2 sm:-ml-4">
-                <CarouselItem class="basis-20 sm:basis-24 lg:basis-28 pl-2 sm:pl-4">
+                <CarouselItem
+                  class="basis-20 sm:basis-24 lg:basis-28 pl-2 sm:pl-4"
+                >
                   <div
-                    class="group aspect-square border-2 border-dashed rounded-lg hover:border-primary transition-colors cursor-pointer flex flex-col items-center justify-center">
+                    class="group aspect-square border-2 border-dashed rounded-lg hover:border-primary transition-colors cursor-pointer flex flex-col items-center justify-center"
+                  >
                     <UploadCloud
-                      class="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      class="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-muted-foreground group-hover:text-primary transition-colors"
+                    />
                   </div>
                 </CarouselItem>
-                <CarouselItem v-for="n in 7" :key="n" class="basis-20 sm:basis-24 lg:basis-28 pl-2 sm:pl-4">
-                  <LazyImage :src="`/macbook${n}.jpg`" alt="macbook" class="aspect-square object-cover rounded-lg" />
+                <CarouselItem
+                  v-for="n in 7"
+                  :key="n"
+                  class="basis-20 sm:basis-24 lg:basis-28 pl-2 sm:pl-4"
+                >
+                  <LazyImage
+                    :src="`/macbook${n}.jpg`"
+                    alt="macbook"
+                    class="aspect-square object-cover rounded-lg"
+                  />
                 </CarouselItem>
               </CarouselContent>
               <CarouselPrevious class="hidden sm:flex" />
