@@ -23,15 +23,17 @@ const modelValue = defineModel({
   type: Number,
   default: 0,
 });
+
+const emit = defineEmits(['updated']);
 </script>
 
 <template>
   <NumberField v-model="modelValue" :min="min" :max="max" :disabled="disabled">
     <Label v-if="label">{{ label }}</Label>
     <NumberFieldContent>
-      <NumberFieldDecrement v-if="!disableDecrement" />
+      <NumberFieldDecrement v-if="!disableDecrement" @click="emit('updated')" />
       <NumberFieldInput :class="props.class" />
-      <NumberFieldIncrement v-if="!disableIncrement" />
+      <NumberFieldIncrement v-if="!disableIncrement" @click="emit('updated')" />
     </NumberFieldContent>
   </NumberField>
 </template>

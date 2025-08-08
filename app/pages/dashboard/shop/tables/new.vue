@@ -16,6 +16,7 @@ import Section from '@/components/layout/Section.vue';
 import ResourceCard from '@/components/card/ResourceCard.vue';
 import SeatRenderer from '@/components/SeatRenderer.vue';
 import createProtectedApiInterface from '@/api/protected';
+import type Table from '~/types/api/Table';
 const router = useRouter();
 const route = useRoute();
 
@@ -85,6 +86,15 @@ async function CreateTable() {
   });
   router.push('/dashboard/shop/tables');
 }
+
+onMounted(async () => {
+  if (isEditing.value) {
+    const tableData = await protectedApiInterface.get<Table>(`shop/tables/${selectedShop.id}/${route.query.id}`);
+
+    tableName.value = tableData.data.name;
+    seatSize.value = tableData.data.seatSize;
+  }
+})  
 </script>
 
 <template>
@@ -113,14 +123,16 @@ async function CreateTable() {
             </div>
           </div>
         </ResourceCard>
-        <ResourceCard title="Kapasite" description="Masanın alabileceği maksimum müşteri sayısı."
+        <ResourceCard
+title="Kapasite" description="Masanın alabileceği maksimum müşteri sayısı."
           class="flex flex-col gap-4">
           <SeatRenderer :seat-size="seatSize" class="mx-auto" />
           <NumberFieldSimplified v-model="seatSize" :disabled="isLoading" label="Kapasite" :max="24" :min="1" />
         </ResourceCard>
       </div>
       <div class="flex flex-col gap-4">
-        <ResourceCard title="Masa Ayarları" description="Masanın çalışma biçimiyle alakalı ayarlar."
+        <ResourceCard
+title="Masa Ayarları" description="Masanın çalışma biçimiyle alakalı ayarlar."
           class="grid grid-cols-2 gap-4">
           <TooltipProvider>
             <TooltipSimplified content="Masayı listelerden gizler ama yine de entegrasyonlar görebilir.">

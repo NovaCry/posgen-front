@@ -86,6 +86,7 @@ onBeforeMount(() => {
     </NuxtLink>
   </div>
   <DataTable :data="composedPagination?.data || []" />
-  <PaginationSimplified v-model="page" class="my-4 w-full flex justify-center" :items-per-page="ITEMS_PER_PAGE"
+  <PaginationSimplified
+v-model="page" class="my-4 w-full flex justify-center" :items-per-page="ITEMS_PER_PAGE"
     :total-items="composedPagination?.meta.totalCount" />
 </template>

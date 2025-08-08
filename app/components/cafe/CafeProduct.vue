@@ -11,6 +11,7 @@ defineProps<{
 }>();
 
 const quantityModel = defineModel<number>('quantity', {
+  type: Number,
   default: 1,
 });
 
@@ -30,7 +31,6 @@ function handleCardClick(e: MouseEvent) {
   <div class="w-full space-y-3">
     <!-- Main Product Card -->
     <button
-      data-purpose="add"
       class="relative flex flex-col gap-4 w-full text-left p-4 bg-card border border-border rounded-xl hover:bg-accent/50 hover:border-accent-foreground/20 transition-all duration-200 hover:shadow-md group overflow-hidden"
       @click="handleCardClick"
     >
@@ -74,6 +74,13 @@ function handleCardClick(e: MouseEvent) {
       </div>
     </button>
 
+    <NumberFieldSimplified
+      v-if="false"
+      v-model="quantityModel"
+      :min="1"
+      :max="9999"
+    />
+
     <!-- External Controls (Quantity & Remove Button) -->
     <motion.div
       v-if="selectedModel"
@@ -81,10 +88,9 @@ function handleCardClick(e: MouseEvent) {
       :animate="{ opacity: 1, y: 0 }"
       :exit="{ opacity: 0, y: -10 }"
       :transition="{ duration: 0.2 }"
-      class="space-y-2 px-1 mb-4"
+      class="relative z-20"
     >
       <NumberFieldSimplified
-        :key="quantityModel"
         v-model="quantityModel"
         :max="maxQuantity"
         :min="1"

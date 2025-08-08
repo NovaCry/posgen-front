@@ -161,7 +161,8 @@ function HandleSelection(command: Command) {
 
     <!-- Mobile View - Just Icon -->
     <div class="sm:hidden">
-      <button class="h-8 w-8 p-0 flex items-center justify-center rounded-md hover:bg-secondary cursor-pointer"
+      <button
+class="h-8 w-8 p-0 flex items-center justify-center rounded-md hover:bg-secondary cursor-pointer"
         title="Posgen'de arayın... (⌘K)" @click="handleOpenChange">
         <Search class="text-muted-foreground size-4" />
       </button>
@@ -177,7 +178,8 @@ function HandleSelection(command: Command) {
       <CommandList>
         <CommandEmpty>Sonuç bulunamadı.</CommandEmpty>
         <CommandGroup v-for="group of groups" :key="group.title" :heading="group.title">
-          <CommandItem v-for="command of group.commands" :key="command.id" class="group" :value="command.id"
+          <CommandItem
+v-for="command of group.commands" :key="command.id" class="group" :value="command.id"
             @select="HandleSelection(command)">
             <Icon v-if="command.icon" :name="command.icon" class="size-4" />
             <!-- <component :is="command.icon" v-if="command.icon" class="size-4" /> -->

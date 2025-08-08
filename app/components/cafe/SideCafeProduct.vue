@@ -42,7 +42,6 @@ function removeFromOrder() {
       >
     </div>
     <NumberFieldSimplified
-      :key="`${name}-${quantityModel}`"
       v-model="quantityModel"
       :min="1"
       :max="maxQuantity"

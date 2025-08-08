@@ -134,7 +134,8 @@ onUnmounted(() => {
 <template>
   <div
     class="fixed top-16 right-0 mr-2 z-30 flex items-center gap-2 px-3 py-1 rounded-lg shadow-lg backdrop-blur border min-w-[180px] bg-white/80 border-gray-200 dark:bg-zinc-900/80 dark:border-zinc-700">
-    <component :is="syncInfo.icon" :class="[
+    <component
+:is="syncInfo.icon" :class="[
       'h-4 w-4',
       syncInfo.iconClass,
       syncInfo.variant === 'destructive'
@@ -143,7 +144,8 @@ onUnmounted(() => {
           ? 'text-yellow-500'
           : 'text-green-500',
     ]" />
-    <span class="text-xs font-medium truncate" :class="syncInfo.variant === 'destructive'
+    <span
+class="text-xs font-medium truncate" :class="syncInfo.variant === 'destructive'
         ? 'text-red-500'
         : syncInfo.variant === 'secondary'
           ? 'text-yellow-500'

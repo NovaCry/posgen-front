@@ -101,7 +101,8 @@ function makeActionsForProduct(product: Product): MenuCell {
 <template>
   <Section>
     <h1 class="text-3xl font-semibold">Ürünler</h1>
-    <Resource :key="resourceVersion" create="/dashboard/shop/product/new"
+    <Resource
+:key="resourceVersion" create="/dashboard/shop/product/new"
       :fetch="`shop/products/${selectedShop.id}/list`" @populate="populateData" />
   </Section>
 </template>

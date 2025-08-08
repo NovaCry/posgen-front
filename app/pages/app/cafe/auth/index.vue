@@ -36,22 +36,26 @@ onUnmounted(() => {
                             </AvatarFallback>
                         </Avatar>
                     </div>
-                    <motion.span :initial="{ filter: 'blur(10px)', scale: 0.8 }"
+                    <motion.span
+:initial="{ filter: 'blur(10px)', scale: 0.8 }"
                         :animate="{ filter: 'blur(0px)', scale: 1 }" class="font-header mb-0.5">{{ toLocaleDate(new
                             Date(),
                         true) }}</motion.span>
-                    <motion.h1 :initial="{ filter: 'blur(10px)', scale: 0.8 }"
+                    <motion.h1
+:initial="{ filter: 'blur(10px)', scale: 0.8 }"
                         :animate="{ filter: 'blur(0px)', scale: 1 }" :transition="{ delay: 0.1 }" class="text-5xl mb-2">
                         {{ localTime }}
                     </motion.h1>
                 </ClientOnly>
-                <motion.div :initial="{ filter: 'blur(10px)', scale: 0.8 }" :animate="{ filter: 'blur(0px)', scale: 1 }"
+                <motion.div
+:initial="{ filter: 'blur(10px)', scale: 0.8 }" :animate="{ filter: 'blur(0px)', scale: 1 }"
                     :transition="{ delay: 0.15 }" class="mt-2 flex flex-col items-center">
                     <span class="mb-2 text-sm text-gray-600 dark:text-gray-300">Garson hesabınıza devam etmek için PIN
                         kodunuzu girin.</span>
                     <CafePinInput />
                 </motion.div>
-                <motion.div :initial="{ filter: 'blur(10px)', scale: 0.8 }" :animate="{ filter: 'blur(0px)', scale: 1 }"
+                <motion.div
+:initial="{ filter: 'blur(10px)', scale: 0.8 }" :animate="{ filter: 'blur(0px)', scale: 1 }"
                     :transition="{ delay: 0.18 }" class="mt-5 w-full flex justify-start">
                     <Alert class="text-left">
                         <Shield class="h-4 w-4 inline-block mr-2 align-top" />
@@ -61,7 +65,8 @@ onUnmounted(() => {
                         </AlertDescription>
                     </Alert>
                 </motion.div>
-                <motion.div :initial="{ filter: 'blur(10px)', scale: 0.8 }" :animate="{ filter: 'blur(0px)', scale: 1 }"
+                <motion.div
+:initial="{ filter: 'blur(10px)', scale: 0.8 }" :animate="{ filter: 'blur(0px)', scale: 1 }"
                     :transition="{ delay: 0.2 }" class="py-3 flex items-center gap-2 justify-center">
                 </motion.div>
             </MotionConfig>

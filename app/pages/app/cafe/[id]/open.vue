@@ -269,6 +269,7 @@ async function completeOrder() {
 async function handleItemDelete() {}
 
 onMounted(async () => {
+  selectedShop.load();
   await fetchTables();
   await fetchProducts();
 });
