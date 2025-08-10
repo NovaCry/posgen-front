@@ -162,17 +162,11 @@ definePageMeta({
   middleware: ['auth'],
 });
 
-const user = useUser();
 const sidebarState = useSidebarStore();
 
 const blurViewport = ref(false);
 
 const sidebarOpenState = ref(sidebarState.open);
-
-router.beforeResolve(async (to, from, next) => {
-  if ((await user.requireToLogin()) && !to.meta.dontAuthorize) next('/login');
-  else next();
-});
 
 watch(sidebarOpenState, (n) => {
   sidebarState.open = n;

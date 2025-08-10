@@ -147,7 +147,7 @@ definePageMeta({
   name: 'Erişim İzni',
 });
 
-const user = useUser();
+const session = useSession();
 const protectedApiInterface = createProtectedApiInterface();
 const selectedShop = useSelectedShopStore();
 
@@ -182,7 +182,7 @@ const app = ref<Application>();
 onBeforeMount(async () => {
   await router.isReady();
 
-  if (await user.requireToLogin()) useRedirect('/login', '/authorize');
+  if (await session.requireToLogin()) useRedirect('/login', '/authorize');
 
   const app_id = router.currentRoute.value.query.id;
 
@@ -199,7 +199,7 @@ onBeforeMount(async () => {
 });
 
 async function GrantAuthorization() {
-  if (!user.session) return;
+  if (!session.data) return;
   Processing.value = true;
 
   // Create access_token for application with refresh_token
@@ -208,7 +208,7 @@ async function GrantAuthorization() {
     url: 'auth/token',
     data: {
       grant_type: 'authorization_code',
-      refresh_token: user.session.refreshToken,
+      refresh_token: session.data.refreshToken,
       application_id: app.value?.id,
     },
   }).catch((err) =>

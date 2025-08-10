@@ -163,6 +163,7 @@ definePageMeta({
   meta: {
     dontAuthorize: true,
   },
+  middleware: ['auth'],
 });
 
 const Processing = ref(false);

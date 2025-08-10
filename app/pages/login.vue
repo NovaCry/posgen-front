@@ -118,7 +118,7 @@ import Label from '@/components/ui/label/Label.vue';
 import type APIError from '@/types/api/APIError';
 import type User from '@/types/api/User';
 import type { AxiosError } from 'axios';
-import { onBeforeMount, ref } from 'vue';
+import { ref } from 'vue';
 import type Shop from '@/types/api/Shop';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowRight, Eye, EyeOff } from 'lucide-vue-next';
@@ -133,6 +133,7 @@ definePageMeta({
   meta: {
     dontAuthorize: true,
   },
+  middleware: ['auth'],
 });
 
 const Processing = ref(false);
@@ -145,6 +146,7 @@ const showPassword = ref(false);
 
 const ApiMessage = ref('');
 
+const session = useSession();
 const user = useUser();
 
 const customizedErrorHandler = (err: AxiosError<APIError>) =>
@@ -183,13 +185,14 @@ async function Login() {
   const expiration = new Date();
   expiration.setFullYear(2026);
 
-  user.patch({
-    user: response.data.user,
+  user.patch(response.data.user);
+  session.patch({
     accessToken: response.data.access_token,
     refreshToken: response.data.refresh_token,
     expiresIn: expiration + '',
   });
   user.save();
+  session.save();
 
   const protectedApiInterface = createProtectedApiInterface();
 
@@ -204,13 +207,7 @@ async function Login() {
   }
 
   user.patch({
-    user: {
-      ...response.data.user,
-      shops: listResponse.data,
-    },
-    accessToken: response.data.access_token,
-    refreshToken: response.data.refresh_token,
-    expiresIn: expiration + '',
+    shops: listResponse.data,
   });
   user.save();
 
@@ -228,10 +225,4 @@ async function Login() {
 
   router.push('/dashboard/');
 }
-
-onBeforeMount(async () => {
-  if (!(await user.requireToLogin())) {
-    router.push('/dashboard/');
-  }
-});
 </script>

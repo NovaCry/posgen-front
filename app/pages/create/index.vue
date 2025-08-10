@@ -170,9 +170,9 @@ async function Create() {
     return;
   }
 
-  if (!listResponse) return;
-
-  if (user.data) user.data.shops = listResponse.data;
+  user.patch({
+    shops: listResponse.data,
+  });
   user.save();
 
   Processing.value = false;

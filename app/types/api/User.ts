@@ -30,8 +30,17 @@ export type Role = 'EMPLOYEE' | 'COURIER' | 'BUSINESS' | 'ADMIN';
 
 export interface RefreshTokenResponse {
   access_token: string;
+  refresh_token: string;
   token_type: 'Bearer';
-  expires_in: number;
+  expires_in: string;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: string;
+    isSuspended: true;
+  };
 }
 
 export interface Session {

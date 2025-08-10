@@ -1,100 +1,41 @@
-import defaultApiInterface from '~/api/default';
 import type User from '~/types/api/User';
-import type { RefreshTokenResponse, Session } from '~/types/api/User';
+
+const _user = ref<User | null>(null);
 
 export default function useUser() {
-  const userStore = useUserStore();
-
   return {
     logout() {
       const router = useRouter();
 
-      userStore.$reset();
-      userStore.save();
+      this.reset();
+      this.save();
       router.push('/login');
+      return this;
     },
-    patch(data: Partial<UserStore>) {
-      userStore.$state = { ...data };
+    patch(data: Partial<User>) {
+      _user.value = { ..._user.value, ...(data as User) };
+      return this;
+    },
+    reset() {
+      _user.value = null;
+      return this;
     },
     load() {
-      userStore.load();
+      let user = localStorage.getItem('user');
+      if (user) {
+        _user.value = JSON.parse(user);
+      }
+      return this;
     },
     save() {
-      userStore.save();
-    },
-    async refreshToken() {
-      if (!this.session) return;
-      const res = await defaultApiInterface
-        .post<RefreshTokenResponse>('auth/token', {
-          data: {
-            grant_type: 'refresh_token',
-            refresh_token: this.session.refreshToken,
-          },
-        })
-        .catch((err) => {
-          console.error(err);
-          return;
-        });
-
-      if (!res) return false;
-      userStore.$patch({
-        accessToken: res.data.access_token,
-        expiresIn: new Date(res.data.expires_in * 1000) + '',
-      });
-
-      userStore.save();
-    },
-    isLoggedIn() {
-      if (!this.data || !this.session) return false;
-      console.log(new Date(this.session.expiresIn));
-      if (new Date() > new Date(this.session.expiresIn)) return false;
-      return true;
-    },
-    async requireToLogin() {
-      if (!this.data || !this.session) return true;
-      if (new Date() > new Date(this.session.expiresIn)) {
-        const res = await defaultApiInterface
-          .post<RefreshTokenResponse>('auth/token', {
-            data: {
-              grant_type: 'refresh_token',
-              refresh_token: this.session.refreshToken,
-            },
-          })
-          .catch((err) => {
-            console.error(err);
-            return;
-          });
-
-        if (!res) return true;
-
-        userStore.$patch({
-          accessToken: res.data.access_token,
-          expiresIn: new Date(res.data.expires_in * 1000) + '',
-        });
-
-        userStore.save();
-      }
-
-      return false;
+      localStorage.setItem('user', JSON.stringify(_user.value));
+      return this;
     },
     data: ((): (User & { name: string }) | undefined => {
-      if (!userStore.user || !userStore.user.id) return undefined;
+      if (!_user.value) return undefined;
       return {
-        ...userStore.user,
-        name: `${userStore.user.firstName} ${userStore.user.lastName}`,
-      };
-    })(),
-    session: ((): Session | undefined => {
-      if (
-        !userStore.expiresIn ||
-        !userStore.refreshToken ||
-        !userStore.accessToken
-      )
-        return undefined;
-      return {
-        expiresIn: userStore.expiresIn,
-        refreshToken: userStore.refreshToken,
-        accessToken: userStore.accessToken,
+        ..._user.value,
+        name: `${_user.value.firstName} ${_user.value.lastName}`,
       };
     })(),
   };

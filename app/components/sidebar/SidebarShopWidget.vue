@@ -14,16 +14,15 @@ import type Shop from '@/types/api/Shop';
 import { useSelectedShopStore } from '@/store/shop';
 import { onBeforeMount } from 'vue';
 
-const router = useRouter();
 const user = useUser();
 const selectedShop = useSelectedShopStore();
 
 const emit = defineEmits(['update']);
 
 onBeforeMount(() => {
-  if (!user.data || !user.session) return router.push('/login');
+  if (!user.data) return;
   if (!user.data.shops || user.data.shops.length === 0 || !user.data.shops[0])
-    return router.push('/create');
+    return;
 
   if (selectedShop.id === '') {
     selectedShop.$state = user.data.shops[0];
