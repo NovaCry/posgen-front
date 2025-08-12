@@ -111,12 +111,10 @@
 </template>
 
 <script setup lang="ts">
-import defaultApiInterface from '@/api/default';
 import Button from '@/components/ui/button/Button.vue';
 import Input from '@/components/ui/input/Input.vue';
 import Label from '@/components/ui/label/Label.vue';
 import type APIError from '@/types/api/APIError';
-import type User from '@/types/api/User';
 import type { AxiosError } from 'axios';
 import { ref } from 'vue';
 import type Shop from '@/types/api/Shop';
@@ -146,7 +144,6 @@ const showPassword = ref(false);
 
 const ApiMessage = ref('');
 
-const session = useSession();
 const user = useUser();
 
 const customizedErrorHandler = (err: AxiosError<APIError>) =>
@@ -156,41 +153,29 @@ const customizedErrorHandler = (err: AxiosError<APIError>) =>
     },
   });
 
-interface UserLoginSuccess {
-  user: User;
-  access_token: string;
-  refresh_token: string;
-  token_type: 'Bearer';
-  expires_in: number;
-  scope: 'default';
-}
-
 async function Login() {
   Processing.value = true;
 
-  const response = await defaultApiInterface<UserLoginSuccess>({
-    url: 'auth/login',
-    method: 'POST',
-    data: {
-      email: Email.value,
-      password: Password.value,
-      rememberMe: RememberMe.value,
-    },
-  }).catch(customizedErrorHandler);
+  // const response = await defaultApiInterface<UserLoginSuccess>({
+  //   url: 'auth/login',
+  //   method: 'POST',
+  //   data: {
+  //     email: Email.value,
+  //     password: Password.value,
+  //     rememberMe: RememberMe.value,
+  //   },
+  // }).catch(customizedErrorHandler);
 
-  Processing.value = false;
+  // Processing.value = false;
+
+  const auth = useAuth();
+  const response = await auth
+    .login(Email.value, Password.value, RememberMe.value)
+    .catch(customizedErrorHandler);
 
   if (!response) return;
 
-  const expiration = new Date();
-  expiration.setFullYear(2026);
-
-  user.patch(response.data.user);
-  session.patch({
-    accessToken: response.data.access_token,
-    refreshToken: response.data.refresh_token,
-    expiresIn: expiration + '',
-  });
+  auth.setCurrentSession(response.data.sessionId);
 
   const protectedApiInterface = createProtectedApiInterface();
 

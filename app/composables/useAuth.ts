@@ -3,9 +3,11 @@ import type User from '~/types/api/User';
 import type { LoginResponse, Session } from '~/types/api/User';
 
 const _users = ref<Record<string, User>>({});
+const _user = ref<User | null>(null);
 const _sessions = ref<Session[]>([]);
 const _session = ref<Session | null>(null);
 
+const ACTIVE_USER_KEY = 'activeUser';
 const ACTIVE_SESSION_KEY = 'activeSession';
 const SAVED_SESSIONS_KEY = 'sessions';
 const SAVED_USERS_KEY = 'users';
@@ -70,20 +72,21 @@ export default function useAuth() {
       return _session;
     },
     getCurrentUser() {
-      if (_session.value?.userId)
-        return _users.value[_session.value.userId] || null;
-      return null;
+      return _user;
     },
-    setCurrentSession(sessionId: string, _dispatched: boolean = false) {
+    setCurrentSession(sessionId: string) {
       _session.value =
         _sessions.value.find((session) => {
           return session.sessionId == sessionId;
         }) || _session.value;
+      if (_session.value)
+        _user.value = _users.value[_session.value.sessionId] || null;
 
       this.save();
     },
     resetCurrentSession() {
       _session.value = null;
+      _user.value = null;
       this.save();
     },
     patchSession(sessionId: string, data: Partial<Session>) {
@@ -98,6 +101,11 @@ export default function useAuth() {
       this.save();
     },
     patchUser(userId: string, data: Partial<User>) {
+      if (userId == _user.value?.id)
+        _user.value = {
+          ..._user.value,
+          ...(data as User),
+        };
       _users.value[userId] = {
         ..._users.value[userId],
         ...(data as User),
@@ -108,11 +116,13 @@ export default function useAuth() {
       localStorage.setItem(SAVED_SESSIONS_KEY, JSON.stringify(_sessions.value));
       localStorage.setItem(ACTIVE_SESSION_KEY, JSON.stringify(_session.value));
       localStorage.setItem(SAVED_USERS_KEY, JSON.stringify(_users.value));
+      localStorage.setItem(ACTIVE_USER_KEY, JSON.stringify(_user.value));
     },
     load() {
       let __sessions = localStorage.getItem(SAVED_SESSIONS_KEY);
       let __session = localStorage.getItem(ACTIVE_SESSION_KEY);
       let __users = localStorage.getItem(SAVED_USERS_KEY);
+      let __user = localStorage.getItem(ACTIVE_USER_KEY);
       if (__sessions) {
         _sessions.value = JSON.parse(__sessions);
       }
@@ -121,6 +131,9 @@ export default function useAuth() {
       }
       if (__users) {
         _users.value = JSON.parse(__users);
+      }
+      if (__user) {
+        _user.value = JSON.parse(__user);
       }
     },
   };

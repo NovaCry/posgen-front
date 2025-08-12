@@ -26,7 +26,7 @@ export default function useSession() {
         .post<RefreshTokenResponse>('auth/token', {
           data: {
             grant_type: 'refresh_token',
-            refresh_token: this.data.refreshToken,
+            refresh_token: _session.value?.refreshToken,
           },
         })
         .catch((err) => {
@@ -44,12 +44,12 @@ export default function useSession() {
     },
     isLoggedIn() {
       if (!this.data) return false;
-      if (new Date() > new Date(this.data.expiresIn)) return false;
+      if (new Date() > new Date(_session.value?.expiresIn || '')) return false;
       return true;
     },
     async requireToLogin() {
       if (!this.data) return true;
-      if (new Date() > new Date(this.data.expiresIn)) {
+      if (new Date() > new Date(_session.value?.expiresIn || '')) {
         const res = await this.refreshToken();
 
         if (!res) return true;

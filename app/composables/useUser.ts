@@ -6,10 +6,10 @@ export default function useUser() {
 
   return {
     patch(data: Partial<User>) {
-      if (!_user?.id) return;
-      manager.patchUser(_user.id, data);
+      if (!_user.value?.id) return;
+      manager.patchUser(_user.value.id, data);
       return this;
     },
-    data: manager.getCurrentUser(),
+    data: manager.getCurrentUser().value,
   };
 }
