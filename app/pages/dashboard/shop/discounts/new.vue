@@ -125,6 +125,20 @@ async function CreateDiscount() {
   router.push('/dashboard/shop/discounts');
 }
 
+function onDiscountInput(event: Event) {
+  const target = event.target as HTMLInputElement;
+  let val = Number(target.value);
+  if (isPercentageDiscount.value) {
+    if (val < 1) val = 1;
+    if (val > 100) val = 100;
+  } else {
+    if (val < 1) val = 1;
+    if (val > 1500) val = 1500;
+  }
+  discountAmount.value = val.toString();
+  target.value = val.toString();
+}
+
 definePageMeta({
   name: 'Yeni İndirim',
 });
@@ -236,8 +250,10 @@ definePageMeta({
                     type="number"
                     :placeholder="isPercentageDiscount ? '25' : '100'"
                     class="h-11 text-base pr-12"
-                    :min="isPercentageDiscount ? 0 : undefined"
-                    :max="isPercentageDiscount ? 100 : undefined"
+                    :min="isPercentageDiscount ? 1 : 1"
+                    :max="isPercentageDiscount ? 100 : 1500"
+                    @input="onDiscountInput"
+                    @change="onDiscountInput"
                   />
                   <div
                     class="absolute inset-y-0 right-0 flex items-center pr-4"
