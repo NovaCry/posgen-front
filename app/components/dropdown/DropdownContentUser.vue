@@ -18,6 +18,7 @@ import {
 import shortenName from '~/lib/shortenName';
 
 const user = useUser();
+const session = useSession();
 </script>
 
 <template>
@@ -76,7 +77,7 @@ const user = useUser();
       </DropdownMenuItem>
     </NuxtLink>
     <DropdownMenuSeparator />
-    <DropdownMenuItem @click="user.logout()">
+    <DropdownMenuItem @click="session.logout">
       <LogOut />
       Çıkış Yap
     </DropdownMenuItem>

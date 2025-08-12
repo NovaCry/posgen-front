@@ -15,7 +15,7 @@ import { useSidebarStore } from '~/store/sidebar';
 
 const router = useRouter();
 
-const user = useUser();
+const session = useSession();
 const open = ref(false);
 
 const { Meta_K, Ctrl_K } = useMagicKeys({
@@ -79,7 +79,7 @@ const addionalGroups: ICommandGroup[] = [
         id: 'logout',
         icon: 'lucide:log-out',
         name: 'Çıkış Yap',
-        action: user.logout,
+        action: session.logout,
       },
     ],
   },
@@ -149,11 +149,13 @@ function HandleSelection(command: Command) {
     <div class="hidden sm:block min-w-64 w-auto max-w-[35%]">
       <button
         class="border rounded-md flex items-center gap-2 px-2 w-full py-1.5 transition hover:bg-secondary cursor-pointer"
-        @click="handleOpenChange">
+        @click="handleOpenChange"
+      >
         <Search class="text-muted-foreground size-4" />
         <p class="text-sm text-muted-foreground">Posgen'de arayın...</p>
         <kbd
-          class="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+          class="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100"
+        >
           <span class="text-xs">⌘</span>K
         </kbd>
       </button>
@@ -162,8 +164,10 @@ function HandleSelection(command: Command) {
     <!-- Mobile View - Just Icon -->
     <div class="sm:hidden">
       <button
-class="h-8 w-8 p-0 flex items-center justify-center rounded-md hover:bg-secondary cursor-pointer"
-        title="Posgen'de arayın... (⌘K)" @click="handleOpenChange">
+        class="h-8 w-8 p-0 flex items-center justify-center rounded-md hover:bg-secondary cursor-pointer"
+        title="Posgen'de arayın... (⌘K)"
+        @click="handleOpenChange"
+      >
         <Search class="text-muted-foreground size-4" />
       </button>
     </div>
@@ -177,15 +181,24 @@ class="h-8 w-8 p-0 flex items-center justify-center rounded-md hover:bg-secondar
       <CommandInput placeholder="Bir komut girin veya arama yapın..." />
       <CommandList>
         <CommandEmpty>Sonuç bulunamadı.</CommandEmpty>
-        <CommandGroup v-for="group of groups" :key="group.title" :heading="group.title">
+        <CommandGroup
+          v-for="group of groups"
+          :key="group.title"
+          :heading="group.title"
+        >
           <CommandItem
-v-for="command of group.commands" :key="command.id" class="group" :value="command.id"
-            @select="HandleSelection(command)">
+            v-for="command of group.commands"
+            :key="command.id"
+            class="group"
+            :value="command.id"
+            @select="HandleSelection(command)"
+          >
             <Icon v-if="command.icon" :name="command.icon" class="size-4" />
             <!-- <component :is="command.icon" v-if="command.icon" class="size-4" /> -->
             {{ command.name }}
             <ArrowRight
-              class="size-4 ml-auto fill-mode-forwards group-data-highlighted:animate-in animate-out fade-in fade-out duration-100" />
+              class="size-4 ml-auto fill-mode-forwards group-data-highlighted:animate-in animate-out fade-in fade-out duration-100"
+            />
           </CommandItem>
         </CommandGroup>
       </CommandList>

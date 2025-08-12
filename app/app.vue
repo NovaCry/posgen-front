@@ -9,13 +9,11 @@ import { Toaster } from './components/ui/sonner';
 import { useSelectedShopStore } from './store/shop';
 useColorMode();
 
-const user = useUser();
-const session = useSession();
+const auth = useAuth();
 const selectedShop = useSelectedShopStore();
 
 onMounted(() => {
-  user.load();
-  session.load();
+  auth.load();
   selectedShop.load();
 });
 </script>

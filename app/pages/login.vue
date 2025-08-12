@@ -191,8 +191,6 @@ async function Login() {
     refreshToken: response.data.refresh_token,
     expiresIn: expiration + '',
   });
-  user.save();
-  session.save();
 
   const protectedApiInterface = createProtectedApiInterface();
 
@@ -209,7 +207,6 @@ async function Login() {
   user.patch({
     shops: listResponse.data,
   });
-  user.save();
 
   const greetingsVerb = (() => {
     const hours = new Date().getHours();

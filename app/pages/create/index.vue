@@ -173,7 +173,6 @@ async function Create() {
   user.patch({
     shops: listResponse.data,
   });
-  user.save();
 
   Processing.value = false;
 

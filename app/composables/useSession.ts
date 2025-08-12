@@ -1,35 +1,23 @@
 import defaultApiInterface from '~/api/default';
 import type { RefreshTokenResponse, Session } from '~/types/api/User';
 
-const _session = ref<Session | null>(null);
-
 export default function useSession() {
+  const manager = useAuth();
+  const _session = manager.getCurrentSession();
+
   return {
     logout() {
+      if (!_session.value) return;
+
       const router = useRouter();
 
-      this.reset();
-      this.save();
+      manager.logout(_session.value?.sessionId);
       router.push('/login');
       return this;
     },
     patch(data: Partial<Session>) {
-      _session.value = { ..._session.value, ...(data as Session) };
-      return this;
-    },
-    reset() {
-      _session.value = null;
-      return this;
-    },
-    load() {
-      let session = localStorage.getItem('session');
-      if (session) {
-        _session.value = JSON.parse(session);
-      }
-      return this;
-    },
-    save() {
-      localStorage.setItem('session', JSON.stringify(_session.value));
+      if (!_session.value?.sessionId) return;
+      manager.patchSession(_session.value.sessionId, data);
       return this;
     },
     async refreshToken() {
@@ -52,8 +40,6 @@ export default function useSession() {
         expiresIn: res.data.expires_in,
       });
 
-      this.save();
-
       return res;
     },
     isLoggedIn() {
@@ -71,8 +57,6 @@ export default function useSession() {
 
       return false;
     },
-    data: ((): Session | null => {
-      return _session.value;
-    })(),
+    data: _session.value,
   };
 }

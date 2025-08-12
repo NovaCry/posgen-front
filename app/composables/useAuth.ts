@@ -1,0 +1,127 @@
+import defaultApiInterface from '~/api/default';
+import type User from '~/types/api/User';
+import type { LoginResponse, Session } from '~/types/api/User';
+
+const _users = ref<Record<string, User>>({});
+const _sessions = ref<Session[]>([]);
+const _session = ref<Session | null>(null);
+
+const ACTIVE_SESSION_KEY = 'activeSession';
+const SAVED_SESSIONS_KEY = 'sessions';
+const SAVED_USERS_KEY = 'users';
+
+export default function useAuth() {
+  return {
+    async login(email: string, password: string, remember: boolean) {
+      const response = await defaultApiInterface<LoginResponse>({
+        url: 'auth/login',
+        method: 'POST',
+        data: {
+          email: email,
+          password: password,
+          rememberMe: remember,
+        },
+      });
+
+      _sessions.value.push({
+        accessToken: response.data.access_token,
+        expiresIn: response.data.expires_in,
+        refreshToken: response.data.refresh_token,
+        active: true,
+        userId: response.data.user.id,
+        sessionId: response.data.sessionId,
+        remember,
+      });
+
+      response.data.user;
+
+      _users.value[response.data.sessionId] = {
+        ...response.data.user,
+        shops: [],
+        name: `${response.data.user.firstName} ${response.data.user.lastName}`,
+      };
+
+      this.save();
+
+      return response;
+    },
+    logout(sessionId: string) {
+      let copyArray: Session[] = [];
+      for (const session of _sessions.value) {
+        if (session.sessionId == sessionId) {
+          session.active = false;
+          session.accessToken = null;
+          // if user selected remember me while logging in. the session will be saved after logout
+          // but if user didn't select remember me, the session will be deleted after logout with user data
+
+          // save session from deleting
+          if (session.remember) return copyArray.push(session);
+          // delete user data
+          delete _users.value[session.userId];
+          return;
+        }
+        copyArray.push(session);
+      }
+      _sessions.value = copyArray;
+      this.save();
+      if (_session.value?.sessionId == sessionId) this.resetCurrentSession();
+    },
+    getCurrentSession() {
+      return _session;
+    },
+    getCurrentUser() {
+      if (_session.value?.userId)
+        return _users.value[_session.value.userId] || null;
+      return null;
+    },
+    setCurrentSession(sessionId: string, _dispatched: boolean = false) {
+      _session.value =
+        _sessions.value.find((session) => {
+          return session.sessionId == sessionId;
+        }) || _session.value;
+
+      this.save();
+    },
+    resetCurrentSession() {
+      _session.value = null;
+      this.save();
+    },
+    patchSession(sessionId: string, data: Partial<Session>) {
+      if (sessionId == _session.value?.sessionId)
+        _session.value = { ..._session.value, ...(data as Session) };
+      _sessions.value.map((session) => {
+        if (session.sessionId == sessionId) {
+          session = { ...session, ...(data as Session) };
+        }
+        return session;
+      });
+      this.save();
+    },
+    patchUser(userId: string, data: Partial<User>) {
+      _users.value[userId] = {
+        ..._users.value[userId],
+        ...(data as User),
+      };
+      this.save();
+    },
+    save() {
+      localStorage.setItem(SAVED_SESSIONS_KEY, JSON.stringify(_sessions.value));
+      localStorage.setItem(ACTIVE_SESSION_KEY, JSON.stringify(_session.value));
+      localStorage.setItem(SAVED_USERS_KEY, JSON.stringify(_users.value));
+    },
+    load() {
+      let __sessions = localStorage.getItem(SAVED_SESSIONS_KEY);
+      let __session = localStorage.getItem(ACTIVE_SESSION_KEY);
+      let __users = localStorage.getItem(SAVED_USERS_KEY);
+      if (__sessions) {
+        _sessions.value = JSON.parse(__sessions);
+      }
+      if (__session) {
+        _session.value = JSON.parse(__session);
+      }
+      if (__users) {
+        _users.value = JSON.parse(__users);
+      }
+    },
+  };
+}

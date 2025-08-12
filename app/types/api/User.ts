@@ -4,25 +4,16 @@ export default interface User {
   // Meta
   id: string;
 
+  name: string;
   firstName: string;
   lastName?: string;
   email: string;
 
-  password: string;
-
-  bornDate: string;
   role: Role;
 
-  // Default Meta
-  createdAt: string;
-  updatedAt: string;
-  isSuspended: boolean;
-
-  // Owned
   shops: Shop[];
 
   // Employee Fields
-  workingIn?: Shop;
   workingId?: string;
 }
 
@@ -39,12 +30,47 @@ export interface RefreshTokenResponse {
     lastName: string;
     email: string;
     role: string;
-    isSuspended: true;
+    isSuspended: boolean;
   };
 }
 
-export interface Session {
+export interface LoginResponse {
+  success: boolean;
+  message: string;
+  access_token: string;
+  refresh_token: string;
+  expires_in: string;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: Role;
+  };
+  has3FA: boolean;
+  hasSecurityPin: boolean;
+  requiresPinSetup: boolean;
+  requires3FA: boolean;
+  sessionId: string;
+  threeFactorMethods: string[];
+}
+
+interface ActiveSession {
   accessToken: string;
+  active: true;
+}
+
+interface InactiveSession {
+  accessToken: null;
+  active: false;
+}
+
+type SessionRaw = ActiveSession | InactiveSession;
+
+export type Session = {
   refreshToken: string;
   expiresIn: string;
-}
+  userId: string;
+  sessionId: string;
+  remember: boolean;
+} & SessionRaw;
