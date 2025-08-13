@@ -49,6 +49,7 @@ export default function useAuth() {
     },
     logout(sessionId: string) {
       let copyArray: Session[] = [];
+
       for (const session of _sessions.value) {
         if (session.sessionId == sessionId) {
           session.active = false;
@@ -57,10 +58,13 @@ export default function useAuth() {
           // but if user didn't select remember me, the session will be deleted after logout with user data
 
           // save session from deleting
-          if (session.remember) return copyArray.push(session);
+          if (session.remember) {
+            copyArray.push(session);
+            continue;
+          }
           // delete user data
           delete _users.value[session.userId];
-          return;
+          continue;
         }
         copyArray.push(session);
       }
@@ -73,6 +77,12 @@ export default function useAuth() {
     },
     getCurrentUser() {
       return _user;
+    },
+    getSavedUsers() {
+      return _users;
+    },
+    getSavedSessions() {
+      return _sessions;
     },
     setCurrentSession(sessionId: string) {
       _session.value =

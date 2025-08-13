@@ -77,7 +77,7 @@ const session = useSession();
       </DropdownMenuItem>
     </NuxtLink>
     <DropdownMenuSeparator />
-    <DropdownMenuItem @click="session.logout">
+    <DropdownMenuItem @click="() => session.logout">
       <LogOut />
       Çıkış Yap
     </DropdownMenuItem>
