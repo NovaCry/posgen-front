@@ -13,19 +13,19 @@ const user = useUser();
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
       <SidebarMenuButton
-        v-if="user.data"
+        v-if="user.data.value"
         size="lg"
         class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
       >
         <Avatar class="h-8 w-8 rounded-lg">
-          <AvatarImage :src="user.data.id" :alt="user.data.name" />
+          <AvatarImage :src="user.data.value.id" :alt="user.data.value.name" />
           <AvatarFallback class="rounded-lg">
-            {{ shortenName(user.data.name) }}
+            {{ shortenName(user.data.value.name) }}
           </AvatarFallback>
         </Avatar>
         <div class="grid flex-1 text-left text-sm leading-tight">
-          <span class="truncate font-semibold">{{ user.data.name }}</span>
-          <span class="truncate text-xs">{{ user.data.email }}</span>
+          <span class="truncate font-semibold">{{ user.data.value.name }}</span>
+          <span class="truncate text-xs">{{ user.data.value.email }}</span>
         </div>
         <ChevronsUpDown class="ml-auto size-4" />
       </SidebarMenuButton>

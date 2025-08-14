@@ -80,7 +80,7 @@ const applications = [
             {{ localTime }}
           </motion.h1>
           <motion.div
-            v-if="user.data"
+            v-if="user.data.value"
             :initial="{ filter: 'blur(10px)', scale: 0.8 }"
             :animate="{ filter: 'blur(0px)', scale: 1 }"
             :transition="{ delay: 0.2 }"
@@ -89,11 +89,11 @@ const applications = [
             <Avatar class="size-10">
               <AvatarImage src="" />
               <AvatarFallback>
-                {{ shortenName(user.data.name) }}
+                {{ shortenName(user.data.value.name) }}
               </AvatarFallback>
             </Avatar>
             <div>
-              <span>Günaydın, {{ user.data.name }}.</span>
+              <span>Günaydın, {{ user.data.value.name }}.</span>
             </div>
           </motion.div>
         </MotionConfig>

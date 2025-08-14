@@ -191,8 +191,7 @@ async function Register() {
     return;
   }
   Processing.value = true;
-  console.log(Birthday.value);
-  // return;
+
   const response = await defaultApiInterface<{ user: User; token: string }>({
     url: 'auth/register',
     method: 'POST',
@@ -209,8 +208,6 @@ async function Register() {
   Processing.value = false;
 
   if (!response) return;
-
-  console.log(response.data);
 
   router.push('/login');
 

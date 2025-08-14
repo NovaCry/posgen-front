@@ -6,11 +6,9 @@ export default defineNuxtRouteMiddleware((to) => {
 
   let isLoggedIn = useSession().isLoggedIn();
 
-  if (
-    ['/login', '/register'].includes(to.path) &&
-    isLoggedIn &&
-    to.path != '/dashboard'
-  )
+  if (['/login', '/register'].includes(to.path) && isLoggedIn)
     return navigateTo('/dashboard');
-  if (!isLoggedIn && to.path != '/login') return navigateTo('/login');
+
+  if (!isLoggedIn && !['/login', '/register'].includes(to.path))
+    return navigateTo('/login');
 });

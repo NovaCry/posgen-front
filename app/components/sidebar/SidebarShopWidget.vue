@@ -20,12 +20,16 @@ const selectedShop = useSelectedShopStore();
 const emit = defineEmits(['update']);
 
 onBeforeMount(() => {
-  if (!user.data) return;
-  if (!user.data.shops || user.data.shops.length === 0 || !user.data.shops[0])
+  if (!user.data.value) return;
+  if (
+    !user.data.value.shops ||
+    user.data.value.shops.length === 0 ||
+    !user.data.value.shops[0]
+  )
     return;
 
   if (selectedShop.id === '') {
-    selectedShop.$state = user.data.shops[0];
+    selectedShop.$state = user.data.value.shops[0];
     selectedShop.save();
     emit('update');
   }
@@ -40,10 +44,10 @@ function setActiveTeam(shop: Shop) {
 
 <template>
   <SidebarMenuItem
-    v-if="user.data"
+    v-if="user.data.value"
     class="hover:bg-accent rounded-md transition duration-200"
   >
-    <NuxtLink v-if="user.data.shops.length == 0" to="/create">
+    <NuxtLink v-if="user.data.value.shops.length == 0" to="/create">
       <SidebarMenuButton
         size="lg"
         class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
@@ -75,6 +79,7 @@ function setActiveTeam(shop: Shop) {
         </SidebarMenuButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent
+        v-if="user.data.value"
         class="w-(--reka-dropdown-menu-trigger-width) min-w-56 rounded-lg"
         align="start"
         side="bottom"
@@ -84,7 +89,7 @@ function setActiveTeam(shop: Shop) {
           Mağazalar
         </DropdownMenuLabel>
         <DropdownMenuItem
-          v-for="(team, index) in user.data.shops"
+          v-for="(team, index) in user.data.value?.shops"
           :key="team.name"
           class="gap-2 p-2"
           @click="setActiveTeam(team)"

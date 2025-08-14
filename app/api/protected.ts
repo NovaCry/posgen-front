@@ -6,7 +6,7 @@ const createProtectedApiInterface = () => {
   return axios.create({
     baseURL: import.meta.env.MODE == 'development' ? api.dev : api.prod,
     headers: {
-      Authorization: `Bearer ${session.data?.accessToken}`,
+      Authorization: `Bearer ${session.data.value?.accessToken}`,
     },
   });
 };

@@ -2,15 +2,17 @@
 import { ArrowUpRight, TriangleAlert } from 'lucide-vue-next';
 import { Button } from '../ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import TooltipSimplified from '../TooltipSimplified.vue';
 </script>
 
 <template>
   <Popover>
     <PopoverTrigger>
-      <Button variant="outline">
-        <TriangleAlert />
-        Hata Bildir!
-      </Button>
+      <TooltipSimplified content="Hata Bildir!">
+        <Button variant="ghost" size="icon">
+          <TriangleAlert />
+        </Button>
+      </TooltipSimplified>
     </PopoverTrigger>
     <PopoverContent class="w-[400px]">
       <h2 class="text-lg font-semibold">Hatalar Var!</h2>

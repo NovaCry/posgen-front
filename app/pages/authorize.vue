@@ -199,7 +199,7 @@ onBeforeMount(async () => {
 });
 
 async function GrantAuthorization() {
-  if (!session.data) return;
+  if (!session.data.value) return;
   Processing.value = true;
 
   // Create access_token for application with refresh_token
@@ -208,7 +208,7 @@ async function GrantAuthorization() {
     url: 'auth/token',
     data: {
       grant_type: 'authorization_code',
-      refresh_token: session.data.refreshToken,
+      refresh_token: session.data.value.refreshToken,
       application_id: app.value?.id,
     },
   }).catch((err) =>

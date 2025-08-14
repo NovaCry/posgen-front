@@ -131,6 +131,37 @@ interface SidebarHandler {
 
 type AnalyticsWidget = ChartWidget | NumeralWidget | ItemList;
 
+// POLLYFILL
+
+let averageTotal = 0;
+let averagePredicted = 0;
+
+function randMinMax(min: number, max: number) {
+  return Math.random() * (max - min) + min;
+}
+
+function createFakeChartData() {
+  const res: { name: string; Gelir: number; Sipariş: number }[] = [];
+  for (let i = 0; i < 6; i++) {
+    const predicted = +randMinMax(5000, 10000).toFixed(2);
+    averagePredicted += predicted;
+    const total = +randMinMax(60000, 120000).toFixed(2);
+    averageTotal += total;
+    res.push({
+      name: new Date(2000, i, 1).toLocaleString(navigator.language, {
+        month: 'long',
+      }),
+      Gelir: total,
+      Sipariş: predicted,
+    });
+  }
+  averagePredicted = +(averagePredicted / 12).toFixed(2);
+  averageTotal = +(averageTotal / 12).toFixed(2);
+  return res;
+}
+
+// POLLYFILL
+
 const orderStats = ref({
   dailyOrders: 0,
   weeklyOrders: 0,
@@ -165,6 +196,8 @@ const showChart = ref(true);
 const chartKey = ref(0);
 const isSidebarTransitioning = ref(false);
 const cachedAnalytics = shallowRef<AnalyticsWidget[]>([]);
+
+const fillFakeData = false;
 
 const statusTranslations: Record<string, string> = {
   PENDING: 'Bekliyor',
@@ -322,8 +355,8 @@ const calculateTableAnalytics = (ordersData: Order[]): TableAnalyticsItem[] => {
                 100
             )
           : table.todayTotal > 0
-          ? 100
-          : 0;
+            ? 100
+            : 0;
 
       const revenueChange =
         table.yesterdayRevenue > 0
@@ -333,8 +366,8 @@ const calculateTableAnalytics = (ordersData: Order[]): TableAnalyticsItem[] => {
                 100
             )
           : table.todayRevenue > 0
-          ? 100
-          : 0;
+            ? 100
+            : 0;
 
       const completionRate =
         table.todayTotal > 0
@@ -583,7 +616,7 @@ const chartWidget = computed(
     title: 'Aylık Gelir ve Sipariş Grafiği',
     alt: 'Son 12 Ay',
     style: 'area',
-    data: chartData.value,
+    data: fillFakeData ? createFakeChartData() : chartData.value,
     categories: ['Gelir', 'Sipariş'],
   })
 );
@@ -594,7 +627,9 @@ const numeralWidgets = computed((): NumeralWidget[] => [
     size: 1,
     icon: markRaw(ShoppingBasket),
     title: 'Bugünkü Siparişler',
-    value: orderStats.value.dailyOrders || 0,
+    value: fillFakeData
+      ? +randMinMax(100, 200).toFixed()
+      : orderStats.value.dailyOrders || 0,
     valueSubfix: 'Sipariş',
   },
   {
@@ -602,15 +637,21 @@ const numeralWidgets = computed((): NumeralWidget[] => [
     size: 1,
     icon: markRaw(ShoppingBasket),
     title: 'Haftalık Siparişler',
-    value: orderStats.value.weeklyOrders || 0,
+    // value: orderStats.value.weeklyOrders || 0,
+    value: fillFakeData
+      ? +randMinMax(400, 700).toFixed()
+      : orderStats.value.weeklyOrders || 0,
     valueSubfix: 'Sipariş',
   },
   {
     type: 'numeral',
     size: 1,
     icon: markRaw(DollarSign),
-    title: 'Toplam Gelir',
-    value: orderStats.value.totalRevenue || 0,
+    title: 'Aylık Gelir',
+    // value: orderStats.value.totalRevenue || 0,
+    value: fillFakeData
+      ? randMinMax(60000, 400000)
+      : orderStats.value.totalRevenue || 0,
     valueSubfix: '₺',
   },
   {
@@ -618,7 +659,10 @@ const numeralWidgets = computed((): NumeralWidget[] => [
     size: 1,
     icon: markRaw(TrendingUp),
     title: 'Tamamlanma Oranı',
-    value: orderStats.value.completionRate || 0,
+    // value: orderStats.value.completionRate || 0,
+    value: fillFakeData
+      ? +randMinMax(70, 100).toFixed(2)
+      : orderStats.value.completionRate || 0,
     valueSubfix: '%',
   },
 ]);

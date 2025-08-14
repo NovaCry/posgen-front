@@ -35,12 +35,8 @@ onUnmounted(() => {
           <div class="flex flex-col items-center mb-2">
             <Avatar class="size-10">
               <AvatarImage src="" />
-              <AvatarFallback v-if="user.data">
-                {{
-                  shortenName(
-                    user.data.firstName + ' ' + (user.data.lastName || '')
-                  )
-                }}
+              <AvatarFallback v-if="user.data.value">
+                {{ shortenName(user.data.value.name) }}
               </AvatarFallback>
             </Avatar>
           </div>

@@ -43,7 +43,7 @@ export default function useSession() {
       return res;
     },
     isLoggedIn() {
-      if (!this.data) return false;
+      if (!_session.value) return false;
       if (new Date() > new Date(_session.value?.expiresIn || '')) return false;
       return true;
     },
@@ -57,6 +57,6 @@ export default function useSession() {
 
       return false;
     },
-    data: _session.value,
+    data: _session,
   };
 }

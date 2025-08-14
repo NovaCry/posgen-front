@@ -21,8 +21,8 @@ defineProps<{
     <DropdownMenuTrigger :disabled="disabled">
       <Button size="icon" variant="outline" class="rounded-lg">
         <Avatar class="h-8 w-8 rounded-md bg-accent">
-          <AvatarFallback v-if="user.data" class="rounded-lg">
-            {{ shortenName(user.data.name) }}
+          <AvatarFallback v-if="user.data.value" class="rounded-lg">
+            {{ shortenName(user.data.value.name) }}
           </AvatarFallback>
           <AvatarFallback v-else>
             <LogIn />

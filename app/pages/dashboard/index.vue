@@ -58,8 +58,8 @@ const navigateToPage = (route: string) => {
 };
 
 onMounted(() => {
-  if (!user.data) return;
-  firstName.value = user.data.firstName;
+  if (!user.data.value) return;
+  firstName.value = user.data.value.firstName;
 
   paiMessages.value = [
     {

@@ -37,13 +37,13 @@ onMounted(async () => {
   await selectedShop.load();
   if (selectedShop.id === '') {
     if (
-      !user.data ||
-      !user.data.shops ||
-      user.data.shops.length < 0 ||
-      !user.data.shops[0]
+      !user.data.value ||
+      !user.data.value.shops ||
+      user.data.value.shops.length < 0 ||
+      !user.data.value.shops[0]
     )
       return router.push('/create');
-    selectedShop.$state = user.data.shops[0];
+    selectedShop.$state = user.data.value.shops[0];
     await selectedShop.save();
   }
   // Only fetch employees after shop is loaded

@@ -20,15 +20,15 @@ const selectedShop = useSelectedShopStore();
 const keys = useMagicKeys();
 const protectedApiInterface = createProtectedApiInterface();
 
-if (user.data) {
+if (user.data.value) {
   const shopKeys =
-    user.data.shops.map((_, index) => keys[`Ctrl+${index + 1}`]) || [];
+    user.data.value.shops.map((_, index) => keys[`Ctrl+${index + 1}`]) || [];
 
   shopKeys.forEach((key, index) => {
     if (!key || !user.data) return;
     watch(key, () => {
-      if (key.value && user.data && user.data.shops[index]) {
-        setActiveTeam(user.data.shops[index], new Event('keyboard'));
+      if (key.value && user.data.value && user.data.value.shops[index]) {
+        setActiveTeam(user.data.value.shops[index], new Event('keyboard'));
       }
     });
   });
@@ -47,10 +47,10 @@ async function fetchShopDetails(shopId: string): Promise<Shop | null> {
 onMounted(async () => {
   await selectedShop.load();
 
-  if (!selectedShop.id && user.data) {
+  if (!selectedShop.id && user.data.value) {
     // For employees, fetch and use their working shop
-    if (user.data.role === 'EMPLOYEE' && user.data.workingId) {
-      const shopDetails = await fetchShopDetails(user.data.workingId);
+    if (user.data.value.role === 'EMPLOYEE' && user.data.value.workingId) {
+      const shopDetails = await fetchShopDetails(user.data.value.workingId);
       if (shopDetails) {
         await setActiveTeam(shopDetails, new Event('init'));
         // Save the shop selection immediately for employees
@@ -58,8 +58,8 @@ onMounted(async () => {
       }
     }
     // For business owners, use their first shop
-    else if ((user.data.shops?.length ?? 0) > 0) {
-      const firstShop = user.data.shops?.[0];
+    else if ((user.data.value.shops?.length ?? 0) > 0) {
+      const firstShop = user.data.value.shops?.[0];
       if (firstShop) {
         await setActiveTeam(firstShop, new Event('init'));
       }
@@ -122,7 +122,7 @@ async function setActiveTeam(shop: Shop, e: Event) {
       </button>
     </DropdownMenuTrigger>
     <DropdownMenuContent
-      v-if="user.data"
+      v-if="user.data.value"
       class="w-(--reka-dropdown-menu-trigger-width) min-w-56 rounded-lg"
       align="start"
       side="bottom"
@@ -132,7 +132,7 @@ async function setActiveTeam(shop: Shop, e: Event) {
         Mağazalar
       </DropdownMenuLabel>
       <DropdownMenuItem
-        v-for="(shop, index) in user.data.shops"
+        v-for="(shop, index) in user.data.value.shops"
         :key="shop.id"
         class="gap-2 p-2 cursor-pointer"
         :class="{ 'bg-accent': selectedShop.id === shop.id }"

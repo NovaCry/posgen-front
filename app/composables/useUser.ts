@@ -10,6 +10,6 @@ export default function useUser() {
       manager.patchUser(_user.value.id, data);
       return this;
     },
-    data: manager.getCurrentUser().value,
+    data: manager.getCurrentUser(),
   };
 }
