@@ -2,14 +2,7 @@
 import Palette from '@/components/CommandPalette.vue';
 import UserWidget from './UserWidget.vue';
 import ShopWidget from './ShopWidget.vue';
-import {
-  ArrowLeft,
-  CakeSlice,
-  ChefHat,
-  ShoppingBasket,
-  Maximize,
-  Minimize,
-} from 'lucide-vue-next';
+import { ArrowLeft, CakeSlice, ChefHat, ShoppingBasket } from 'lucide-vue-next';
 // import router from '@/router';
 import {
   type FunctionalComponent,
@@ -20,6 +13,7 @@ import {
 } from 'vue';
 import { Button } from '@/components/ui/button';
 import { motion } from 'motion-v';
+import FullScreenButton from './FullScreenButton.vue';
 
 const router = useRouter();
 
@@ -142,14 +136,7 @@ onUnmounted(() => {
           </button>
         </div>
 
-        <button
-          :title="isFullscreen ? 'Tam ekrandan çık (F11)' : 'Tam ekran (F11)'"
-          class="p-1 sm:p-1.5 outline-none disabled:opacity-60 disabled:cursor-not-allowed focus-visible:ring-2 transition hover:scale-105 rounded-md active:scale-95 bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300"
-          @click="toggleFullscreen"
-        >
-          <Maximize v-if="!isFullscreen" class="size-3 sm:size-4" />
-          <Minimize v-else class="size-3 sm:size-4" />
-        </button>
+        <FullScreenButton />
 
         <div class="shrink-0">
           <ClientOnly>

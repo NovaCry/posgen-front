@@ -6,9 +6,10 @@ export default function sortByLength(l: string[], asd: boolean = false) {
     isSorted = true;
     for (let i = 0; i < l.length; i++) {
       const el = result[i];
+      if (!el) continue;
       if (asd) {
         if (i != result.length - 1) {
-          if (el.length > result[i + 1].length) {
+          if (result[i + 1] && el.length > result[i + 1].length) {
             isSorted = false;
             result[i] = result[i + 1];
             result[i + 1] = el;

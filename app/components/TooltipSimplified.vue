@@ -11,12 +11,14 @@ defineProps<{
 </script>
 
 <template>
-  <Tooltip>
-    <TooltipTrigger>
-      <slot />
-    </TooltipTrigger>
-    <TooltipContent>
-      <p>{{ content }}</p>
-    </TooltipContent>
-  </Tooltip>
+  <ClientOnly>
+    <Tooltip>
+      <TooltipTrigger>
+        <slot />
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>{{ content }}</p>
+      </TooltipContent>
+    </Tooltip>
+  </ClientOnly>
 </template>
