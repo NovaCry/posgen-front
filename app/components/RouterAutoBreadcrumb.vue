@@ -41,8 +41,6 @@ const routerPathHistory = computed(() => {
     return a.path.toString().length - b.path.toString().length;
   });
 
-  console.log(list);
-
   return {
     first: list.shift(),
     last: list.pop(),

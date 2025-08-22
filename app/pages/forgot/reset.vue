@@ -100,6 +100,6 @@ async function Login() {
 
   console.log(response.data);
 
-  router.push('/dashboard/user');
+  router.push('/user');
 }
 </script>

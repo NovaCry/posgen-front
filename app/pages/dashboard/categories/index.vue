@@ -70,7 +70,10 @@ function makeActionsForCategory(category: Category): MenuCell {
   <Section>
     <h1 class="text-3xl font-semibold">Kategoriler</h1>
     <Resource
-:key="resourceVersion" create="/dashboard/shop/categories/new"
-      :fetch="`shop/categories/${selectedShop.id}/list`" @populate="populateData" />
+      :key="resourceVersion"
+      create="/dashboard/categories/new"
+      :fetch="`shop/categories/${selectedShop.id}/list`"
+      @populate="populateData"
+    />
   </Section>
 </template>

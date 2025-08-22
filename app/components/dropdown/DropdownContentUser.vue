@@ -7,14 +7,7 @@ import {
   DropdownMenuSeparator,
 } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import {
-  BadgeCheck,
-  Bell,
-  LogOut,
-  Settings,
-  Shield,
-  Package,
-} from 'lucide-vue-next';
+import { BadgeCheck, LogOut, Shield, User2, Cog } from 'lucide-vue-next';
 import shortenName from '~/lib/shortenName';
 
 const user = useUser();
@@ -49,35 +42,29 @@ const session = useSession();
     </DropdownMenuLabel>
     <DropdownMenuSeparator />
     <DropdownMenuGroup>
-      <NuxtLink to="/dashboard/user">
+      <NuxtLink to="/user">
         <DropdownMenuItem>
-          <BadgeCheck />
+          <User2 />
           Hesap
         </DropdownMenuItem>
       </NuxtLink>
-      <NuxtLink to="/dashboard/user/subscription">
+      <NuxtLink to="/user/subscription">
         <DropdownMenuItem>
-          <Package />
+          <BadgeCheck />
           Abonelik
-        </DropdownMenuItem>
-      </NuxtLink>
-      <NuxtLink to="/dashboard/user/notifications">
-        <DropdownMenuItem>
-          <Bell />
-          Bildirimler
         </DropdownMenuItem>
       </NuxtLink>
     </DropdownMenuGroup>
     <DropdownMenuSeparator />
-    <NuxtLink to="/dashboard/user/security">
+    <NuxtLink to="/user/security">
       <DropdownMenuItem>
         <Shield />
         Güvenlik
       </DropdownMenuItem>
     </NuxtLink>
-    <NuxtLink to="/dashboard/user/preferences">
+    <NuxtLink to="/user/preferences">
       <DropdownMenuItem>
-        <Settings />
+        <Cog />
         Tercihler
       </DropdownMenuItem>
     </NuxtLink>

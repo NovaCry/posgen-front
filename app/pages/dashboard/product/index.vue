@@ -3,15 +3,13 @@ import createProtectedApiInterface from '@/api/protected';
 import Resource from '@/components/layout/Resource.vue';
 import Section from '@/components/layout/Section.vue';
 import { useSelectedShopStore } from '@/store/shop';
-import type Table from '@/types/api/Table';
+import type { Product } from '@/types/api/Product';
 import type { MenuCell, TableData } from '@/types/DataTable';
-import { Trash, Edit } from 'lucide-vue-next';
+import { Copy, Edit, Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
-import { toast } from 'vue-sonner';
-
 
 definePageMeta({
-  name: 'Masalar',
+  name: 'Ürünler',
 });
 
 const router = useRouter();
@@ -19,23 +17,33 @@ const protectedApiInterface = createProtectedApiInterface();
 const selectedShop = useSelectedShopStore();
 const resourceVersion = ref(0);
 
-function MakeResourceColumn(tableData: TableData[], column: Table) {
+async function populateData(tableData: TableData[], product: Product) {
+  const totalStock =
+    product.stocks?.reduce((sum, stock) => sum + Number(stock.quantity), 0) ||
+    0;
+  const maxStock =
+    product.stocks?.reduce(
+      (sum, stock) => sum + Number(stock.maxQuantity),
+      0
+    ) || 0;
+
   tableData.push({
-    'Masa Adı': column.name,
-    Kapasite: `${column.seatSize} Kişi`,
-    Durum: [
+    'Ürün Adı': product.name,
+    Fiyat: `${(+product.price).toLocaleString()} ₺`,
+    Kategori: product.category?.name || 'Kategori Yok',
+    Stok: [
       {
         type: 'badge',
-        data: 'Müsait',
-        color: '#000',
+        data: maxStock === 0 ? 'Stoksuz' : `${totalStock} Adet`,
+        color: 'black',
         background: 'rgb(22, 163, 74)',
       },
     ],
-    İşlemler: [makeActionsForAdmission(column)],
+    İşlemler: [makeActionsForProduct(product)],
   });
 }
 
-function makeActionsForAdmission(table: Table): MenuCell {
+function makeActionsForProduct(product: Product): MenuCell {
   const res: MenuCell = {
     type: 'menu',
     data: [
@@ -49,12 +57,20 @@ function makeActionsForAdmission(table: Table): MenuCell {
             icon: Edit,
             async action() {
               router.push({
-                path: "/dashboard/shop/tables/new",
+                path: '/dashboard/product/new',
                 query: {
-                  edit: "true",
-                  id: table.id
-                }
-              })
+                  edit: 'true',
+                  id: product.id,
+                },
+              });
+            },
+          },
+          {
+            type: 'item',
+            text: 'Çoğalt',
+            icon: Copy,
+            async action() {
+              // TODO: Implement product duplication logic
             },
           },
           {
@@ -63,17 +79,14 @@ function makeActionsForAdmission(table: Table): MenuCell {
             icon: Trash,
             async action() {
               await protectedApiInterface({
-                url: `shop/tables/${table.shopId}/${table.id}/delete`,
+                url: `shop/products/${product.shopId}/${product.id}/delete`,
                 method: 'DELETE',
               })
                 .catch(useErrorHandler)
                 .then((res) => {
                   if (!res) return;
-                  resourceVersion.value += 1;
-                  toast('Masa Silindi', {
-                    description: `${table.name} adındaki masa silindi.`,
-                  });
                 });
+              resourceVersion.value += 1;
             },
           },
         ],
@@ -86,12 +99,12 @@ function makeActionsForAdmission(table: Table): MenuCell {
 
 <template>
   <Section>
-    <h1 class="text-3xl font-semibold">Masalar</h1>
+    <h1 class="text-3xl font-semibold">Ürünler</h1>
     <Resource
       :key="resourceVersion"
-      create="/dashboard/shop/tables/new"
-      :fetch="`shop/tables/${selectedShop.id}/list`"
-      @populate="MakeResourceColumn"
+      create="/dashboard/product/new"
+      :fetch="`shop/products/${selectedShop.id}/list`"
+      @populate="populateData"
     />
   </Section>
 </template>

@@ -27,7 +27,6 @@ definePageMeta({
 const protectedApiInterface = createProtectedApiInterface();
 const selectedShop = useSelectedShopStore();
 
-
 const isEditing = ref(route.query.edit === 'true' && route.query.id);
 const tableName = ref('');
 const seatSize = ref(6);
@@ -44,7 +43,6 @@ const isAcceptable = computed(() => {
     return true;
   return false;
 });
-
 
 async function EditTable() {
   isLoading.value = true;
@@ -65,7 +63,7 @@ async function EditTable() {
   toast('Masa Güncellendi!', {
     description: `${tableName.value} adındaki ${seatSize.value} kişilik masa güncellendi!`,
   });
-  router.push('/dashboard/shop/tables');
+  router.push('/dashboard/tables');
 }
 
 async function CreateTable() {
@@ -84,17 +82,19 @@ async function CreateTable() {
   toast('Masa oluşturuldu!', {
     description: `${tableName.value} adındaki ${seatSize.value} kişilik masa oluşturuldu!`,
   });
-  router.push('/dashboard/shop/tables');
+  router.push('/dashboard/tables');
 }
 
 onMounted(async () => {
   if (isEditing.value) {
-    const tableData = await protectedApiInterface.get<Table>(`shop/tables/${selectedShop.id}/${route.query.id}`);
+    const tableData = await protectedApiInterface.get<Table>(
+      `shop/tables/${selectedShop.id}/${route.query.id}`
+    );
 
     tableName.value = tableData.data.name;
     seatSize.value = tableData.data.seatSize;
   }
-})  
+});
 </script>
 
 <template>
@@ -106,7 +106,11 @@ onMounted(async () => {
         </Button>
         <h1 class="text-3xl font-semibold">Yeni Masa</h1>
       </div>
-      <Button :disabled="isLoading || !isAcceptable" class="ml-auto" @click="isEditing ? EditTable() : CreateTable()">
+      <Button
+        :disabled="isLoading || !isAcceptable"
+        class="ml-auto"
+        @click="isEditing ? EditTable() : CreateTable()"
+      >
         <Loader2 v-if="isLoading" class="animate-spin" />
         <template v-if="isEditing">Masayı Düzenle</template>
         <template v-else>Masayı Oluştur</template>
@@ -115,27 +119,48 @@ onMounted(async () => {
     </div>
     <div class="grid grid-cols-2 mt-6 gap-6">
       <div class="flex flex-col gap-4">
-        <ResourceCard title="Masa Bilgisi" description="Masa hakkındaki en basit belirtici bilgi.">
+        <ResourceCard
+          title="Masa Bilgisi"
+          description="Masa hakkındaki en basit belirtici bilgi."
+        >
           <div class="flex flex-col gap-2">
             <div>
               <Label for="name">Masa Adı</Label>
-              <Input id="name" v-model="tableName" :disabled="isLoading" class="mt-2" placeholder="Masa Adı" />
+              <Input
+                id="name"
+                v-model="tableName"
+                :disabled="isLoading"
+                class="mt-2"
+                placeholder="Masa Adı"
+              />
             </div>
           </div>
         </ResourceCard>
         <ResourceCard
-title="Kapasite" description="Masanın alabileceği maksimum müşteri sayısı."
-          class="flex flex-col gap-4">
+          title="Kapasite"
+          description="Masanın alabileceği maksimum müşteri sayısı."
+          class="flex flex-col gap-4"
+        >
           <SeatRenderer :seat-size="seatSize" class="mx-auto" />
-          <NumberFieldSimplified v-model="seatSize" :disabled="isLoading" label="Kapasite" :max="24" :min="1" />
+          <NumberFieldSimplified
+            v-model="seatSize"
+            :disabled="isLoading"
+            label="Kapasite"
+            :max="24"
+            :min="1"
+          />
         </ResourceCard>
       </div>
       <div class="flex flex-col gap-4">
         <ResourceCard
-title="Masa Ayarları" description="Masanın çalışma biçimiyle alakalı ayarlar."
-          class="grid grid-cols-2 gap-4">
+          title="Masa Ayarları"
+          description="Masanın çalışma biçimiyle alakalı ayarlar."
+          class="grid grid-cols-2 gap-4"
+        >
           <TooltipProvider>
-            <TooltipSimplified content="Masayı listelerden gizler ama yine de entegrasyonlar görebilir.">
+            <TooltipSimplified
+              content="Masayı listelerden gizler ama yine de entegrasyonlar görebilir."
+            >
               <div class="flex items-center gap-2">
                 <Checkbox id="hide" :disabled="isLoading" />
                 <Label for="hide"> Masayı Gizle </Label>

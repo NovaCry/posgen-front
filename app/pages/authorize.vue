@@ -186,7 +186,7 @@ onBeforeMount(async () => {
 
   const app_id = router.currentRoute.value.query.id;
 
-  if (!app_id) return useRedirect('/dashboard/user');
+  if (!app_id) return useRedirect('/user');
 
   const application = await protectedApiInterface<Application>({
     method: 'GET',
@@ -215,7 +215,7 @@ async function GrantAuthorization() {
     useErrorHandler(err, {
       locales: {
         '404': () => {
-          useRedirect('/dashboard/user');
+          useRedirect('/user');
           return {
             title: 'Bulunamadı.',
             reason: 'Oturum açma talebi istenen uygulama, mevcut değil.',

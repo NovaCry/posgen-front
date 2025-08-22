@@ -157,7 +157,7 @@ async function EditProduct() {
     description: `${productName.value} adındaki ürün güncellendi!`,
   });
 
-  await router.push('/dashboard/shop/product');
+  await router.push('/dashboard/product');
 }
 
 async function CreateProduct(): Promise<void> {
@@ -192,7 +192,7 @@ async function CreateProduct(): Promise<void> {
     description: `${productName.value} adındaki ürün oluşturuldu!`,
   });
 
-  await router.push('/dashboard/shop/product');
+  await router.push('/dashboard/product');
 }
 
 function newStock(): void {

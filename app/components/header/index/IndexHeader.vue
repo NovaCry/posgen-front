@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-vue-next';
-import HeaderMobileContext from './HeaderMobileContext.vue';
+const session = useSession();
 </script>
 
 <template>
@@ -28,20 +27,8 @@ import HeaderMobileContext from './HeaderMobileContext.vue';
           <Button variant="ghost"> Hakkımızda </Button>
         </div>
       </div>
-      <div class="hidden items-center gap-2.5 lg:flex">
-        <NuxtLink to="/login">
-          <Button variant="outline"> Oturum Aç </Button>
-        </NuxtLink>
-        <NuxtLink to="/register">
-          <Button>
-            Şimdi Başla
-            <ArrowRight />
-          </Button>
-        </NuxtLink>
-      </div>
-      <div class="flex lg:hidden items-center">
-        <HeaderMobileContext />
-      </div>
+      <HeaderIndexHeaderUserContext v-if="session.isLoggedIn()" />
+      <HeaderIndexHeaderNoUserContext v-else />
     </div>
   </header>
 </template>
