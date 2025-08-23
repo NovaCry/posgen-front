@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Search } from 'lucide-vue-next';
 import Autoplay from 'embla-carousel-autoplay';
 import Section from '@/components/layout/Section.vue';
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 
 definePageMeta({
   name: 'Topluluk',
@@ -17,6 +18,7 @@ definePageMeta({
 </script>
 
 <template>
+  <SeoMeta title="Topluluk" description="Topluluk" />
   <Section>
     <div class="flex items-center">
       <h1 class="text-3xl font-semibold">Topluluk</h1>

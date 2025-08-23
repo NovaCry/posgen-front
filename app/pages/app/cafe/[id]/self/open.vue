@@ -14,7 +14,7 @@ import { ref, computed, onMounted, nextTick } from 'vue';
 import { useSelectedShopStore } from '@/store/shop';
 import createProtectedApiInterface from '@/api/protected';
 import type { Product } from '@/types/api/Product';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 const selectedShop = useSelectedShopStore();
 const protectedApiInterface = createProtectedApiInterface();
 
@@ -162,6 +162,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <SeoMeta title="Sipariş Sayfası" description="Sipariş sayfası" />
   <div class="grid grid-cols-1 lg:grid-cols-3 h-screen max-h-[calc(100vh-3rem)] overflow-hidden">
     <ScrollArea class="col-span-1 lg:col-span-2 border-r-0 lg:border-r h-full max-h-[calc(100vh-3rem)]">
       <Catalog v-model="productList" class="relative" />

@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import Header from '@/components/header/index/IndexHeader.vue';
 import Button from '@/components/ui/button/Button.vue';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 const router = useRouter();
 const isLoaded = ref(false);
 
@@ -22,6 +22,7 @@ function goHome() {
 </script>
 
 <template>
+  <SeoMeta title="404 - Sayfa Bulunamadı" description="404 - Sayfa Bulunamadı" />
   <div class="min-h-screen text-white overflow-hidden">
     <Header />
     <div class="absolute inset-0 overflow-hidden pointer-events-none">

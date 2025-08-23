@@ -1,4 +1,5 @@
 <template>
+  <SeoMeta title="Kayıt Ol - Posgen" description="Posgen'e üye olun ve işletme yönetim sisteminizi kurmaya başlayın." />
   <div class="w-screen h-screen flex items-center justify-center flex-col p-4">
     <Header />
     <div class="flex-1 flex items-center justify-center w-full pt-8 md:pt-0">
@@ -15,7 +16,7 @@
           <div class="flex flex-col gap-3 md:gap-5 mt-3 md:mt-6">
             <div class="flex flex-col md:flex-row gap-3 md:gap-4">
               <div class="flex flex-col gap-2 flex-1">
-                <Label for="firstname">Ad</Label>
+                <Label for="firstname">Ad <span class="text-red-500">*</span></Label>
                 <Input
                   id="firstname"
                   v-model="FirstName"
@@ -25,7 +26,7 @@
                 />
               </div>
               <div class="flex flex-col gap-2 flex-1">
-                <Label for="lastname">Soyad</Label>
+                <Label for="lastname">Soyad <span class="text-red-500">*</span></Label>
                 <Input
                   id="lastname"
                   v-model="LastName"
@@ -36,7 +37,7 @@
               </div>
             </div>
             <div class="flex flex-col gap-2">
-              <Label for="email">E-Posta</Label>
+              <Label for="email">E-Posta <span class="text-red-500">*</span></Label>
               <Input
                 id="email"
                 v-model="Email"
@@ -46,7 +47,7 @@
               />
             </div>
             <div class="flex flex-col gap-2">
-              <Label for="pass">Şifre</Label>
+              <Label for="pass">Şifre <span class="text-red-500">*</span></Label>
               <div class="relative">
                 <Input
                   id="pass"
@@ -69,7 +70,7 @@
               </div>
             </div>
             <div class="flex flex-col gap-2">
-              <Label for="pass-repeat">Şifre Tekrar</Label>
+              <Label for="pass-repeat">Şifre Tekrar <span class="text-red-500">*</span></Label>
               <div class="relative">
                 <Input
                   id="pass-repeat"
@@ -81,13 +82,31 @@
               </div>
             </div>
             <div class="flex flex-col gap-2">
-              <Label for="pass" class="flex w-full">Doğum Tarihi </Label>
+              <Label for="pass" class="flex w-full">Doğum Tarihi <span class="text-red-500">*</span></Label>
               <DatePicker
                 v-model="Birthday"
                 :disabled="Processing"
                 rule="birthday"
               />
             </div>
+            <div class="flex items-center space-x-2">
+    <Checkbox id="terms" v-model:checked="acceptedTerms" />
+    <label
+      for="terms"
+      class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+    >
+      <NuxtLink to="/terms" class="underline">Kullanım Koşullarını</NuxtLink> kabul ediyorum.
+    </label>
+  </div>
+  <div class="flex items-center space-x-2">
+    <Checkbox id="privacy" v-model:checked="acceptedPrivacy" />
+    <label
+      for="privacy"
+      class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+    >
+      <NuxtLink to="/privacy" class="underline">Gizlilik Sözleşmesini</NuxtLink> kabul ediyorum.
+    </label>
+  </div>
             <span
               v-if="ApiMessage != ''"
               class="text-sm text-center text-red-600"
@@ -132,12 +151,7 @@
         </div>
       </div>
     </div>
-    <span class="text-xs md:text-sm mt-3 md:mt-4 text-center px-4">
-      Kayıt olarak
-      <NuxtLink class="underline" to="/">Kullanım Koşullarını</NuxtLink> ve
-      <NuxtLink class="underline" to="/">Gizlilik Sözleşmesini</NuxtLink>
-      kabul edersiniz.
-    </span>
+
   </div>
 </template>
 
@@ -153,7 +167,9 @@ import type User from '@/types/api/User';
 import type { AxiosError } from 'axios';
 import { ArrowRight, Eye, EyeOff } from 'lucide-vue-next';
 import { ref } from 'vue';
+import { Checkbox } from "@/components/ui/checkbox"
 import { toast } from 'vue-sonner';
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 import Header from '@/components/header/index/IndexHeader.vue';
 
 const router = useRouter();
@@ -167,6 +183,9 @@ definePageMeta({
 });
 
 const Processing = ref(false);
+
+const acceptedTerms = ref(false);
+const acceptedPrivacy = ref(false);
 
 const FirstName = ref('');
 const LastName = ref('');
@@ -186,6 +205,13 @@ const customizedErrorHandler = (err: AxiosError<APIError>) =>
   });
 
 async function Register() {
+  if (!acceptedTerms.value || !acceptedPrivacy.value) {
+    toast('Yasal Uyarı', {
+      description: 'Kullanım Koşullarını ve Gizlilik Sözleşmesini kabul etmelisiniz.',
+    });
+    return;
+  }
+  
   if (Password.value !== PasswordRepeat.value) {
     ApiMessage.value = 'Şifreler eşleşmiyor.';
     return;

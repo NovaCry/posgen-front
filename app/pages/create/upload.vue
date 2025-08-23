@@ -1,4 +1,5 @@
 <template>
+  <SeoMeta title="Mağaza Dosyaları Yükleyin" description="Mağaza dosyaları yükleyin" />
   <div class="flex items-center justify-center w-screen h-screen">
     <Header />
     <div
@@ -66,7 +67,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import Header from '@/components/header/index/IndexHeader.vue';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 definePageMeta({
   name: 'Mağaza Dosyaları Yükleyin',
 });

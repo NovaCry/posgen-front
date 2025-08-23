@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 import Section from '@/components/layout/Section.vue';
 import { AreaChart } from '@/components/ui/chart-area';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -131,34 +132,9 @@ interface SidebarHandler {
 
 type AnalyticsWidget = ChartWidget | NumeralWidget | ItemList;
 
- 
-
-let averageTotal = 0;
-let averagePredicted = 0;
-
-function randMinMax(min: number, max: number) {
-  return Math.random() * (max - min) + min;
-}
-
-function createFakeChartData() {
-  const res: { name: string; Gelir: number; Sipariş: number }[] = [];
-  for (let i = 0; i < 6; i++) {
-    const predicted = +randMinMax(5000, 10000).toFixed(2);
-    averagePredicted += predicted;
-    const total = +randMinMax(60000, 120000).toFixed(2);
-    averageTotal += total;
-    res.push({
-      name: new Date(2000, i, 1).toLocaleString('tr-TR', {
-        month: 'long',
-      }),
-      Gelir: total,
-      Sipariş: predicted,
-    });
-  }
-  averagePredicted = +(averagePredicted / 12).toFixed(2);
-  averageTotal = +(averageTotal / 12).toFixed(2);
-  return res;
-}
+definePageMeta({
+  name: 'Analizler',
+});
 
  
 
@@ -197,7 +173,7 @@ const chartKey = ref(0);
 const isSidebarTransitioning = ref(false);
 const cachedAnalytics = shallowRef<AnalyticsWidget[]>([]);
 
-const fillFakeData = true;
+
 
 const statusTranslations: Record<string, string> = {
   PENDING: 'Bekliyor',
@@ -673,7 +649,7 @@ const chartWidget = computed(
     title: 'Aylık Gelir ve Sipariş Grafiği',
     alt: 'Son 12 Ay',
     style: 'area',
-    data: fillFakeData ? createFakeChartData() : chartData.value,
+    data: chartData.value,
     categories: ['Gelir', 'Sipariş'],
   })
 );
@@ -684,9 +660,7 @@ const numeralWidgets = computed((): NumeralWidget[] => [
     size: 1,
     icon: markRaw(ShoppingBasket),
     title: 'Bugünkü Siparişler',
-    value: fillFakeData
-      ? +randMinMax(100, 200).toFixed()
-      : orderStats.value.dailyOrders || 0,
+    value: orderStats.value.dailyOrders || 0,
     valueSubfix: 'Sipariş',
   },
   {
@@ -695,9 +669,7 @@ const numeralWidgets = computed((): NumeralWidget[] => [
     icon: markRaw(ShoppingBasket),
     title: 'Haftalık Siparişler',
     
-    value: fillFakeData
-      ? +randMinMax(400, 700).toFixed()
-      : orderStats.value.weeklyOrders || 0,
+    value: orderStats.value.weeklyOrders || 0,
     valueSubfix: 'Sipariş',
   },
   {
@@ -706,9 +678,7 @@ const numeralWidgets = computed((): NumeralWidget[] => [
     icon: markRaw(DollarSign),
     title: 'Aylık Gelir',
     
-    value: fillFakeData
-      ? randMinMax(60000, 400000)
-      : orderStats.value.totalRevenue || 0,
+    value: orderStats.value.totalRevenue || 0,
     valueSubfix: '₺',
   },
   {
@@ -717,9 +687,7 @@ const numeralWidgets = computed((): NumeralWidget[] => [
     icon: markRaw(TrendingUp),
     title: 'Tamamlanma Oranı',
     
-    value: fillFakeData
-      ? +randMinMax(70, 100).toFixed(2)
-      : orderStats.value.completionRate || 0,
+    value: orderStats.value.completionRate || 0,
     valueSubfix: '%',
   },
 ]);
@@ -846,12 +814,10 @@ onUnmounted(() => {
   }
 });
 
-definePageMeta({
-  name: 'Analizler',
-});
 </script>
 
 <template>
+  <SeoMeta title="Analizler" description="Analizler" />
   <Section>
     <div class="flex items-center justify-between mb-6">
       <div>

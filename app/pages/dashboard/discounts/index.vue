@@ -10,7 +10,7 @@ import type { BadgeCell, MenuCell, TableData, TextCell } from '@/types/DataTable
 import { Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 definePageMeta({
   name: 'İndirimler',
 });
@@ -98,7 +98,8 @@ function makeActionsForDiscount(discount: Discount): MenuCell {
 </script>
 
 <template>
-  <Section>
+  <SeoMeta title="İndirimler" description="İndirimler" />
+    <Section>
     <h1 class="text-3xl font-semibold">İndirimler</h1>
     <Resource
       :key="resourceVersion"

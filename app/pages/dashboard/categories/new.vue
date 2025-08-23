@@ -30,7 +30,7 @@ import { useSelectedShopStore } from '@/store/shop';
 import { toast } from 'vue-sonner';
 import createProtectedApiInterface from '@/api/protected';
 import Section from '@/components/layout/Section.vue';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 const router = useRouter();
 const selectedShop = useSelectedShopStore(); // Move hook call to top level
 definePageMeta({
@@ -80,6 +80,7 @@ async function CreateCategory() {
 </script>
 
 <template>
+  <SeoMeta title="Yeni Kategori" description="Yeni Kategori" />
   <Section>
     <div
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"

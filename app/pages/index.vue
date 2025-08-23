@@ -15,10 +15,12 @@ definePageMeta({
     dontAuthorize: true,
   },
 });
+
 </script>
 
 <template>
-  <main>
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <SeoMeta />
     <Header />
     <div
       class="flex flex-col items-center [background-image:var(--background-grid)] bg-size-[17px_17px]"
@@ -35,5 +37,5 @@ definePageMeta({
       </div>
     </div>
     <Footer />
-  </main>
+  </div>
 </template>

@@ -1,2 +1,163 @@
-User-Agent: *
-Disallow:
+User-agent: *
+Allow: /
+
+# ========================================
+# SITEMAP BİLGİLERİ
+# ========================================
+Sitemap: https://posgen.tr/sitemap.xml
+Sitemap: https://posgen.tr/sitemap_index.xml
+
+# ========================================
+# ANA SAYFA VE GENEL ERİŞİM
+# ========================================
+Allow: /
+Allow: /login
+Allow: /register
+Allow: /terms
+Allow: /privacy
+Allow: /about
+Allow: /contact
+Allow: /features
+Allow: /pricing
+Allow: /blog
+Allow: /help
+Allow: /support
+
+# ========================================
+# DASHBOARD ALANLARI (KORUNAN)
+# ========================================
+# Ana dashboard sayfaları
+Disallow: /dashboard/
+Disallow: /dashboard/analytics
+Disallow: /dashboard/admissions
+Disallow: /dashboard/shop/
+Disallow: /dashboard/shop/products
+Disallow: /dashboard/shop/orders
+Disallow: /dashboard/shop/tables
+Disallow: /dashboard/shop/reservations
+Disallow: /dashboard/shop/discounts
+Disallow: /dashboard/shop/employees
+Disallow: /dashboard/shop/customers
+Disallow: /dashboard/shop/reports
+Disallow: /dashboard/shop/settings
+
+# ========================================
+# UYGULAMA ALANLARI (KORUNAN)
+# ========================================
+# Cafe uygulama sayfaları
+Disallow: /app/
+Disallow: /app/cafe/
+Disallow: /app/cafe/*
+Disallow: /app/pos/
+Disallow: /app/kitchen/
+Disallow: /app/waiter/
+
+# ========================================
+# API VE TEKNİK ALANLAR
+# ========================================
+# API endpoint'leri
+Disallow: /api/
+Disallow: /_nuxt/
+Disallow: /_ipx/
+Disallow: /__nuxt/
+Disallow: /sw.js
+Disallow: /workbox-*.js
+Disallow: /manifest.json
+
+# ========================================
+# GÜVENLİK VE YÖNETİM
+# ========================================
+# Admin ve yönetim alanları
+Disallow: /admin/
+Disallow: /manage/
+Disallow: /settings/
+Disallow: /profile/
+Disallow: /account/
+Disallow: /user/
+Disallow: /auth/
+Disallow: /login
+Disallow: /register
+Disallow: /logout
+
+# ========================================
+# GİZLİ VE TEST SAYFALARI
+# ========================================
+# Test ve geliştirme sayfaları
+Disallow: /test/
+Disallow: /dev/
+Disallow: /staging/
+Disallow: /debug/
+Disallow: /error/
+Disallow: /404
+Disallow: /500
+
+# ========================================
+# MEDYA VE STATİK DOSYALAR
+# ========================================
+# Resimler ve medya dosyaları
+Allow: /assets/
+Allow: /images/
+Allow: /img/
+Allow: /media/
+Allow: /uploads/
+Allow: /static/
+Allow: /public/
+
+# CSS, JS ve font dosyaları
+Allow: /css/
+Allow: /js/
+Allow: /fonts/
+Allow: /icons/
+
+# ========================================
+# ÖZEL BOT KURALLARI
+# ========================================
+# Google bot'ları için özel kurallar
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Bing bot'ları için özel kurallar
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+# Yandex bot'ları için özel kurallar
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 3
+
+# Facebook bot'ları için özel kurallar
+User-agent: facebookexternalhit
+Allow: /
+Crawl-delay: 1
+
+# Twitter bot'ları için özel kurallar
+User-agent: Twitterbot
+Allow: /
+Crawl-delay: 1
+
+# LinkedIn bot'ları için özel kurallar
+User-agent: LinkedInBot
+Allow: /
+Crawl-delay: 2
+
+# ========================================
+# CRAWL DELAY AYARLARI
+# ========================================
+# Genel crawl delay
+Crawl-delay: 2
+
+# ========================================
+# EK SEO BİLGİLERİ
+# ========================================
+# Host: https://posgen.tr
+# Language: tr-TR
+# Country: TR
+# Industry: Restaurant Management Software
+# Keywords: kafe yönetimi, restoran yönetimi, POS sistemi, sipariş takibi
+
+# ========================================
+# İLETİŞİM BİLGİLERİ
+# ========================================
+# Support: destek@posgen.tr

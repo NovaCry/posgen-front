@@ -8,7 +8,7 @@ import type { MenuCell, TableData } from '@/types/DataTable';
 import { Trash, Edit } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 definePageMeta({
   name: 'Masalar',
 });
@@ -84,6 +84,7 @@ function makeActionsForAdmission(table: Table): MenuCell {
 </script>
 
 <template>
+  <SeoMeta title="Masalar" description="Masalar" />
   <Section>
     <h1 class="text-3xl font-semibold">Masalar</h1>
     <Resource

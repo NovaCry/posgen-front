@@ -6,7 +6,7 @@ import shortenName from '~/lib/shortenName';
 import { toLocaleDate } from '~/lib/toLocaleDate';
 import { toLocaleTime } from '~/lib/toLocaleTime';
 import { cn } from '~/lib/utils';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 const user = useUser();
 
 const localTime = ref('');
@@ -52,6 +52,7 @@ const applications = [
 </script>
 
 <template>
+  <SeoMeta title="Posgen Portal" description="Posgen Portal" />
   <main
     class="h-[calc(100vh-3rem)] grid grid-cols-1 md:grid-cols-5 xl:w-[1000px] mx-auto px-2 md:px-0"
   >

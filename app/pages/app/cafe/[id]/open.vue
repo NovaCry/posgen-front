@@ -26,7 +26,7 @@ import { useSelectedShopStore } from '@/store/shop';
 import  useErrorHandler from '@/composables/useErrorHandler';
 import type Table from '@/types/api/Table';
 import type { Product } from '@/types/api/Product';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 const route = useRoute();
 const router = useRouter();
 
@@ -421,6 +421,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <SeoMeta title="Sipariş Sayfası" description="Sipariş sayfası" />
   <div
     class="grid grid-cols-1 lg:grid-cols-3 h-screen max-h-[calc(100vh-3rem)] overflow-hidden"
   >

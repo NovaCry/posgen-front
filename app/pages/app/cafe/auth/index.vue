@@ -6,6 +6,7 @@ import { toLocaleDate } from '~/lib/toLocaleDate';
 import { toLocaleTime } from '~/lib/toLocaleTime';
 import CafePinInput from '@/components/cafe/PinInput.vue';
 import { Shield } from 'lucide-vue-next';
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 const user = useUser();
 const localTime = ref('');
 
@@ -24,6 +25,7 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <SeoMeta title="Garson Girişi" description="Garson girişi" />
   <main
     class="h-[calc(100vh-3rem)] flex items-start justify-center min-h-[80vh] pt-45 px-2 md:px-0"
   >

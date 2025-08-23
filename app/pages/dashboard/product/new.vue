@@ -49,7 +49,7 @@ import createProtectedApiInterface from '@/api/protected';
 import Section from '@/components/layout/Section.vue';
 import { Separator } from '@/components/ui/separator';
 import type { Product } from '~/types/api/Product';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 const router = useRouter();
 const route = useRoute();
 
@@ -236,6 +236,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <SeoMeta title="Ürün Oluştur" description="Ürün oluştur" />
   <Section>
     <div class="flex flex-col space-y-4 mb-6 sm:mb-8 lg:mb-10">
       <div

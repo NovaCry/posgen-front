@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 import { ref, reactive, onMounted } from 'vue';
 import DataTable from '@/components/DataTable.vue';
 import PaginationSimplified from '@/components/PaginationSimplified.vue';
@@ -56,7 +57,7 @@ const newEmployee = reactive({
   lastName: '',
   email: '',
   password: '',
-  bornDate: '',
+  bornDate: new Date(),
   rol: 'Depo Sorumlusu',
 });
 
@@ -111,6 +112,13 @@ const getActionsMenu = (): Cell => {
 
 const data = ref<TableData[]>([]);
 
+interface Employee {
+  firstName: string;
+  lastName: string;
+  email: string;
+  createdAt: string;
+}
+
 const fetchEmployees = async () => {
   if (!selectedShop.id) {
     console.error('No shop selected');
@@ -125,7 +133,7 @@ const fetchEmployees = async () => {
 
     if (response) {
       // Transform employees data for the table
-      data.value = response.data.employees.map((employee) => ({
+      data.value = response.data.employees.map((employee: Employee) => ({
         Profil: [
           {
             type: 'image',
@@ -214,7 +222,7 @@ const addEmployee = async () => {
         lastName: '',
         email: '',
         password: '',
-        bornDate: '',
+        bornDate: new Date(),
         rol: 'Depo Sorumlusu',
       });
     }
@@ -228,6 +236,7 @@ const addEmployee = async () => {
 </script>
 
 <template>
+  <SeoMeta title="Çalışanlar" description="Çalışanlar" />
   <Section>
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-3xl font-semibold">Çalışanlar</h1>

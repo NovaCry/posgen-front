@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import LazyImage from '@/components/img/LazyImage.vue';
 import { ArrowRight } from 'lucide-vue-next';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 definePageMeta({
   name: 'Cihazlar',
 });
@@ -40,6 +40,7 @@ const paymentTerminals: PaymentTerminal[] = [
 </script>
 
 <template>
+  <SeoMeta title="Cihazlar" description="Cihazlar" />
   <div class="grid grid-cols-9 w-full h-full max-h-[calc(100vh-3rem)]">
     <div class="border-r col-span-5 max-h-full overflow-auto">
       <div class="p-4 border-b">

@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import Skeleton from '@/components/ui/skeleton/Skeleton.vue';
 import { ArrowRight, ArrowUpRight } from 'lucide-vue-next';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 import Header from '@/components/header/index/IndexHeader.vue';
 
 definePageMeta({
@@ -11,6 +11,7 @@ definePageMeta({
 </script>
 
 <template>
+  <SeoMeta title="Mağaza Oluşturuldu" description="Mağaza oluşturuldu" />
   <div class="flex items-center justify-center w-screen h-screen">
     <Header />
     <div

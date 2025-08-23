@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import Resource from '@/components/layout/Resource.vue';
 import { toLocaleDate } from '@/lib/toLocaleDate';
@@ -375,6 +376,7 @@ const fetchSalesData = async (page: number, limit: number, search: string) => {
 </script>
 
 <template>
+  <SeoMeta title="Satışlar" description="Satışlar" />
   <Section>
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-3xl font-semibold">Satışlar</h1>

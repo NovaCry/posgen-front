@@ -32,7 +32,7 @@ import { Input } from '@/components/ui/input';
 import ChangeDomainDialog from '@/components/dialogs/ChangeDomainDialog.vue';
 import { toLocaleDate } from '@/lib/toLocaleDate';
 import Section from '@/components/layout/Section.vue';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 definePageMeta({
   name: 'QR Menü Yönetimi',
 });
@@ -91,7 +91,7 @@ const generateRandomSubdomain = () => {
   return `${word1}${word2}${randomNum}`;
 };
 
-const selectedTemplate = ref<Template>(templates.value[0]);
+const selectedTemplate = ref<Template>(templates.value[0]!);
 const isLoading = ref(false);
 const viewCount = ref(0);
 const creationDate = ref(toLocaleDate(new Date(), true));
@@ -145,6 +145,7 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <SeoMeta title="QR Menü Yönetimi" description="QR Menü Yönetimi" />
   <Section>
     <h1 class="text-3xl font-semibold">QR Menü Yönetimi</h1>
 

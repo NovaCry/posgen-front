@@ -7,7 +7,7 @@ import type { Product } from '@/types/api/Product';
 import type { MenuCell, TableData } from '@/types/DataTable';
 import { Copy, Edit, Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 definePageMeta({
   name: 'Ürünler',
 });
@@ -98,6 +98,7 @@ function makeActionsForProduct(product: Product): MenuCell {
 </script>
 
 <template>
+  <SeoMeta title="Ürünler" description="Ürünler" />
   <Section>
     <h1 class="text-3xl font-semibold">Ürünler</h1>
     <Resource

@@ -15,6 +15,8 @@ import type {
   TimelineGroup,
   TimelineReservation,
 } from '@/types/Cafe';
+import SeoMeta from '@/components/seo/SeoMeta.vue';
+
 
 const selectedShop = useSelectedShopStore();
 const protectedApiInterface = createProtectedApiInterface();
@@ -131,6 +133,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <SeoMeta title="Kafe" description="Kafe" />
   <div
     class="grid grid-cols-1 lg:grid-cols-10 px-2.5 sm:container gap-4 lg:gap-8 h-screen max-h-[calc(100vh-3rem)] overflow-hidden"
   >

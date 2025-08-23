@@ -2,37 +2,19 @@
 import createProtectedApiInterface from '@/api/protected';
 import { toLocaleDate } from '@/lib/toLocaleDate';
 import { useSelectedShopStore } from '@/store/shop';
-import { Filter, Receipt, ChevronRight, Eye } from 'lucide-vue-next';
 import Section from '@/components/layout/Section.vue';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
-import AdmissionWidget from '@/components/card/AdmissionWidget.vue';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
-import { Separator } from '@/components/ui/separator';
 import PaginationSimplified from '@/components/PaginationSimplified.vue';
 import DataTable from '@/components/DataTable.vue';
 import { Input } from '@/components/ui/input';
-import { ListFilter } from 'lucide-vue-next';
-import type { BadgeCell, MenuCell, TableData, TextCell } from '@/types/DataTable';
+import type { Cell } from '@/types/DataTable';
+import { ListFilter, Eye, Receipt } from 'lucide-vue-next';
 import AdmissionsHeader from '@/components/admissions/AdmissionsHeader.vue';
 import AdmissionsStats from '@/components/admissions/AdmissionsStats.vue';
 import AdmissionDetails from '@/components/admissions/AdmissionDetails.vue';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 interface Product {
   id: string;
   name: string;
@@ -75,7 +57,6 @@ const itemsPerPage = 10;
 const totalCount = ref(0);
 const totalPages = ref(0);
 const search = ref('');
-const resourceVersion = ref(0);
 
 const statusTranslations: Record<string, string> = {
   OPEN: 'Bekliyor',
@@ -135,7 +116,7 @@ const stats = computed(() => {
 
 const getFilteredOrders = (): Order[] => {
   let filteredOrders = orders.value;
-  
+
   if (filter.value === 'active') {
     filteredOrders = orders.value.filter((order: Order) =>
       ['PENDING', 'PREPARING', 'READY'].includes(order.status)
@@ -144,42 +125,48 @@ const getFilteredOrders = (): Order[] => {
 
   if (search.value.trim()) {
     const searchTerm = search.value.toLowerCase().replace('#', '');
-    filteredOrders = filteredOrders.filter(order => {
-      const productNames = order.items.map(item => getProductName(item.productId)).join(' ').toLowerCase();
+    filteredOrders = filteredOrders.filter((order) => {
+      const productNames = order.items
+        .map((item) => getProductName(item.productId))
+        .join(' ')
+        .toLowerCase();
       const tableName = getTableName(order.tableId, order.id).toLowerCase();
       const orderId = order.id.toLowerCase();
-      
-      return productNames.includes(searchTerm) || 
-             tableName.includes(searchTerm) || 
-             orderId.includes(searchTerm) ||
-             orderId.replace('#', '').includes(searchTerm);
+
+      return (
+        productNames.includes(searchTerm) ||
+        tableName.includes(searchTerm) ||
+        orderId.includes(searchTerm) ||
+        orderId.replace('#', '').includes(searchTerm)
+      );
     });
   }
 
-  return filteredOrders.sort((a: Order, b: Order) => 
-    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  return filteredOrders.sort(
+    (a: Order, b: Order) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 };
 
-const getCurrentPageOrders = (): Order[] => {
+const _getCurrentPageOrders = (): Order[] => {
   const filteredOrders = getFilteredOrders();
   const startIndex = (currentPage.value - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   return filteredOrders.slice(startIndex, endIndex);
 };
 
-const getTableData = (): any[] => {
+const getTableData = (): Record<string, string | Cell[]>[] => {
   const filteredOrders = getFilteredOrders();
-  const tableData: any[] = [];
-  
+  const tableData: Record<string, string | Cell[]>[] = [];
+
   for (const order of filteredOrders) {
     makeResourceColumn(tableData, order);
   }
-  
+
   return tableData;
 };
 
-function makeActionsForAdmission(order: Order): any {
+function makeActionsForAdmission(order: Order): Cell {
   return {
     type: 'menu',
     data: [
@@ -209,7 +196,7 @@ function makeActionsForAdmission(order: Order): any {
   };
 }
 
-function makeResourceColumn(tableData: any[], order: Order) {
+function makeResourceColumn(tableData: Record<string, string | Cell[]>[], order: Order) {
   const itemsText =
     order.items
       ?.slice(0, 2)
@@ -253,17 +240,16 @@ function makeResourceColumn(tableData: any[], order: Order) {
         data: `${formatPrice(order.finalAmount)} ₺`,
       },
     ],
-    'Durum': [
+    Durum: [
       {
         type: 'badge',
-        background:'#5456c0',
+        background: '#5456c0',
         color: 'white',
         data: getStatusTranslation(order.status),
       },
     ],
 
-    
-    'İşlemler': [makeActionsForAdmission(order)],
+    İşlemler: [makeActionsForAdmission(order)],
   });
 }
 
@@ -286,13 +272,12 @@ const formatOrderId = (orderId: string): string => {
 };
 
 const getTableName = (tableId: string | null, orderId?: string): string => {
-  if (!tableId) return `Paket Sipariş${orderId ? ` | ${formatOrderId(orderId)}` : ''}`;
+  if (!tableId)
+    return `Paket Sipariş${orderId ? ` | ${formatOrderId(orderId)}` : ''}`;
   const table = tables.value.find((t: Table) => t.id === tableId);
   const tableName = table?.name || `${tableId}`;
   return orderId ? `${tableName} | ${formatOrderId(orderId)}` : tableName;
 };
-
-
 
 const fetchOrders = async (): Promise<void> => {
   try {
@@ -315,13 +300,14 @@ const fetchOrders = async (): Promise<void> => {
     }
 
     const ordersResponse = await protectedApiInterface({
-        url: `shop/orders/${selectedShop.id}/orders`,
-        method: 'GET',
+      url: `shop/orders/${selectedShop.id}/orders`,
+      method: 'GET',
     });
 
     const baseOrders = (ordersResponse?.data?.data || []) as Order[];
 
-    orders.value = baseOrders.sort((a: Order, b: Order) => 
+    orders.value = baseOrders.sort(
+      (a: Order, b: Order) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
     updatePagination();
@@ -344,13 +330,11 @@ const viewOrderDetails = (orderId: string) => {
   }
 };
 
-const handlePageChange = (page: number) => {
+const _handlePageChange = (page: number) => {
   currentPage.value = page;
 };
 
-
-
-const getActionsMenu = (order: Order): any => {
+const _getActionsMenu = (order: Order): Cell => {
   return {
     type: 'menu',
     data: [
@@ -361,7 +345,7 @@ const getActionsMenu = (order: Order): any => {
           {
             type: 'item',
             text: 'Detayları Görüntüle',
-            icon: 'Eye',
+            icon: Eye,
             action() {
               viewOrderDetails(order.id);
             },
@@ -403,6 +387,7 @@ definePageMeta({
 </script>
 
 <template>
+  <SeoMeta title="Adisyonlar" description="Adisyonlar" />
   <Section>
     <AdmissionsHeader v-model:filter="filter" />
     <AdmissionsStats :stats="stats" />
@@ -419,52 +404,62 @@ definePageMeta({
       </p>
     </div>
 
-     <template v-else>
-       <div class="flex items-center my-4">
-         <div class="flex items-center mr-auto gap-4">
-           <Input v-model="search" placeholder="Adisyonlarda Arama Yap..." />
-           <Button disabled variant="outline">
-             <ListFilter />
-             Sırala
-           </Button>
-         </div>
-       </div>
-       
-       <div v-if="getFilteredOrders().length === 0" class="text-center py-12 animate-in fade-in duration-500">
-      <Receipt
-        class="size-12 mx-auto mb-4 text-muted-foreground opacity-50 animate-bounce"
-      />
-      <h3 class="text-lg font-semibold mb-2">
-        {{
-             search.trim() 
-               ? 'Arama sonucu bulunamadı' 
-               : filter === 'active'
-            ? 'Aktif adisyon bulunmuyor'
-            : 'Henüz adisyon bulunmuyor'
-        }}
-      </h3>
-      <p class="text-muted-foreground">
-        {{
-             search.trim()
-               ? `"${search}" için sonuç bulunamadı. Farklı kelimeler deneyin.`
-               : filter === 'active'
-            ? 'Şu anda aktif olan bir adisyon yok.'
-            : 'Henüz hiç sipariş oluşturulmamış.'
-        }}
-      </p>
-    </div>
+    <template v-else>
+      <div class="flex items-center my-4">
+        <div class="flex items-center mr-auto gap-4">
+          <Input v-model="search" placeholder="Adisyonlarda Arama Yap..." />
+          <Button disabled variant="outline">
+            <ListFilter />
+            Sırala
+          </Button>
+        </div>
+      </div>
 
-       <template v-else>
-         <DataTable :data="getTableData().slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)" />
-         
-         <PaginationSimplified
-           v-model="currentPage"
-           class="my-4 w-full flex justify-center"
-           :items-per-page="itemsPerPage"
-           :total-items="getFilteredOrders().length"
-         />
-       </template>
-     </template>
+      <div
+        v-if="getFilteredOrders().length === 0"
+        class="text-center py-12 animate-in fade-in duration-500"
+      >
+        <Receipt
+          class="size-12 mx-auto mb-4 text-muted-foreground opacity-50 animate-bounce"
+        />
+        <h3 class="text-lg font-semibold mb-2">
+          {{
+            search.trim()
+              ? 'Arama sonucu bulunamadı'
+              : filter === 'active'
+                ? 'Aktif adisyon bulunmuyor'
+                : 'Henüz adisyon bulunmuyor'
+          }}
+        </h3>
+        <p class="text-muted-foreground">
+          {{
+            search.trim()
+              ? `"${search}" için sonuç bulunamadı. Farklı kelimeler deneyin.`
+              : filter === 'active'
+                ? 'Şu anda aktif olan bir adisyon yok.'
+                : 'Henüz hiç sipariş oluşturulmamış.'
+          }}
+        </p>
+      </div>
+
+      <template v-else>
+        <DataTable
+          :data="
+            getTableData().slice(
+              (currentPage - 1) * itemsPerPage,
+              currentPage * itemsPerPage
+            )
+          "
+        />
+
+        <PaginationSimplified
+          v-model="currentPage"
+          class="my-4 w-full flex justify-center"
+          :items-per-page="itemsPerPage"
+          :total-items="getFilteredOrders().length"
+        />
+      </template>
+    </template>
 
     <AdmissionDetails
       :is-dialog-open="isDialogOpen"
