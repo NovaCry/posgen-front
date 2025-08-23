@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
 } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { BadgeCheck, LogOut, Shield, User2, Cog } from 'lucide-vue-next';
+import { BadgeCheck, LogOut, Shield, User2, Cog, LayoutDashboard  } from 'lucide-vue-next';
 import shortenName from '~/lib/shortenName';
 
 const user = useUser();
@@ -42,6 +42,12 @@ const session = useSession();
     </DropdownMenuLabel>
     <DropdownMenuSeparator />
     <DropdownMenuGroup>
+      <NuxtLink to="/dashboard">
+        <DropdownMenuItem>
+          <LayoutDashboard />
+          Yönetim Paneli
+        </DropdownMenuItem>
+      </NuxtLink>
       <NuxtLink to="/user">
         <DropdownMenuItem>
           <User2 />
