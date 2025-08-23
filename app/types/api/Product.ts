@@ -27,6 +27,9 @@ export interface Product {
   isPricePerUnit: boolean;
   pricePerUnit?: string;
   unitType?: string; // Örnek: "kg", "litre", "adet"
+  
+  // Stockless product flag
+  isLimitless: boolean;
 
   taxes: ProductTax[];
   ProductAttribute: ProductAttribute[];

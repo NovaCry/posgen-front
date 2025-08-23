@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Trash2 } from 'lucide-vue-next';
 import NumberFieldSimplified from '../input/NumberFieldSimplified.vue';
+import { watch } from 'vue';
 
 defineProps<{
   name: string;
@@ -17,10 +18,20 @@ const quantityModel = defineModel('quantity', {
   default: 1,
 });
 
+const emit = defineEmits<{
+  itemUpdate: [];
+}>();
+
 function removeFromOrder() {
   selectedModel.value = false;
   quantityModel.value = 1;
+  emit('itemUpdate');
 }
+
+// Watch for changes in selected and quantity models
+watch([selectedModel, quantityModel], () => {
+  emit('itemUpdate');
+});
 </script>
 
 <template>
@@ -46,6 +57,7 @@ function removeFromOrder() {
       :min="1"
       :max="maxQuantity"
       class="max-w-28 shrink-0"
+      @update:model-value="emit('itemUpdate')"
     />
   </div>
 </template>

@@ -39,12 +39,15 @@ interface Emits {
   (e: 'changeTable'): void;
   (e: 'update:splitPayment', value: boolean): void;
   (e: 'update:numberOfPeople', value: number): void;
+  (e: 'update:splitPayment', value: boolean): void;
+  (e: 'update:numberOfPeople', value: number): void;
   (e: 'update:splitMode', value: 'equal' | 'custom'): void;
   (e: 'update:customSplitAmounts', value: number[]): void;
   (e: 'update:splitPaymentMethods', value: Array<'cash' | 'card'>): void;
   (e: 'update:paymentMethod', value: 'cash' | 'card'): void;
   (e: 'completeOrder'): void;
   (e: 'itemDelete'): void;
+  (e: 'itemUpdate'): void;
 }
 
 defineProps<Props>();
@@ -58,7 +61,7 @@ defineEmits<Emits>();
   >
     <div class="flex flex-col h-full">
       <div class="border-b p-4 flex items-center justify-between">
-        <h2 class="text-lg font-semibold">Masa Siparişi</h2>
+        <h2 class="text-lg font-semibold">{{ selectedTable ? 'Masa Siparişi' : 'Paket Siparişi' }}</h2>
         <Button
           variant="ghost"
           size="icon"
@@ -70,7 +73,7 @@ defineEmits<Emits>();
 
       <ScrollArea class="flex-1">
         <div class="p-4 space-y-6">
-          <div>
+          <div v-if="selectedTable">
             <h3 class="font-medium mb-3">Aktif Masa</h3>
             <TableInfo
               :selected-table="selectedTable"
@@ -81,7 +84,7 @@ defineEmits<Emits>();
           </div>
 
           <div>
-            <h3 class="font-medium mb-3">Masa Siparişleri</h3>
+            <h3 class="font-medium mb-3">{{ selectedTable ? 'Masa Siparişleri' : 'Siparişler' }}</h3>
             <div class="space-y-3">
               <div
                 v-if="selectedItemsList.length === 0"
@@ -98,10 +101,12 @@ defineEmits<Emits>();
                 :key="`mobile-${tableId}-${item.title}`"
                 v-model:quantity="item.state.quantity"
                 v-model:selected="item.state.selected"
+                @update:quantity="$emit('itemUpdate')"
+                @update:selected="$emit('itemUpdate')"
                 :name="item.title"
                 :price="item.price"
                 :max-quantity="item.maxQuantity"
-                @delete="$emit('itemDelete')"
+                @delete="$emit('itemUpdate')"
               />
             </div>
           </div>
@@ -171,7 +176,6 @@ defineEmits<Emits>();
           class="w-full"
           size="lg"
           :disabled="
-            !selectedTable ||
             selectedItemsList.length === 0 ||
             isLoading ||
             (splitPayment &&

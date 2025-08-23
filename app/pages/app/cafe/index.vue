@@ -30,7 +30,7 @@ const timeline = computed<TimelineGroup[]>(() => {
     const reservationDate = new Date(reservation.date);
     const [hours, minutes] = reservation.time.split(':').map(Number);
     const startTime = new Date(reservationDate);
-    startTime.setHours(hours, minutes, 0, 0);
+    startTime.setHours(hours || 0, minutes || 0, 0, 0);
 
     const endTime = addHours(startTime, 2);
 
@@ -49,9 +49,9 @@ const timeline = computed<TimelineGroup[]>(() => {
 
     const tableName = reservation.table?.name || `Masa ${reservation.tableId}`;
     const tableNumberMatch = tableName.match(/(\d+)/);
-    const tableNumber = tableNumberMatch ? parseInt(tableNumberMatch[1]) : 0;
+    const tableNumber = tableNumberMatch?.[1] ? parseInt(tableNumberMatch[1]) : 0;
 
-    groups[groupName].push({
+    groups[groupName]!.push({
       name: reservation.customerName,
       start: startTime,
       end: endTime,
@@ -77,7 +77,16 @@ const timeline = computed<TimelineGroup[]>(() => {
   }));
 });
 
-const TableStatusByIndex = ['empty', 'filled'] as TableStatus[];
+// Masaların durumuna göre status belirleme
+function getTableStatus(table: Table): TableStatus {
+  if (table.hasActiveOrder) {
+    return 'filled'; // Aktif siparişi olan masalar yeşil
+  }
+  if (table.hasActiveReservation) {
+    return 'reserved'; // Rezervasyonu olan masalar kırmızı
+  }
+  return 'empty'; // Boş masalar mavi
+}
 
 async function fetchTables() {
   const res = await protectedApiInterface({
@@ -147,7 +156,7 @@ onMounted(async () => {
               <TableView
                 :name="table.name"
                 :size="table.seatSize"
-                :status="TableStatusByIndex[0]"
+                :status="getTableStatus(table)"
               />
             </motion.div>
           </RouterLink>

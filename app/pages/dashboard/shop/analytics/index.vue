@@ -47,7 +47,7 @@ interface OrderItem {
 
 interface Order {
   id: string;
-  tableId: string;
+  tableId: string | null;
   status: string;
   createdAt: string;
   finalAmount: number;
@@ -131,7 +131,7 @@ interface SidebarHandler {
 
 type AnalyticsWidget = ChartWidget | NumeralWidget | ItemList;
 
-// POLLYFILL
+ 
 
 let averageTotal = 0;
 let averagePredicted = 0;
@@ -160,7 +160,7 @@ function createFakeChartData() {
   return res;
 }
 
-// POLLYFILL
+ 
 
 const orderStats = ref({
   dailyOrders: 0,
@@ -242,7 +242,8 @@ const getProductName = (productId: string): string => {
   return product?.name || `Ürün ${productId.slice(-4)}`;
 };
 
-const getTableName = (tableId: string): string => {
+const getTableName = (tableId: string | null): string => {
+  if (!tableId || tableId === 'self') return 'Self Servis';
   const table = tables.value.find((t) => t.id === tableId);
   return table?.name || `Masa ${tableId.slice(-4)}`;
 };
@@ -270,7 +271,7 @@ const calculateTableAnalytics = (ordersData: Order[]): TableAnalyticsItem[] => {
   const tableStats: Record<string, TableStats> = {};
 
   todayOrders.forEach((order: Order) => {
-    const tableId = order.tableId;
+    const tableId = order.tableId || 'self';
     if (!tableStats[tableId]) {
       tableStats[tableId] = {
         tableId,
@@ -317,7 +318,7 @@ const calculateTableAnalytics = (ordersData: Order[]): TableAnalyticsItem[] => {
   });
 
   yesterdayOrders.forEach((order: Order) => {
-    const tableId = order.tableId;
+    const tableId = order.tableId || 'self';
     if (!tableStats[tableId]) {
       tableStats[tableId] = {
         tableId,
@@ -402,20 +403,76 @@ const calculateTableAnalytics = (ordersData: Order[]): TableAnalyticsItem[] => {
   return tableAnalyticsData;
 };
 
+type Admission = {
+  id: string;
+  shopId: string;
+  status: string;
+  totalPrice: string;
+  products: string[];
+  tableId: string | null;
+  createdAt: string;
+};
+
+function mapAdmissionsToOrders(admissions: Admission[], productList: Product[]): Order[] {
+  return admissions.map((adm) => {
+    const items: OrderItem[] = (adm.products || []).map((p) => {
+      const [productId, qtyStr] = (p || '').split(':');
+      const product = productList.find((pr) => pr.id === productId);
+      const price = product ? Number(product.price) : 0;
+      const quantity = Math.max(0, Number(qtyStr || '1'));
+      return { productId, quantity, price } as OrderItem;
+    });
+    const finalAmount = Number(adm.totalPrice || '0');
+    
+    const table = adm.tableId ? undefined : {
+      id: 'self',
+      name: 'Self Servis',
+      seatSize: 0,
+      status: 'AVAILABLE',
+      shopId: adm.shopId
+    };
+    
+    return {
+      id: adm.id,
+      tableId: adm.tableId ?? 'self',
+      status: adm.status === 'OPEN' ? 'COMPLETED' : adm.status,
+      createdAt: adm.createdAt,
+      finalAmount,
+      items,
+      table,
+    } as Order;
+  });
+}
+
 const fetchOrderStats = async (showLoader = false): Promise<void> => {
   try {
     if (showLoader) isLoading.value = true;
 
     await Promise.all([fetchProducts(), fetchTables()]);
 
-    const response = await protectedApiInterface({
-      url: `shop/orders/${selectedShop.id}/orders`,
-      method: 'GET',
-    });
+    const [ordersRes, admissionsRes] = await Promise.all([
+      protectedApiInterface({
+        url: `shop/orders/${selectedShop.id}/orders`,
+        method: 'GET',
+      }),
+      protectedApiInterface({
+        url: `shop/admissions/${selectedShop.id}/list?limit=250&page=0`,
+        method: 'GET',
+      }),
+    ]);
 
-    if (response?.data?.data) {
-      orders.value = response.data.data;
-      const ordersData: Order[] = response.data.data;
+    if (ordersRes?.data?.data) {
+      const orderDataFromOrders: Order[] = ordersRes.data.data;
+      const admissions: Admission[] = admissionsRes?.data?.data || [];
+      const orderDataFromAdmissions = mapAdmissionsToOrders(admissions, products.value);
+      
+      const allOrders = [...orderDataFromOrders, ...orderDataFromAdmissions];
+      allOrders.sort((a: Order, b: Order) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      
+      orders.value = allOrders;
+      const ordersData: Order[] = orders.value;
 
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -526,7 +583,7 @@ const fetchOrderStats = async (showLoader = false): Promise<void> => {
         .slice(0, 8)
         .map((order: Order) => ({
           name: `Sipariş`,
-          alt: `${order.table?.name || 'Bilinmeyen Masa'} - ${
+          alt: `${order.table?.name || getTableName(order.tableId)} - ${
             statusTranslations[order.status] || order.status
           }`,
           value: `${parseFloat(
@@ -637,7 +694,7 @@ const numeralWidgets = computed((): NumeralWidget[] => [
     size: 1,
     icon: markRaw(ShoppingBasket),
     title: 'Haftalık Siparişler',
-    // value: orderStats.value.weeklyOrders || 0,
+    
     value: fillFakeData
       ? +randMinMax(400, 700).toFixed()
       : orderStats.value.weeklyOrders || 0,
@@ -648,7 +705,7 @@ const numeralWidgets = computed((): NumeralWidget[] => [
     size: 1,
     icon: markRaw(DollarSign),
     title: 'Aylık Gelir',
-    // value: orderStats.value.totalRevenue || 0,
+    
     value: fillFakeData
       ? randMinMax(60000, 400000)
       : orderStats.value.totalRevenue || 0,
@@ -659,7 +716,7 @@ const numeralWidgets = computed((): NumeralWidget[] => [
     size: 1,
     icon: markRaw(TrendingUp),
     title: 'Tamamlanma Oranı',
-    // value: orderStats.value.completionRate || 0,
+    
     value: fillFakeData
       ? +randMinMax(70, 100).toFixed(2)
       : orderStats.value.completionRate || 0,

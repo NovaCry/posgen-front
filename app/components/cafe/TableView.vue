@@ -2,7 +2,7 @@
 import { ArrowRight, Ellipsis } from 'lucide-vue-next';
 import SeatRenderer from './SeatRenderer.vue';
 
-export type TableStatus = 'empty' | 'reserved' | 'filled';
+export type TableStatus = 'empty' | 'reserved' | 'filled' | 'active';
 
 defineProps<{
   name: string;
@@ -22,10 +22,12 @@ defineProps<{
         renderer-size="small"
         :color="
           status === 'empty'
-            ? 'default'
+            ? 'blue'
             : status === 'filled'
-              ? 'red'
-              : 'yellow'
+              ? 'green'
+              : status === 'reserved'
+                ? 'red'
+                : 'default'
         "
         class="shrink-0"
       >

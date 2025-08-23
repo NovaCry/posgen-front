@@ -94,14 +94,7 @@ const selectedCategoryId = ref('');
 const isLimitless = ref(false);
 const PricePerUnit = ref(false);
 const price = ref(0);
-const stock = ref<Stock[]>([
-  {
-    id: 0,
-    barcode: '',
-    quantity: 0,
-    maxQuantity: 0,
-  },
-]);
+const stock = ref<Stock[]>([]);
 const productName = ref('');
 const hideProduct = ref(false);
 const isLoading = ref(false);
@@ -120,7 +113,7 @@ const isAcceptable = computed(() => {
   return (
     selectedCategoryId.value !== '' &&
     price.value > 0 &&
-    stock.value.length > 0 &&
+    (isLimitless.value || stock.value.length > 0) &&
     productName.value !== '' &&
     productName.value.length >= 1
   );
@@ -141,7 +134,8 @@ async function EditProduct() {
     data: {
       name: productName.value,
       price: price.value,
-      stocks: stock.value.map((stockItem) => ({
+      isLimitless: isLimitless.value,
+      stocks: isLimitless.value ? [] : stock.value.map((stockItem) => ({
         ...stockItem,
         quantity: stockItem.quantity,
       })),
@@ -173,9 +167,8 @@ async function CreateProduct(): Promise<void> {
       isPricePerUnit: PricePerUnit.value,
       pricePerUnit: PricePerUnit.value ? String(price.value) : undefined,
       unitType: PricePerUnit.value ? 'kg' : undefined,
-      taxType: selectedTaxType.value.id,
-      taxRate: selectedTaxType.value.rate,
-      stocks: stock.value.map((stockItem) => ({
+      isLimitless: isLimitless.value,
+      stocks: isLimitless.value ? [] : stock.value.map((stockItem) => ({
         ...stockItem,
         quantity: String(stockItem.quantity),
         maxQuantity: String(stockItem.maxQuantity),
@@ -199,15 +192,13 @@ function newStock(): void {
   stock.value.push({
     barcode: '',
     id: stock.value.length + 1,
-    maxQuantity: 0,
-    quantity: 0,
+    maxQuantity: 100,
+    quantity: 1,
   });
 }
 
 function deleteStock(index: number): void {
-  if (stock.value.length > 1) {
-    stock.value.splice(index, 1);
-  }
+  stock.value.splice(index, 1);
 }
 
 onMounted(async () => {
@@ -225,14 +216,21 @@ onMounted(async () => {
       price.value = +product.data.data.price;
     }
     selectedCategoryId.value = product.data.data.categoryId;
-    product.data.data.stocks.forEach((stockItem) => {
-      stock.value.push({
-        id: +stockItem.id,
-        barcode: stockItem.barcode || '',
-        quantity: Number(stockItem.quantity),
-        maxQuantity: Number(stockItem.maxQuantity),
+    isLimitless.value = product.data.data.isLimitless || false;
+    
+    if (!isLimitless.value && product.data.data.stocks && product.data.data.stocks.length > 0) {
+      stock.value = []; // Clear default stock
+      product.data.data.stocks.forEach((stockItem) => {
+        stock.value.push({
+          id: +stockItem.id,
+          barcode: stockItem.barcode || '',
+          quantity: Number(stockItem.quantity),
+          maxQuantity: Number(stockItem.maxQuantity),
+        });
       });
-    });
+    } else if (isLimitless.value) {
+      stock.value = []; // Clear stocks for limitless products
+    }
   }
 });
 </script>
@@ -320,92 +318,57 @@ onMounted(async () => {
               <Package class="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
               <div class="min-w-0 flex-1">
                 <CardTitle class="text-lg sm:text-xl truncate">
-                  Ürün Stoğu
+                  {{ isLimitless ? 'Stok Kontrolü Yok' : 'Ürün Stoğu' }}
                 </CardTitle>
                 <CardDescription class="text-xs sm:text-sm">
-                  Stok ve barkod bilgileri
+                  {{ isLimitless ? 'Bu ürün için stok kontrolü yapılmaz' : 'Stok ve barkod bilgileri' }}
                 </CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent class="space-y-4 sm:space-y-6 px-4 sm:px-6">
+            <div v-if="isLimitless" class="text-center py-8">
+              <Package class="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+              <h3 class="text-lg font-semibold mb-2">Stok Kontrolü Yok</h3>
+              <p class="text-muted-foreground">
+                Bu ürün için stok kontrolü yapılmaz. Ürün her zaman satışa açıktır.
+              </p>
+            </div>
+            
             <div
+              v-else
               v-for="(stockField, i) in stock"
               :key="stockField.id"
               class="space-y-4"
             >
               <div class="block sm:hidden space-y-3">
-                <template v-if="i > 0">
-                  <div class="flex items-center gap-2">
-                    <div class="flex-1 flex items-center gap-2">
-                      <Label class="text-sm font-medium">Barkod</Label>
-                      <Input
-                        v-model="stockField.barcode"
-                        class="h-10 text-sm mt-1 flex-1"
-                        :disabled="isLimitless || isLoading"
-                        placeholder="978020137962"
-                      />
-                    </div>
-                    <Button
-                      class="h-9 w-9 shrink-0"
-                      :disabled="isLimitless || isLoading"
-                      size="icon"
-                      variant="outline"
-                      @click="deleteStock(i)"
-                    >
-                      <X class="h-4 w-4" />
-                    </Button>
+                <div class="flex items-center gap-2">
+                  <div class="flex-1 flex items-center gap-2">
+                    <Label class="text-sm font-medium">Barkod</Label>
+                    <Input
+                      v-model="stockField.barcode"
+                      class="h-10 text-sm mt-1 flex-1"
+                      :disabled="isLoading"
+                      placeholder="978020137962"
+                    />
                   </div>
-                  <div class="grid grid-cols-2 gap-3">
-                    <div>
-                      <Label class="text-sm font-medium">Stok</Label>
-                      <NumberFieldSimplified
-                        v-model="stockField.quantity"
-                        class="h-10 text-sm mt-1"
-                        :disabled="isLimitless || isLoading"
-                        label=""
-                      />
-                    </div>
-                    <div>
-                      <Label class="text-sm font-medium">Maksimum</Label>
-                      <NumberFieldSimplified
-                        v-model="stockField.maxQuantity"
-                        class="h-10 text-sm mt-1"
-                        :disabled="isLimitless || isLoading"
-                        label=""
-                      />
-                    </div>
-                  </div>
-                </template>
-              </div>
-              <div class="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <template v-if="i > 0">
-                  <div class="flex items-end gap-2 lg:col-span-2">
-                    <Button
-                      class="h-11 w-11 shrink-0"
-                      :disabled="isLimitless || isLoading"
-                      size="icon"
-                      variant="outline"
-                      @click="deleteStock(i)"
-                    >
-                      <X class="h-4 w-4" />
-                    </Button>
-                    <div class="flex-1">
-                      <Label class="text-sm font-medium">Barkod</Label>
-                      <Input
-                        v-model="stockField.barcode"
-                        class="h-11 text-base"
-                        :disabled="isLimitless || isLoading"
-                        placeholder="978020137962"
-                      />
-                    </div>
-                  </div>
+                  <Button
+                    class="h-9 w-9 shrink-0"
+                    :disabled="isLoading"
+                    size="icon"
+                    variant="outline"
+                    @click="deleteStock(i)"
+                  >
+                    <X class="h-4 w-4" />
+                  </Button>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
                   <div>
                     <Label class="text-sm font-medium">Stok</Label>
                     <NumberFieldSimplified
                       v-model="stockField.quantity"
-                      class="h-11 text-base"
-                      :disabled="isLimitless || isLoading"
+                      class="h-10 text-sm mt-1"
+                      :disabled="isLoading"
                       label=""
                     />
                   </div>
@@ -413,16 +376,57 @@ onMounted(async () => {
                     <Label class="text-sm font-medium">Maksimum</Label>
                     <NumberFieldSimplified
                       v-model="stockField.maxQuantity"
-                      class="h-11 text-base"
-                      :disabled="isLimitless || isLoading"
+                      class="h-10 text-sm mt-1"
+                      :disabled="isLoading"
                       label=""
                     />
                   </div>
-                </template>
+                </div>
+              </div>
+              <div class="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="flex items-end gap-2 lg:col-span-2">
+                  <Button
+                    class="h-11 w-11 shrink-0"
+                    :disabled="isLoading"
+                    size="icon"
+                    variant="outline"
+                    @click="deleteStock(i)"
+                  >
+                    <X class="h-4 w-4" />
+                  </Button>
+                  <div class="flex-1">
+                    <Label class="text-sm font-medium">Barkod</Label>
+                    <Input
+                      v-model="stockField.barcode"
+                      class="h-11 text-base"
+                      :disabled="isLoading"
+                      placeholder="978020137962"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label class="text-sm font-medium">Stok</Label>
+                  <NumberFieldSimplified
+                    v-model="stockField.quantity"
+                    class="h-11 text-base"
+                    :disabled="isLoading"
+                    label=""
+                  />
+                </div>
+                <div>
+                  <Label class="text-sm font-medium">Maksimum</Label>
+                  <NumberFieldSimplified
+                    v-model="stockField.maxQuantity"
+                    class="h-11 text-base"
+                    :disabled="isLoading"
+                    label=""
+                  />
+                </div>
               </div>
             </div>
             <Button
-              :disabled="isLimitless || isLoading"
+              v-if="!isLimitless"
+              :disabled="isLoading"
               class="w-full h-10 sm:h-11"
               @click="newStock()"
             >

@@ -27,8 +27,8 @@ function MakeResourceColumn(tableData: TableData[], column: Table) {
       {
         type: 'badge',
         data: 'Müsait',
-        color: '#000',
-        background: 'rgb(22, 163, 74)',
+        color: 'white',
+        background: '#5456c0',
       },
     ],
     İşlemler: [makeActionsForAdmission(column)],

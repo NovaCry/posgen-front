@@ -4,8 +4,9 @@ import Resource from '@/components/layout/Resource.vue';
 import Section from '@/components/layout/Section.vue';
 import { toLocaleDate } from '@/lib/toLocaleDate';
 import { useSelectedShopStore } from '@/store/shop';
+import { Badge } from '@/components/ui/badge';
 import type { Discount } from '@/types/api/Discount';
-import type { MenuCell, TableData } from '@/types/DataTable';
+import type { BadgeCell, MenuCell, TableData, TextCell } from '@/types/DataTable';
 import { Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
@@ -20,20 +21,46 @@ const resourceVersion = ref(0);
 
 async function populateData(tableData: TableData[], discount: Discount) {
   tableData.push({
-    'İndirim Kodu': discount.name,
-    'Oluşturma Tarihi': toLocaleDate(new Date(discount.createdAt), true),
-    'Sona Erme Tarihi': discount.expiry
-      ? toLocaleDate(new Date(discount.expiry), true)
-      : '-',
-    İndirim: `${
-      discount.isRate
-        ? discount.discount + '%'
-        : (+discount.discount).toLocaleString() + '₺'
-    }`,
-    'Maksimum Kullanım': `${discount.maxUses || 'Sınırsız'}`,
+    'İndirim Kodu': [
+      {
+        type: 'text',
+        data: discount.name,
+      },
+    ],
+    'Oluşturma Tarihi': [
+      {
+        type: 'text',
+        data: toLocaleDate(new Date(discount.createdAt), true),
+      },
+    ],
+    'Sona Erme Tarihi': [
+      {
+        type: 'text',
+        data: discount.expiry
+          ? toLocaleDate(new Date(discount.expiry), true)
+          : '-',
+      },
+    ],
+    İndirim: [
+      {
+        type: 'text',
+        data: discount.isRate
+          ? discount.discount + '%'
+          : (+discount.discount).toLocaleString() + '₺',
+      },
+    ],
+    'Maksimum Kullanım': [
+      {
+        type: 'badge',
+        background: '#5456c0',
+        color: 'white',
+        data: discount.maxUses ? discount.maxUses.toString() : 'Sınırsız',
+      },
+    ],
     İşlemler: [makeActionsForDiscount(discount)],
   });
 }
+
 
 function makeActionsForDiscount(discount: Discount): MenuCell {
   const res: MenuCell = {

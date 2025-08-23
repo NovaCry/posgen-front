@@ -23,6 +23,7 @@ import { computed, ref, onMounted, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import createProtectedApiInterface from '@/api/protected';
 import { useSelectedShopStore } from '@/store/shop';
+import  useErrorHandler from '@/composables/useErrorHandler';
 import type Table from '@/types/api/Table';
 import type { Product } from '@/types/api/Product';
 
@@ -37,7 +38,6 @@ const productList = ref<CartCategory[]>([]);
 const showMobileOrders = ref(false);
 const paymentMethod = ref<'cash' | 'card'>('cash');
 const isLoading = ref(false);
-
 const splitPayment = ref(false);
 const numberOfPeople = ref(2);
 const splitPaymentMethods = ref<Array<'cash' | 'card'>>(['cash', 'cash']);
@@ -57,6 +57,7 @@ const currentOrder = ref<{
   status?: string;
   paymentStatus?: string;
 } | null>(null);
+const autoSaveTimeout = ref<NodeJS.Timeout | null>(null);
 
 const tableId = computed(() => {
   const params = route.params as { id?: string };
@@ -136,10 +137,10 @@ const nextReservation = computed(() => {
 
 async function fetchTables() {
   try {
-    const res = await protectedApiInterface({
-      url: `shop/tables/${selectedShop.id}/list?page=0`,
-      method: 'GET',
-    }).catch(useErrorHandler);
+          const res = await protectedApiInterface({
+        url: `shop/tables/${selectedShop.id}/list?page=0`,
+        method: 'GET',
+      }).catch(useErrorHandler);
 
     if (!res) return;
 
@@ -179,16 +180,27 @@ async function fetchProducts() {
       const categoryId = product.categoryId || 'uncategorized';
       const category = categories.get(categoryId);
 
+      // Stok kontrolü - stoksuz ürünler için her zaman stok var kabul edilir
+      const totalStock = product.stocks?.reduce((sum, stock) => {
+        const quantity = Number(stock.quantity) || 0;
+        return sum + quantity;
+      }, 0) || 0;
+      
+      // Eğer stok yoksa ama ürün stoksuz olarak işaretlenmişse veya stok alanı yoksa, stok var kabul et
+      const hasStock = totalStock > 0 || (product.isLimitless === true) || (product.stocks && product.stocks.length === 0);
+      const maxQuantity = hasStock ? (totalStock > 0 ? totalStock : 999) : 0;
+
       category?.items.push({
         title: product.name,
         price: parseFloat(product.price),
         image: '',
-        maxQuantity: product.currentStock || 999,
+        maxQuantity: maxQuantity,
         productId: product.id,
         state: {
           quantity: 1,
           selected: false,
         },
+        hasStock: hasStock,
       } as CartItem);
     });
 
@@ -204,51 +216,82 @@ async function fetchProducts() {
 }
 
 function changeTable() {
-  router.push('/cafe');
+  router.push('/app/cafe');
 }
 
 async function completeOrder() {
   if (!tableId.value || selectedItemsList.value.length === 0 || isLoading.value)
     return;
 
+  console.log('🚀 Sipariş tamamlanıyor...', {
+    tableId: tableId.value,
+    items: selectedItemsList.value,
+    currentOrder: currentOrder.value
+  });
+
   try {
     isLoading.value = true;
 
-    const orderItems = selectedItemsList.value.map((item) => ({
-      productId: item.productId,
-      quantity: item.state.quantity,
-      note: '',
-    }));
+    // Eğer mevcut bir otomatik kaydedilmiş sipariş varsa, onu kullan
+    if (currentOrder.value?.id) {
+      // Mevcut siparişi güncelle ve tamamla
+      const orderItems = selectedItemsList.value.map((item) => ({
+        productId: item.productId,
+        quantity: item.state.quantity,
+        note: '',
+      }));
 
-    const orderData = {
-      tableId: tableId.value,
-      items: orderItems,
-      paymentMethod: paymentMethod.value === 'cash' ? 'CASH' : 'CARD',
-      note: '',
-    };
+      await protectedApiInterface({
+        url: `shop/orders/${selectedShop.id}/orders/${currentOrder.value.id}`,
+        method: 'PUT',
+        data: {
+          status: 'COMPLETED',
+          paymentStatus: 'PAID',
+          items: orderItems, // Stok güncellemesi için items gerekli
+        },
+      }).catch(useErrorHandler);
+    } else {
+      // Yeni sipariş oluştur
+      const orderItems = selectedItemsList.value.map((item) => ({
+        productId: item.productId,
+        quantity: item.state.quantity,
+        note: '',
+      }));
 
-    const response = await protectedApiInterface({
-      url: `shop/orders/${selectedShop.id}/orders`,
-      method: 'POST',
-      data: orderData,
-    }).catch(useErrorHandler);
+      const orderData = {
+        tableId: tableId.value,
+        items: orderItems,
+        paymentMethod: paymentMethod.value === 'cash' ? 'CASH' : 'CARD',
+        note: '',
+      };
 
-    if (!response) return;
+      const response = await protectedApiInterface({
+        url: `shop/orders/${selectedShop.id}/orders`,
+        method: 'POST',
+        data: orderData,
+      }).catch(useErrorHandler);
 
-    currentOrder.value = {
-      id: response.data.id,
-      status: response.data.status,
-      paymentStatus: response.data.paymentStatus,
-    };
+      if (!response) return;
 
-    await protectedApiInterface({
-      url: `shop/orders/${selectedShop.id}/orders/${currentOrder.value.id}`,
-      method: 'PUT',
-      data: {
-        status: 'COMPLETED',
-        paymentStatus: 'PAID',
-      },
-    }).catch(useErrorHandler);
+      currentOrder.value = {
+        id: response.data.id,
+        status: response.data.status,
+        paymentStatus: response.data.paymentStatus,
+      };
+
+      // Yeni oluşturulan siparişi tamamla
+      await protectedApiInterface({
+        url: `shop/orders/${selectedShop.id}/orders/${currentOrder.value.id}`,
+        method: 'PUT',
+        data: {
+          status: 'COMPLETED',
+          paymentStatus: 'PAID',
+        },
+      }).catch(useErrorHandler);
+    }
+
+    // Siparişi temizle
+    currentOrder.value = null;
 
     for (const cat of productList.value) {
       for (const item of cat.items) {
@@ -256,6 +299,9 @@ async function completeOrder() {
         item.state.quantity = 1;
       }
     }
+
+    // Sipariş sonrası ürün listesini yenile (stok güncellemesi için)
+    await fetchProducts();
 
     splitPayment.value = false;
     showMobileOrders.value = false;
@@ -266,12 +312,111 @@ async function completeOrder() {
   }
 }
 
+// Otomatik kaydetme fonksiyonu
+async function autoSaveOrder() {
+  if (!tableId.value || selectedItemsList.value.length === 0) return;
+
+  try {
+    const orderItems = selectedItemsList.value.map((item) => ({
+      productId: item.productId,
+      quantity: item.state.quantity,
+      note: '',
+    }));
+
+    const orderData = {
+      tableId: tableId.value,
+      items: orderItems,
+      paymentMethod: 'CASH', // Varsayılan olarak nakit
+    };
+
+    // Eğer mevcut bir sipariş varsa, onu güncelle
+    if (currentOrder.value?.id) {
+      await protectedApiInterface({
+        url: `shop/orders/${selectedShop.id}/orders/${currentOrder.value.id}`,
+        method: 'PUT',
+        data: {
+          items: orderItems,
+          paymentMethod: 'CASH',
+        },
+      });
+    } else {
+      // Yeni sipariş oluştur
+      const response = await protectedApiInterface({
+        url: `shop/orders/${selectedShop.id}/orders`,
+        method: 'POST',
+        data: orderData,
+      });
+
+      if (response?.data?.id) {
+        currentOrder.value = {
+          id: response.data.id,
+          status: response.data.status,
+          paymentStatus: response.data.paymentStatus,
+        };
+      }
+    }
+  } catch (error) {
+    console.error('Otomatik kaydetme hatası:', error);
+  }
+}
+
+// Debounced otomatik kaydetme
+function scheduleAutoSave() {
+  if (autoSaveTimeout.value) {
+    clearTimeout(autoSaveTimeout.value);
+  }
+  
+  autoSaveTimeout.value = setTimeout(() => {
+    autoSaveOrder();
+  }, 1000); // 1 saniye bekle
+}
+
 async function handleItemDelete() {}
+
+// Mevcut siparişi kontrol et ve geri yükle
+async function checkExistingOrder() {
+  try {
+    if (!tableId.value) return;
+
+    const response = await protectedApiInterface({
+      url: `shop/orders/${selectedShop.id}/orders/table/${tableId.value}`,
+      method: 'GET',
+    });
+
+    if (response?.data?.order) {
+      currentOrder.value = {
+        id: response.data.order.id,
+        status: response.data.order.status,
+        paymentStatus: response.data.order.paymentStatus,
+      };
+
+      // Mevcut siparişi ürün listesine yükle
+      if (response.data.order.items) {
+        for (const orderItem of response.data.order.items) {
+          for (const cat of productList.value) {
+            for (const product of cat.items) {
+              if (product.productId === orderItem.productId) {
+                product.state.selected = true;
+                product.state.quantity = orderItem.quantity;
+                break;
+              }
+            }
+          }
+        }
+      }
+
+
+    }
+  } catch (error) {
+    console.error('Mevcut sipariş kontrol hatası:', error);
+  }
+}
 
 onMounted(async () => {
   selectedShop.load();
   await fetchTables();
   await fetchProducts();
+  await checkExistingOrder();
 });
 </script>
 
@@ -302,12 +447,12 @@ onMounted(async () => {
         </div>
       </motion.div>
 
-      <Catalog v-model="productList" class="relative" />
+      <Catalog v-model="productList" class="relative" @product-update="scheduleAutoSave" />
     </ScrollArea>
 
     <div class="hidden lg:block relative max-h-[calc(100vh-3rem)] h-full">
       <ScrollArea class="h-[calc(100%-4rem)]">
-        <SideCollapsible title="Aktif Masa">
+        <SideCollapsible title="Masa Bilgisi">
           <div class="mt-4">
             <TableInfo
               :selected-table="selectedTable"
@@ -341,16 +486,18 @@ onMounted(async () => {
               <UtensilsCrossed class="size-8 mx-auto mb-2 opacity-50" />
               <p class="text-sm">Henüz sipariş alınmadı</p>
             </div>
-            <SideCafeProduct
-              v-for="item of selectedItemsList"
-              :key="`${tableId}-${item.title}`"
-              v-model:quantity="item.state.quantity"
-              v-model:selected="item.state.selected"
-              :name="item.title"
-              :price="item.price"
-              :max-quantity="item.maxQuantity"
-              @delete="handleItemDelete"
-            />
+                         <SideCafeProduct
+               v-for="item of selectedItemsList"
+               :key="`${tableId}-${item.title}`"
+               v-model:quantity="item.state.quantity"
+               v-model:selected="item.state.selected"
+               :name="item.title"
+               :price="item.price"
+               :max-quantity="item.maxQuantity"
+               @delete="handleItemDelete"
+               @update:quantity="scheduleAutoSave"
+               @update:selected="scheduleAutoSave"
+             />
           </div>
         </SideCollapsible>
 
@@ -454,6 +601,7 @@ onMounted(async () => {
       @update:split-payment-methods="splitPaymentMethods = $event"
       @update:payment-method="paymentMethod = $event"
       @complete-order="completeOrder"
+      @item-update="scheduleAutoSave"
     >
       <template #mobile-order-items>
         <div class="mt-4 flex flex-col gap-3">
@@ -464,16 +612,18 @@ onMounted(async () => {
             <UtensilsCrossed class="size-8 mx-auto mb-2 opacity-50" />
             <p class="text-sm">Henüz sipariş alınmadı</p>
           </div>
-          <SideCafeProduct
-            v-for="item of selectedItemsList"
-            :key="`mobile-${tableId}-${item.title}`"
-            v-model:quantity="item.state.quantity"
-            v-model:selected="item.state.selected"
-            :name="item.title"
-            :price="item.price"
-            :max-quantity="item.maxQuantity"
-            @delete="handleItemDelete"
-          />
+                     <SideCafeProduct
+             v-for="item of selectedItemsList"
+             :key="`mobile-${tableId}-${item.title}`"
+             v-model:quantity="item.state.quantity"
+             v-model:selected="item.state.selected"
+             :name="item.title"
+             :price="item.price"
+             :max-quantity="item.maxQuantity"
+             @delete="handleItemDelete"
+             @update:quantity="scheduleAutoSave"
+             @update:selected="scheduleAutoSave"
+           />
         </div>
       </template>
     </MobileOrderView>

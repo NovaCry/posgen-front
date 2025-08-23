@@ -2,11 +2,11 @@
 import createProtectedApiInterface from '@/api/protected';
 import { toLocaleDate } from '@/lib/toLocaleDate';
 import { useSelectedShopStore } from '@/store/shop';
-import { Filter, Receipt, ChevronRight } from 'lucide-vue-next';
+import { Filter, Receipt, ChevronRight, Eye } from 'lucide-vue-next';
 import Section from '@/components/layout/Section.vue';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import AdmissionWidget from '@/components/card/AdmissionWidget.vue';
 import {
   Select,
@@ -24,6 +24,14 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import PaginationSimplified from '@/components/PaginationSimplified.vue';
+import DataTable from '@/components/DataTable.vue';
+import { Input } from '@/components/ui/input';
+import { ListFilter } from 'lucide-vue-next';
+import type { BadgeCell, MenuCell, TableData, TextCell } from '@/types/DataTable';
+import AdmissionsHeader from '@/components/admissions/AdmissionsHeader.vue';
+import AdmissionsStats from '@/components/admissions/AdmissionsStats.vue';
+import AdmissionDetails from '@/components/admissions/AdmissionDetails.vue';
 
 interface Product {
   id: string;
@@ -44,7 +52,7 @@ interface OrderItem {
 
 interface Order {
   id: string;
-  tableId: string;
+  tableId: string | null;
   status: string;
   createdAt: string;
   finalAmount: number;
@@ -62,9 +70,15 @@ const products = ref<Product[]>([]);
 const tables = ref<Table[]>([]);
 const isDialogOpen = ref(false);
 const selectedOrder = ref<Order | null>(null);
+const currentPage = ref(1);
+const itemsPerPage = 10;
+const totalCount = ref(0);
+const totalPages = ref(0);
+const search = ref('');
+const resourceVersion = ref(0);
 
 const statusTranslations: Record<string, string> = {
-  PENDING: 'Bekliyor',
+  OPEN: 'Bekliyor',
   PREPARING: 'Hazırlanıyor',
   READY: 'Hazır',
   COMPLETED: 'Tamamlandı',
@@ -77,7 +91,7 @@ const formatPrice = (price: number | string): string => {
 
 const stats = computed(() => {
   const activeOrders = orders.value.filter((order: Order) =>
-    ['PENDING', 'PREPARING', 'READY'].includes(order.status)
+    ['OPEN', 'PREPARING', 'READY'].includes(order.status)
   );
   const completedOrders = orders.value.filter(
     (order: Order) => order.status === 'COMPLETED'
@@ -119,24 +133,166 @@ const stats = computed(() => {
   };
 });
 
-const filteredOrders = computed(() => {
+const getFilteredOrders = (): Order[] => {
+  let filteredOrders = orders.value;
+  
   if (filter.value === 'active') {
-    return orders.value.filter((order: Order) =>
+    filteredOrders = orders.value.filter((order: Order) =>
       ['PENDING', 'PREPARING', 'READY'].includes(order.status)
     );
   }
-  return orders.value;
-});
+
+  if (search.value.trim()) {
+    const searchTerm = search.value.toLowerCase().replace('#', '');
+    filteredOrders = filteredOrders.filter(order => {
+      const productNames = order.items.map(item => getProductName(item.productId)).join(' ').toLowerCase();
+      const tableName = getTableName(order.tableId, order.id).toLowerCase();
+      const orderId = order.id.toLowerCase();
+      
+      return productNames.includes(searchTerm) || 
+             tableName.includes(searchTerm) || 
+             orderId.includes(searchTerm) ||
+             orderId.replace('#', '').includes(searchTerm);
+    });
+  }
+
+  return filteredOrders.sort((a: Order, b: Order) => 
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+};
+
+const getCurrentPageOrders = (): Order[] => {
+  const filteredOrders = getFilteredOrders();
+  const startIndex = (currentPage.value - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  return filteredOrders.slice(startIndex, endIndex);
+};
+
+const getTableData = (): any[] => {
+  const filteredOrders = getFilteredOrders();
+  const tableData: any[] = [];
+  
+  for (const order of filteredOrders) {
+    makeResourceColumn(tableData, order);
+  }
+  
+  return tableData;
+};
+
+function makeActionsForAdmission(order: Order): any {
+  return {
+    type: 'menu',
+    data: [
+      {
+        type: 'group',
+        title: 'İşlemler',
+        items: [
+          {
+            type: 'item',
+            text: 'Detayları Görüntüle',
+            icon: Eye,
+            action() {
+              viewOrderDetails(order.id);
+            },
+          },
+          {
+            type: 'item',
+            text: 'Yazdır',
+            icon: Receipt,
+            action() {
+              console.log('Yazdır', order.id);
+            },
+          },
+        ],
+      },
+    ],
+  };
+}
+
+function makeResourceColumn(tableData: any[], order: Order) {
+  const itemsText =
+    order.items
+      ?.slice(0, 2)
+      .map(
+        (item: OrderItem) =>
+          `${item.quantity}x ${getProductName(item.productId)}`
+      )
+      .join(', ') +
+    (order.items && order.items.length > 2
+      ? ` +${order.items.length - 2}`
+      : '');
+
+  tableData.push({
+    'Adisyon No': [
+      {
+        type: 'text',
+        data: formatOrderId(order.id),
+      },
+    ],
+    'Masa/Adisyon': [
+      {
+        type: 'text',
+        data: getTableName(order.tableId, order.id),
+      },
+    ],
+    'Oluşturma Tarihi': [
+      {
+        type: 'text',
+        data: toLocaleDate(new Date(order.createdAt)),
+      },
+    ],
+    'Ürün Detayı': [
+      {
+        type: 'text',
+        data: itemsText,
+      },
+    ],
+    'Toplam Tutar': [
+      {
+        type: 'text',
+        data: `${formatPrice(order.finalAmount)} ₺`,
+      },
+    ],
+    'Durum': [
+      {
+        type: 'badge',
+        background:'#5456c0',
+        color: 'white',
+        data: getStatusTranslation(order.status),
+      },
+    ],
+
+    
+    'İşlemler': [makeActionsForAdmission(order)],
+  });
+}
+
+const updatePagination = () => {
+  const filteredLength = getFilteredOrders().length;
+  totalCount.value = filteredLength;
+  totalPages.value = Math.ceil(filteredLength / itemsPerPage);
+  if (currentPage.value > totalPages.value && totalPages.value > 0) {
+    currentPage.value = totalPages.value;
+  }
+};
 
 const getProductName = (productId: string): string => {
   const product = products.value.find((p: Product) => p.id === productId);
   return product?.name || `Ürün ${productId.slice(-4)}`;
 };
 
-const getTableName = (tableId: string): string => {
-  const table = tables.value.find((t: Table) => t.id === tableId);
-  return table?.name || `Masa ${tableId.slice(-4)}`;
+const formatOrderId = (orderId: string): string => {
+  return `#${String(orderId).slice(-6).toUpperCase()}PSGNTR`;
 };
+
+const getTableName = (tableId: string | null, orderId?: string): string => {
+  if (!tableId) return `Paket Sipariş${orderId ? ` | ${formatOrderId(orderId)}` : ''}`;
+  const table = tables.value.find((t: Table) => t.id === tableId);
+  const tableName = table?.name || `${tableId}`;
+  return orderId ? `${tableName} | ${formatOrderId(orderId)}` : tableName;
+};
+
+
 
 const fetchOrders = async (): Promise<void> => {
   try {
@@ -159,12 +315,16 @@ const fetchOrders = async (): Promise<void> => {
     }
 
     const ordersResponse = await protectedApiInterface({
-      url: `shop/orders/${selectedShop.id}/orders`,
-      method: 'GET',
+        url: `shop/orders/${selectedShop.id}/orders`,
+        method: 'GET',
     });
-    if (ordersResponse?.data?.data) {
-      orders.value = ordersResponse.data.data as Order[];
-    }
+
+    const baseOrders = (ordersResponse?.data?.data || []) as Order[];
+
+    orders.value = baseOrders.sort((a: Order, b: Order) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+    updatePagination();
   } catch (error) {
     console.error('Veriler yüklenirken hata:', error);
   } finally {
@@ -184,7 +344,44 @@ const viewOrderDetails = (orderId: string) => {
   }
 };
 
+const handlePageChange = (page: number) => {
+  currentPage.value = page;
+};
+
+
+
+const getActionsMenu = (order: Order): any => {
+  return {
+    type: 'menu',
+    data: [
+      {
+        type: 'group',
+        title: 'İşlemler',
+        items: [
+          {
+            type: 'item',
+            text: 'Detayları Görüntüle',
+            icon: 'Eye',
+            action() {
+              viewOrderDetails(order.id);
+            },
+          },
+        ],
+      },
+    ],
+  };
+};
+
 const autoRefreshInterval = ref<ReturnType<typeof setInterval> | null>(null);
+
+watch(filter, () => {
+  currentPage.value = 1;
+  updatePagination();
+});
+
+watch(search, () => {
+  currentPage.value = 1;
+});
 
 onMounted(() => {
   fetchOrders();
@@ -207,62 +404,8 @@ definePageMeta({
 
 <template>
   <Section>
-    <div
-      class="flex items-center justify-between mb-6 animate-in fade-in duration-500"
-    >
-      <div>
-        <h1 class="text-2xl md:text-3xl font-semibold">Adisyonlar</h1>
-        <p class="text-muted-foreground mt-1">
-          Masa siparişlerini adisyon olarak görüntüleyin ve yönetin
-        </p>
-      </div>
-
-      <div>
-        <Select v-model="filter" default-value="all">
-          <SelectTrigger>
-            <SelectValue as-child>
-              <Filter />
-              Filtreler
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all"> Tümü </SelectItem>
-            <SelectItem value="active"> Sadece Aktif </SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-      <AdmissionWidget
-        :icon="Receipt"
-        name="Aktif Adisyon"
-        :value="stats.active.toLocaleString()"
-        value-subfix="Adet"
-        state="normal"
-      />
-      <AdmissionWidget
-        :icon="Receipt"
-        name="Net Gelir"
-        :value="stats.netRevenue.toLocaleString()"
-        value-subfix="₺"
-        state="success"
-      />
-      <AdmissionWidget
-        :icon="Receipt"
-        name="Vergi Toplamı"
-        :value="stats.totalTax.toLocaleString()"
-        value-subfix="₺"
-        state="danger"
-      />
-      <AdmissionWidget
-        :icon="Receipt"
-        name="Toplam Ciro"
-        :value="stats.totalRevenue.toLocaleString()"
-        value-subfix="₺"
-        state="normal"
-      />
-    </div>
+    <AdmissionsHeader v-model:filter="filter" />
+    <AdmissionsStats :stats="stats" />
 
     <div
       v-if="isLoading && orders.length === 0"
@@ -276,229 +419,57 @@ definePageMeta({
       </p>
     </div>
 
-    <div
-      v-else-if="filteredOrders.length === 0"
-      class="text-center py-12 animate-in fade-in duration-500"
-    >
+     <template v-else>
+       <div class="flex items-center my-4">
+         <div class="flex items-center mr-auto gap-4">
+           <Input v-model="search" placeholder="Adisyonlarda Arama Yap..." />
+           <Button disabled variant="outline">
+             <ListFilter />
+             Sırala
+           </Button>
+         </div>
+       </div>
+       
+       <div v-if="getFilteredOrders().length === 0" class="text-center py-12 animate-in fade-in duration-500">
       <Receipt
         class="size-12 mx-auto mb-4 text-muted-foreground opacity-50 animate-bounce"
       />
       <h3 class="text-lg font-semibold mb-2">
         {{
-          filter === 'active'
+             search.trim() 
+               ? 'Arama sonucu bulunamadı' 
+               : filter === 'active'
             ? 'Aktif adisyon bulunmuyor'
             : 'Henüz adisyon bulunmuyor'
         }}
       </h3>
       <p class="text-muted-foreground">
         {{
-          filter === 'active'
+             search.trim()
+               ? `"${search}" için sonuç bulunamadı. Farklı kelimeler deneyin.`
+               : filter === 'active'
             ? 'Şu anda aktif olan bir adisyon yok.'
             : 'Henüz hiç sipariş oluşturulmamış.'
         }}
       </p>
     </div>
 
-    <div v-else class="grid gap-4">
-      <Card
-        v-for="(order, index) in filteredOrders"
-        :key="order.id"
-        class="transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1 animate-in slide-in-from-bottom-4 duration-500"
-        :style="`animation-delay: ${index * 50}ms`"
-      >
-        <CardContent class="p-6">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-4">
-              <div
-                class="p-3 bg-primary/10 rounded-lg transition-all duration-300 hover:bg-primary/20 hover:scale-110"
-              >
-                <Receipt
-                  class="size-6 text-primary transition-transform duration-300 hover:rotate-12"
-                />
-              </div>
+       <template v-else>
+         <DataTable :data="getTableData().slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)" />
+         
+         <PaginationSimplified
+           v-model="currentPage"
+           class="my-4 w-full flex justify-center"
+           :items-per-page="itemsPerPage"
+           :total-items="getFilteredOrders().length"
+         />
+       </template>
+     </template>
 
-              <div>
-                <div class="flex items-center gap-2 mb-1">
-                  <h3
-                    class="font-semibold transition-colors duration-300 hover:text-primary"
-                  >
-                    {{ getTableName(order.tableId) }}
-                  </h3>
-                  <Badge
-                    :variant="
-                      ['PENDING', 'PREPARING', 'READY'].includes(order.status)
-                        ? 'default'
-                        : 'secondary'
-                    "
-                    :class="
-                      ['PENDING', 'PREPARING', 'READY'].includes(order.status)
-                        ? 'bg-green-500 hover:bg-green-600'
-                        : 'bg-gray-500'
-                    "
-                    class="transition-all duration-300 hover:scale-105"
-                  >
-                    {{ getStatusTranslation(order.status) }}
-                  </Badge>
-                </div>
-
-                <div
-                  class="flex items-center gap-4 text-sm text-muted-foreground mb-3"
-                >
-                  <span
-                    class="transition-colors duration-300 hover:text-foreground"
-                    >{{ toLocaleDate(new Date(order.createdAt)) }}</span
-                  >
-                  <span
-                    class="font-semibold text-foreground transition-all duration-300 hover:text-green-600 hover:scale-105"
-                  >
-                    {{ formatPrice(order.finalAmount) }} ₺
-                  </span>
-                </div>
-
-                <div class="flex items-center">
-                  <Button
-                    size="sm"
-                    class="flex items-center gap-2 text-xs bg-white border border-gray-200 text-gray-700 hover:bg-white/80 hover:border-gray-300 hover:shadow-md hover:scale-[1.02] transform transition-all duration-300 ease-in-out"
-                    @click="() => viewOrderDetails(order.id)"
-                  >
-                    Detay
-                    <ChevronRight class="size-3" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-
-    <Dialog v-model:open="isDialogOpen">
-      <DialogContent class="max-w-2xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle class="flex items-center gap-2">
-            <Receipt class="size-5" />
-            Adisyon Detayları
-          </DialogTitle>
-          <DialogDescription>
-            Seçili adisyonun detaylı bilgilerini görüntüleyin
-          </DialogDescription>
-        </DialogHeader>
-
-        <div v-if="selectedOrder" class="space-y-6">
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <h4 class="font-semibold text-sm text-muted-foreground mb-1">
-                Masa
-              </h4>
-              <p class="font-medium">
-                {{ getTableName(selectedOrder.tableId) }}
-              </p>
-            </div>
-            <div>
-              <h4 class="font-semibold text-sm text-muted-foreground mb-1">
-                Durum
-              </h4>
-              <Badge
-                :variant="
-                  ['PENDING', 'PREPARING', 'READY'].includes(
-                    selectedOrder.status
-                  )
-                    ? 'default'
-                    : 'secondary'
-                "
-                :class="
-                  ['PENDING', 'PREPARING', 'READY'].includes(
-                    selectedOrder.status
-                  )
-                    ? 'bg-green-500'
-                    : 'bg-gray-500'
-                "
-              >
-                {{ getStatusTranslation(selectedOrder.status) }}
-              </Badge>
-            </div>
-            <div>
-              <h4 class="font-semibold text-sm text-muted-foreground mb-1">
-                Tarih
-              </h4>
-              <p class="text-sm">
-                {{ toLocaleDate(new Date(selectedOrder.createdAt)) }}
-              </p>
-            </div>
-            <div>
-              <h4 class="font-semibold text-sm text-muted-foreground mb-1">
-                Sipariş ID
-              </h4>
-              <p class="text-sm font-mono">
-                {{ selectedOrder.id.slice(-8) }}
-              </p>
-            </div>
-          </div>
-
-          <Separator />
-
-          <div>
-            <h4 class="font-semibold mb-3">Sipariş İçeriği</h4>
-            <div class="space-y-2">
-              <div
-                v-for="item in selectedOrder.items"
-                :key="item.productId"
-                class="flex justify-between items-center p-3 bg-muted/50 rounded-lg"
-              >
-                <div>
-                  <p class="font-medium">
-                    {{ getProductName(item.productId) }}
-                  </p>
-                  <p class="text-sm text-muted-foreground">
-                    {{ item.quantity }} adet
-                  </p>
-                </div>
-                <div class="text-right">
-                  <p class="font-semibold">
-                    {{
-                      formatPrice(
-                        parseFloat(item.price?.toString() || '0') *
-                          item.quantity
-                      )
-                    }}
-                    ₺
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          <div>
-            <div class="rounded-lg p-6 text-white">
-              <h4 class="font-semibold mb-4 text-lg">Fiyat Detayları</h4>
-              <div class="space-y-3">
-                <div class="flex justify-between items-center">
-                  <span class="text-slate-300">Ara Toplam:</span>
-                  <span class="font-medium text-lg"
-                    >{{ formatPrice(selectedOrder.totalAmount) }} ₺</span
-                  >
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-slate-300">Vergi:</span>
-                  <span class="font-medium text-lg"
-                    >{{ formatPrice(selectedOrder.taxAmount) }} ₺</span
-                  >
-                </div>
-                <div class="border-t border-slate-700 pt-3">
-                  <div class="flex justify-between items-center">
-                    <span class="font-semibold text-xl">Toplam:</span>
-                    <span class="font-bold text-2xl text-green-400"
-                      >{{ formatPrice(selectedOrder.finalAmount) }} ₺</span
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <AdmissionDetails
+      :is-dialog-open="isDialogOpen"
+      :selected-order="selectedOrder"
+      @update:is-dialog-open="isDialogOpen = $event"
+    />
   </Section>
 </template>

@@ -35,8 +35,8 @@ async function populateData(tableData: TableData[], product: Product) {
       {
         type: 'badge',
         data: maxStock === 0 ? 'Stoksuz' : `${totalStock} Adet`,
-        color: 'black',
-        background: 'rgb(22, 163, 74)',
+        color: 'white',
+        background: '#5456c0',
       },
     ],
     İşlemler: [makeActionsForProduct(product)],

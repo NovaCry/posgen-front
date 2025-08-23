@@ -2,7 +2,7 @@
 import { cn } from '@/lib/utils';
 import { computed, ref } from 'vue';
 
-type RendererColor = 'green' | 'red' | 'yellow' | 'default';
+type RendererColor = 'green' | 'red' | 'yellow' | 'blue' | 'default';
 type RendererSize = 'large' | 'medium' | 'small' | 'extrasmall';
 
 const props = defineProps<{
@@ -33,6 +33,8 @@ function styleRendererAsColor(color: RendererColor) {
       red: 'group-data-[color=red]:bg-red-200 dark:group-data-[color=red]:bg-red-950',
       yellow:
         'group-data-[color=yellow]:bg-yellow-200 dark:group-data-[color=yellow]:bg-yellow-950',
+      blue:
+        'group-data-[color=blue]:bg-blue-200 dark:group-data-[color=blue]:bg-blue-950',
     } as Record<RendererColor, string>
   )[color];
 }
