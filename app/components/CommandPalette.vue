@@ -46,14 +46,14 @@ const addionalGroups: ICommandGroup[] = [
         id: 'security',
         icon: 'lucide:shield',
         name: 'Güvenlik',
-        href: '/dashboard/user/security',
+        href: '/user/security',
       },
       {
         type: 'link',
         id: 'account',
         icon: 'lucide:settings',
         name: 'Tercihler',
-        href: '/dashboard/user/preferences',
+        href: '/user/preferences',
       },
     ],
   },
@@ -63,16 +63,16 @@ const addionalGroups: ICommandGroup[] = [
       {
         type: 'link',
         id: 'account',
-        icon: 'lucide:badge-check',
+        icon: 'lucide:user-2',
         name: 'Hesap',
-        href: '/dashboard/user',
+        href: '/user',
       },
       {
         type: 'link',
-        id: 'notifications',
-        icon: 'lucide:bell',
-        name: 'Bildirimler',
-        href: '/dashboard/user/notifications',
+        id: 'subscription',
+        icon: 'lucide:badge-check',
+        name: 'Abonelik',
+        href: '/user/subscription',
       },
       {
         type: 'action',
@@ -172,36 +172,38 @@ function HandleSelection(command: Command) {
       </button>
     </div>
 
-    <!-- Command Dialog - Same for all screen sizes -->
-    <CommandDialog :open="open" @update:open="handleOpenChange">
-      <div class="sr-only">
-        <h2>Komut Paleti</h2>
-        <p>Uygulamada hızlı navigasyon ve arama yapın</p>
-      </div>
-      <CommandInput placeholder="Bir komut girin veya arama yapın..." />
-      <CommandList>
-        <CommandEmpty>Sonuç bulunamadı.</CommandEmpty>
-        <CommandGroup
-          v-for="group of groups"
-          :key="group.title"
-          :heading="group.title"
-        >
-          <CommandItem
-            v-for="command of group.commands"
-            :key="command.id"
-            class="group"
-            :value="command.id"
-            @select="HandleSelection(command)"
+    <ClientOnly>
+      <!-- Command Dialog - Same for all screen sizes -->
+      <CommandDialog :open="open" @update:open="handleOpenChange">
+        <div class="sr-only">
+          <h2>Komut Paleti</h2>
+          <p>Uygulamada hızlı navigasyon ve arama yapın</p>
+        </div>
+        <CommandInput placeholder="Bir komut girin veya arama yapın..." />
+        <CommandList>
+          <CommandEmpty>Sonuç bulunamadı.</CommandEmpty>
+          <CommandGroup
+            v-for="group of groups"
+            :key="group.title"
+            :heading="group.title"
           >
-            <Icon v-if="command.icon" :name="command.icon" class="size-4" />
-            <!-- <component :is="command.icon" v-if="command.icon" class="size-4" /> -->
-            {{ command.name }}
-            <ArrowRight
-              class="size-4 ml-auto fill-mode-forwards group-data-highlighted:animate-in animate-out fade-in fade-out duration-100"
-            />
-          </CommandItem>
-        </CommandGroup>
-      </CommandList>
-    </CommandDialog>
+            <CommandItem
+              v-for="command of group.commands"
+              :key="command.id"
+              class="group"
+              :value="command.id"
+              @select="HandleSelection(command)"
+            >
+              <Icon v-if="command.icon" :name="command.icon" class="size-4" />
+              <!-- <component :is="command.icon" v-if="command.icon" class="size-4" /> -->
+              {{ command.name }}
+              <ArrowRight
+                class="size-4 ml-auto fill-mode-forwards group-data-highlighted:animate-in animate-out fade-in fade-out duration-100"
+              />
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
+    </ClientOnly>
   </div>
 </template>

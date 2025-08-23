@@ -148,7 +148,7 @@ function createFakeChartData() {
     const total = +randMinMax(60000, 120000).toFixed(2);
     averageTotal += total;
     res.push({
-      name: new Date(2000, i, 1).toLocaleString(navigator.language, {
+      name: new Date(2000, i, 1).toLocaleString('tr-TR', {
         month: 'long',
       }),
       Gelir: total,
@@ -197,7 +197,7 @@ const chartKey = ref(0);
 const isSidebarTransitioning = ref(false);
 const cachedAnalytics = shallowRef<AnalyticsWidget[]>([]);
 
-const fillFakeData = false;
+const fillFakeData = true;
 
 const statusTranslations: Record<string, string> = {
   PENDING: 'Bekliyor',

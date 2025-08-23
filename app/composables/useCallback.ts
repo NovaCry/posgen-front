@@ -11,5 +11,5 @@ export default async function routeCallback() {
     });
   }
   // fallback
-  router.push('/dashboard/user');
+  router.push('/user');
 }

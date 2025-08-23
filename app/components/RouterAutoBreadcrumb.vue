@@ -37,7 +37,9 @@ const routerPathHistory = computed(() => {
     }
   }
 
-  list = list.reverse();
+  list = list.sort((a, b) => {
+    return a.path.toString().length - b.path.toString().length;
+  });
 
   return {
     first: list.shift(),

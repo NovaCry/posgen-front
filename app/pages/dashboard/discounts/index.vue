@@ -102,7 +102,7 @@ function makeActionsForDiscount(discount: Discount): MenuCell {
     <h1 class="text-3xl font-semibold">İndirimler</h1>
     <Resource
       :key="resourceVersion"
-      create="/dashboard/shop/discounts/new"
+      create="/dashboard/discounts/new"
       :fetch="`shop/discounts/${selectedShop.id}/list`"
       @populate="populateData"
     />

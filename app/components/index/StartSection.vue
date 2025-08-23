@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-vue-next';
 import { AnimatePresence, motion } from 'motion-v';
 import { onUnmounted, ref } from 'vue';
-import { Skeleton } from '../ui/skeleton';
 
 let heroVerbIndex = 1;
 const heroVerbs = ['POS', 'Adisyon', 'Depo', 'Mutfak', 'Muhasebe'];
@@ -65,11 +64,16 @@ onUnmounted(() => {
       </div>
     </div>
     <div
-      class="relative hidden items-center justify-center lg:flex overflow-hidden pr-8 md:pr-16"
+      class="relative hidden items-center justify-start lg:flex overflow-hidden pr-8 md:pr-16"
     >
-      <Skeleton
-        class="aspect-video lg:max-h-[430px] xl:max-h-[520px] 2xl:max-h-[768px] h-full ml-2.5 bg-accent rounded-4xl"
-      ></Skeleton>
+      <figure
+        class="aspect-[683/384] relative lg:max-h-[430px] xl:max-h-[520px] 2xl:max-h-[768px] border h-full ml-2.5 bg-accent rounded-xl"
+      >
+        <NuxtImg
+          src="/assets/screenshot.png"
+          class="w-full h-full object-fit rounded-xl"
+        ></NuxtImg>
+      </figure>
     </div>
   </section>
 </template>

@@ -57,7 +57,9 @@ function fillViewport() {
 function iterateViewport() {
   const newImage: Integration[] = [];
   for (let i = 0; i < 5; i++) {
-    newImage.push(images[(i + viewportPosition) % images.length]);
+    const iterated = images[(i + viewportPosition) % images.length];
+    if (!iterated) continue;
+    newImage.push(iterated);
   }
   viewport.value = newImage.reverse();
   viewportPosition = (viewportPosition + 1) % images.length;
@@ -102,7 +104,7 @@ onUnmounted(() => {
           </Button>
         </div>
       </div>
-      <div class="grid grid-cols-5 w-full items-center">
+      <div class="grid-cols-5 w-full items-center hidden sm:grid">
         <AnimatePresence mode="popLayout">
           <motion.div
             v-for="(image, index) of viewport"

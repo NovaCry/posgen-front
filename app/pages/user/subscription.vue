@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import UpgradeSubscription from '@/components/UpgradeSubscription.vue';
 import Section from '@/components/layout/Section.vue';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
@@ -16,10 +15,11 @@ import {
   Users,
   ShoppingCart,
   Calendar,
+  Ellipsis,
 } from 'lucide-vue-next';
 
 definePageMeta({
-  name: 'Abonelik',
+  name: 'Abonelik Yönetimi',
 });
 
 const limits = [
@@ -29,7 +29,7 @@ const limits = [
     usage: 50,
     current: 125,
     max: 250,
-    link: '/dashboard/shop/sells',
+    link: '/dashboard/sells',
   },
   {
     name: 'Çalışanlar',
@@ -37,7 +37,7 @@ const limits = [
     usage: 75,
     current: 15,
     max: 20,
-    link: '/dashboard/shop/settings/employees',
+    link: '/dashboard/settings/employees',
   },
   {
     name: 'Adisyonlar',
@@ -45,7 +45,7 @@ const limits = [
     usage: 30,
     current: 300,
     max: 1000,
-    link: '/dashboard/shop/admissions',
+    link: '/dashboard/admissions',
   },
   {
     name: 'Raporlar',
@@ -53,24 +53,26 @@ const limits = [
     usage: 10,
     current: 5,
     max: 50,
-    link: '/dashboard/shop/analytics/reports',
+    link: '/dashboard/analytics/reports',
   },
 ];
 </script>
 
 <template>
   <Section>
-    <h1 class="text-3xl font-semibold">Abonelik</h1>
-    <div class="grid grid-cols-10 gap-6 mt-4">
+    <h1 class="text-2xl sm:text-3xl font-semibold">Abonelik</h1>
+    <div class="gap-6 mt-4">
       <div
-        class="flex flex-col gap-4 col-span-6 bg-linear-to-br from-zinc-200 to-zinc-100 dark:from-zinc-800 dark:to-zinc-900 p-4 border rounded-lg"
+        class="flex flex-col gap-4 col-span-6 bg-linear-to-br from-zinc-200 to-zinc-100 dark:from-primary/20 dark:to-primary/0 p-4 border rounded-lg"
       >
         <div class="flex justify-between">
           <div class="flex flex-col">
-            <h2 class="text-2xl">Profesyonel</h2>
-            <span class="text-3xl">1600₺/<span class="text-xl">ay</span></span>
+            <h2 class="sm:text-2xl">Profesyonel</h2>
+            <span class="text-xl sm:text-3xl"
+              >1600₺/<span class="text-xl">ay</span></span
+            >
           </div>
-          <div>
+          <div class="hidden md:block">
             <NuxtLink
               to="/pricing"
               class="flex gap-2 items-center text-sm hover:underline"
@@ -87,16 +89,22 @@ const limits = [
           <Progress :model-value="25" />
         </div>
       </div>
-      <UpgradeSubscription class="col-span-4" />
     </div>
 
     <div class="flex items-center justify-between mt-8 mb-4">
-      <h2 class="text-3xl font-semibold">Limitler</h2>
-      <Button variant="outline" size="sm"> Tüm Limitleri Görüntüle </Button>
+      <h2 class="text-2xl sm:text-3xl font-semibold">Limitler</h2>
+      <Button variant="ghost" size="sm">
+        <Ellipsis />
+        <span class="hidden md:block">Tüm Limitleri Görüntüle</span>
+      </Button>
     </div>
 
-    <div class="grid grid-cols-2 gap-6">
-      <Card v-for="(limit, index) in limits" :key="index" class="border">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <Card
+        v-for="(limit, index) in limits"
+        :key="index"
+        class="border gap-2 sm:gap-2"
+      >
         <CardHeader class="pb-2">
           <div class="flex items-center gap-2">
             <component :is="limit.icon" class="size-5" />
@@ -107,7 +115,7 @@ const limits = [
               :to="limit.link"
               class="text-sm ml-auto flex gap-2 items-center hover:underline"
             >
-              Daha Fazla
+              <span class="hidden sm:block"> Daha Fazla </span>
               <ArrowRight class="size-4" />
             </NuxtLink>
           </div>

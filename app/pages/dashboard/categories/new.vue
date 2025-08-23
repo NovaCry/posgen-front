@@ -75,7 +75,7 @@ async function CreateCategory() {
   toast('Kategori Oluşturuldu!', {
     description: `${categoryName.value} adındaki kategori oluşturuldu!`,
   });
-  router.push('/dashboard/shop/categories');
+  router.push('/dashboard/categories');
 }
 </script>
 

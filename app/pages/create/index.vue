@@ -176,6 +176,6 @@ async function Create() {
 
   Processing.value = false;
 
-  router.push('/dashboard/shop');
+  router.push('/dashboard');
 }
 </script>

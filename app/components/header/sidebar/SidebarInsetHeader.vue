@@ -5,6 +5,7 @@ import RouterAutoBreadcrumb from '@/components/RouterAutoBreadcrumb.vue';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import SidebarConnectivityIndicator from './SidebarConnectivityIndicator.vue';
+import FullScreenButton from '../app/FullScreenButton.vue';
 const sidebar = useSidebar();
 </script>
 
@@ -24,8 +25,13 @@ const sidebar = useSidebar();
 
       <div class="flex flex-1 items-center justify-end space-x-1 sm:space-x-2">
         <TooltipProvider>
-          <SidebarConnectivityIndicator />
-          <ReportErrorsShortcut />
+          <ClientOnly>
+            <SidebarConnectivityIndicator />
+            <ReportErrorsShortcut />
+            <TooltipSimplified content="Tam Ekranı ayarla">
+              <FullScreenButton />
+            </TooltipSimplified>
+          </ClientOnly>
           <Palette />
         </TooltipProvider>
       </div>

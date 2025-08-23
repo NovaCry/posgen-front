@@ -470,7 +470,7 @@ definePageMeta({
                             yeni çalışamlar eklemek için çalışam yönetimi
                             sayfasını ziyaret edin.
                           </p>
-                          <NuxtLink to="/dashboard/shop/settings/employees">
+                          <NuxtLink to="/dashboard/settings/employees">
                             <Button variant="outline" class="mt-4">
                               Çalışan Yönetimine Git
                             </Button>

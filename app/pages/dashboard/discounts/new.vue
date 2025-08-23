@@ -122,7 +122,7 @@ async function CreateDiscount() {
   toast('İndirim Oluşturuldu!', {
     description: `${discountCode.value} adındaki indirim başarıyla oluşturuldu!`,
   });
-  router.push('/dashboard/shop/discounts');
+  router.push('/dashboard/discounts');
 }
 
 function onDiscountInput(event: Event) {
