@@ -1,41 +1,43 @@
-<template>  
-  <SeoMeta title="Şifremi Unuttum" description="Şifremi unuttum" />
-  <div class="container flex flex-col items-center justify-center min-h-screen">
-    <Header />
-    <Card class="w-[400px]">
-      <CardHeader>
-        <CardTitle class="text-3xl"> Şifremi Unuttum </CardTitle>
-        <CardDescription>
-          E-Posta adresinizi kullanarak şifrenizi sıfırlayabilirsiniz.
-        </CardDescription>
-      </CardHeader>
-      <CardContent class="flex flex-col gap-6">
-        <div class="flex flex-col gap-2">
-          <Label for="email">E-Posta</Label>
-          <Input
-            id="email"
-            v-model="Email"
-            :disabled="Processing"
-            type="email"
-            placeholder="E-Posta Adresiniz..."
-          />
-        </div>
+<template>
+  <div>
+    <SeoMeta title="Şifremi Unuttum" description="Şifremi unuttum" />
+    <div class="container flex flex-col items-center justify-center min-h-screen">
+      <Header />
+      <Card class="w-[400px]">
+        <CardHeader>
+          <CardTitle class="text-3xl"> Şifremi Unuttum </CardTitle>
+          <CardDescription>
+            E-Posta adresinizi kullanarak şifrenizi sıfırlayabilirsiniz.
+          </CardDescription>
+        </CardHeader>
+        <CardContent class="flex flex-col gap-6">
+          <div class="flex flex-col gap-2">
+            <Label for="email">E-Posta</Label>
+            <Input
+              id="email"
+              v-model="Email"
+              :disabled="Processing"
+              type="email"
+              placeholder="E-Posta Adresiniz..."
+            />
+          </div>
 
-        <Button :disabled="Processing" @click="Login()">
-          <Icon
-            v-if="Processing"
-            name="lucide:loader-circle"
-            class="animate-spin duration-1000"
-          />
-          Devam Et
-        </Button>
-        <span
-          v-if="ApiMessage != ''"
-          class="text-sm text-center text-red-600"
-          >{{ ApiMessage }}</span
-        >
-      </CardContent>
-    </Card>
+          <Button :disabled="Processing" @click="Login()">
+            <Icon
+              v-if="Processing"
+              name="lucide:loader-circle"
+              class="animate-spin duration-1000"
+            />
+            Devam Et
+          </Button>
+          <span
+            v-if="ApiMessage != ''"
+            class="text-sm text-center text-red-600"
+            >{{ ApiMessage }}</span
+          >
+        </CardContent>
+      </Card>
+    </div>
   </div>
 </template>
 

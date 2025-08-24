@@ -1,6 +1,6 @@
 import defaultApiInterface from '~/api/default';
 import type User from '~/types/api/User';
-import type { LoginResponse, Session } from '~/types/api/User';
+import type { Session } from '~/types/api/User';
 
 const _users = ref<Record<string, User>>({});
 const _user = ref<User | null>(null);
@@ -15,13 +15,19 @@ const SAVED_USERS_KEY = 'users';
 export default function useAuth() {
   return {
     async login(email: string, password: string, remember: boolean) {
-      const response = await defaultApiInterface<LoginResponse>({
+      const response = await defaultApiInterface<{
+        user: User;
+        sessionId: string;
+        access_token: string;
+        expires_in: string;
+        refresh_token: string;
+      }>({
         url: 'auth/login',
         method: 'POST',
         data: {
-          email: email,
-          password: password,
-          rememberMe: remember,
+          email,
+          password,
+          remember,
         },
       });
 
@@ -35,8 +41,6 @@ export default function useAuth() {
         remember,
       });
 
-      response.data.user;
-
       _users.value[response.data.sessionId] = {
         ...response.data.user,
         shops: [],
@@ -48,7 +52,7 @@ export default function useAuth() {
       return response;
     },
     logout(sessionId: string) {
-      let copyArray: Session[] = [];
+      const copyArray: Session[] = [];
 
       for (const session of _sessions.value) {
         if (session.sessionId == sessionId) {
@@ -63,7 +67,10 @@ export default function useAuth() {
             continue;
           }
           // delete user data
-          delete _users.value[session.userId];
+          if (_users.value[session.userId]) {
+            const { [session.userId]: removed, ...remainingUsers } = _users.value;
+            _users.value = remainingUsers;
+          }
           continue;
         }
         copyArray.push(session);
@@ -129,10 +136,10 @@ export default function useAuth() {
       localStorage.setItem(ACTIVE_USER_KEY, JSON.stringify(_user.value));
     },
     load() {
-      let __sessions = localStorage.getItem(SAVED_SESSIONS_KEY);
-      let __session = localStorage.getItem(ACTIVE_SESSION_KEY);
-      let __users = localStorage.getItem(SAVED_USERS_KEY);
-      let __user = localStorage.getItem(ACTIVE_USER_KEY);
+      const __sessions = localStorage.getItem(SAVED_SESSIONS_KEY);
+      const __session = localStorage.getItem(ACTIVE_SESSION_KEY);
+      const __users = localStorage.getItem(SAVED_USERS_KEY);
+      const __user = localStorage.getItem(ACTIVE_USER_KEY);
       if (__sessions) {
         _sessions.value = JSON.parse(__sessions);
       }

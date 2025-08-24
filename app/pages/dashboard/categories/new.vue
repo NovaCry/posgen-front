@@ -80,222 +80,224 @@ async function CreateCategory() {
 </script>
 
 <template>
-  <SeoMeta title="Yeni Kategori" description="Yeni Kategori" />
-  <Section>
-    <div
-      class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
-    >
-      <div>
-        <h1 class="text-2xl sm:text-3xl font-semibold">Yeni Kategori</h1>
-        <p class="text-muted-foreground mt-1">
-          Mağazanız için yeni bir kategori oluşturun
-        </p>
-      </div>
-      <Button
-        class="w-full sm:w-auto"
-        :disabled="isLoading || !isAcceptable"
-        @click="CreateCategory"
+  <div>
+    <SeoMeta title="Yeni Kategori" description="Yeni Kategori" />
+    <Section>
+      <div
+        class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
       >
-        <Loader2 v-if="isLoading" class="animate-spin mr-2" />
-        Oluştur
-        <Plus class="ml-2" />
-      </Button>
-    </div>
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-semibold">Yeni Kategori</h1>
+          <p class="text-muted-foreground mt-1">
+            Mağazanız için yeni bir kategori oluşturun
+          </p>
+        </div>
+        <Button
+          class="w-full sm:w-auto"
+          :disabled="isLoading || !isAcceptable"
+          @click="CreateCategory"
+        >
+          <Loader2 v-if="isLoading" class="animate-spin mr-2" />
+          Oluştur
+          <Plus class="ml-2" />
+        </Button>
+      </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 w-full mt-6 gap-6">
-      <div class="grid grid-cols-1 gap-6 h-full">
-        <Card class="h-full flex flex-col">
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
-              <Tag class="w-5 h-5" />
-              Kategori Bilgisi
-            </CardTitle>
-            <CardDescription
-              >Kategoriye ait temel bilgileri girin</CardDescription
-            >
-          </CardHeader>
-          <CardContent class="flex flex-col gap-4 flex-1">
-            <div>
-              <Label for="name">Kategori Adı *</Label>
-              <Input
-                id="name"
-                v-model="categoryName"
-                :disabled="isLoading"
-                class="mt-1"
-                placeholder="Örn: Tatlılar"
-              />
-            </div>
-            <div>
-              <Label for="icon">Kategori İkonu *</Label>
-              <IconifyIconSelect
-                id="icon"
-                v-model="categoryIcon"
-                :disabled="isLoading"
-                class="w-full mt-1"
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card class="h-full flex flex-col">
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
-              <FileText class="w-5 h-5" />
-              Önizleme
-            </CardTitle>
-            <CardDescription
-              >Kategorinin nasıl görüneceğini inceleyin</CardDescription
-            >
-          </CardHeader>
-          <CardContent class="flex-1">
-            <div
-              v-if="categoryName || categoryIcon"
-              class="flex items-center gap-3 p-4 border rounded-lg bg-muted/30 min-h-[72px]"
-            >
-              <div
-                class="flex items-center justify-center w-12 h-12 border rounded-lg bg-background"
+      <div class="grid grid-cols-1 lg:grid-cols-2 w-full mt-6 gap-6">
+        <div class="grid grid-cols-1 gap-6 h-full">
+          <Card class="h-full flex flex-col">
+            <CardHeader>
+              <CardTitle class="flex items-center gap-2">
+                <Tag class="w-5 h-5" />
+                Kategori Bilgisi
+              </CardTitle>
+              <CardDescription
+                >Kategoriye ait temel bilgileri girin</CardDescription
               >
-                <Icon
-                  v-if="categoryIcon"
-                  :name="categoryIcon"
-                  class="w-6 h-6"
+            </CardHeader>
+            <CardContent class="flex flex-col gap-4 flex-1">
+              <div>
+                <Label for="name">Kategori Adı *</Label>
+                <Input
+                  id="name"
+                  v-model="categoryName"
+                  :disabled="isLoading"
+                  class="mt-1"
+                  placeholder="Örn: Tatlılar"
                 />
-                <Tag v-else class="w-6 h-6 text-muted-foreground" />
               </div>
-              <div class="flex flex-col gap-1 flex-1 justify-center">
-                <span class="font-medium">{{
-                  categoryName || 'Kategori Adı'
-                }}</span>
-                <span
-                  v-if="categoryDescription"
-                  class="text-sm text-muted-foreground"
+              <div>
+                <Label for="icon">Kategori İkonu *</Label>
+                <IconifyIconSelect
+                  id="icon"
+                  v-model="categoryIcon"
+                  :disabled="isLoading"
+                  class="w-full mt-1"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card class="h-full flex flex-col">
+            <CardHeader>
+              <CardTitle class="flex items-center gap-2">
+                <FileText class="w-5 h-5" />
+                Önizleme
+              </CardTitle>
+              <CardDescription
+                >Kategorinin nasıl görüneceğini inceleyin</CardDescription
+              >
+            </CardHeader>
+            <CardContent class="flex-1">
+              <div
+                v-if="categoryName || categoryIcon"
+                class="flex items-center gap-3 p-4 border rounded-lg bg-muted/30 min-h-[72px]"
+              >
+                <div
+                  class="flex items-center justify-center w-12 h-12 border rounded-lg bg-background"
                 >
-                  {{ categoryDescription }}
-                </span>
-                <div class="flex flex-wrap gap-1 mt-2">
-                  <Badge v-if="isHidden" variant="secondary" class="text-xs">
-                    <EyeOff class="w-3 h-3 mr-1" />
-                    Gizli
-                  </Badge>
-                  <Badge
-                    v-if="isStockless"
-                    variant="outline"
-                    class="text-xs bg-green-50 text-green-700 border-green-200"
+                  <Icon
+                    v-if="categoryIcon"
+                    :name="categoryIcon"
+                    class="w-6 h-6"
+                  />
+                  <Tag v-else class="w-6 h-6 text-muted-foreground" />
+                </div>
+                <div class="flex flex-col gap-1 flex-1 justify-center">
+                  <span class="font-medium">{{
+                    categoryName || 'Kategori Adı'
+                  }}</span>
+                  <span
+                    v-if="categoryDescription"
+                    class="text-sm text-muted-foreground"
                   >
-                    <Icon name="mdi:infinity" class="w-3 h-3 mr-1" />
-                    Stoksuz
-                  </Badge>
+                    {{ categoryDescription }}
+                  </span>
+                  <div class="flex flex-wrap gap-1 mt-2">
+                    <Badge v-if="isHidden" variant="secondary" class="text-xs">
+                      <EyeOff class="w-3 h-3 mr-1" />
+                      Gizli
+                    </Badge>
+                    <Badge
+                      v-if="isStockless"
+                      variant="outline"
+                      class="text-xs bg-green-50 text-green-700 border-green-200"
+                    >
+                      <Icon name="mdi:infinity" class="w-3 h-3 mr-1" />
+                      Stoksuz
+                    </Badge>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div
-              v-else
-              class="flex items-center justify-center p-8 border-2 border-dashed rounded-lg text-muted-foreground"
-            >
-              <div class="text-center">
-                <Tag class="w-8 h-8 mx-auto mb-2" />
-                <p class="text-sm">Kategori bilgilerini doldurun</p>
+              <div
+                v-else
+                class="flex items-center justify-center p-8 border-2 border-dashed rounded-lg text-muted-foreground"
+              >
+                <div class="text-center">
+                  <Tag class="w-8 h-8 mx-auto mb-2" />
+                  <p class="text-sm">Kategori bilgilerini doldurun</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
 
-      <div class="grid grid-cols-1 gap-6 h-full">
-        <Card class="h-full flex flex-col">
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
-              <Eye class="w-5 h-5" />
-              Görünürlük Ayarları
-            </CardTitle>
-            <CardDescription
-              >Kategorinin müşteriler tarafından görünürlüğünü kontrol
-              edin</CardDescription
-            >
-          </CardHeader>
-          <CardContent class="flex-1">
-            <div class="flex items-start gap-3 p-4 border rounded-lg">
-              <Checkbox
-                id="hide"
-                v-model:checked="isHidden"
-                :disabled="isLoading"
-                class="mt-1"
-              />
-              <div class="flex flex-col gap-2 flex-1">
-                <Label
-                  for="hide"
-                  class="flex items-center gap-2 cursor-pointer"
-                >
-                  <EyeOff class="w-4 h-4" />
-                  Kategoriyi Gizle
-                  <Badge v-if="isHidden" variant="secondary" class="text-xs">
-                    Gizli
-                  </Badge>
-                </Label>
-                <p class="text-sm text-muted-foreground">
-                  Kategori ve içerisindeki ürünler müşteri listelerinde
-                  görünmez. Bu seçenek kategoriyi geçici olarak devre dışı
-                  bırakmak için kullanılabilir.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card class="h-full flex flex-col">
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
-              <Package class="w-5 h-5" />
-              Stok Yönetimi
-            </CardTitle>
-            <CardDescription
-              >Bu kategorideki ürünlerin stok takibini
-              yapılandırın</CardDescription
-            >
-          </CardHeader>
-          <CardContent class="flex-1">
-            <div class="flex items-start gap-3 p-4 border rounded-lg">
-              <Checkbox
-                id="stockless"
-                v-model:checked="isStockless"
-                :disabled="isLoading"
-                class="mt-1"
-              />
-              <div class="flex flex-col gap-2 flex-1">
-                <Label
-                  for="stockless"
-                  class="flex items-center gap-2 cursor-pointer"
-                >
-                  <Icon name="mdi:infinity" class="w-4 h-4" />
-                  Stoksuz Kategori
-                  <Badge
-                    v-if="isStockless"
-                    variant="outline"
-                    class="text-xs bg-green-50 text-green-700 border-green-200"
+        <div class="grid grid-cols-1 gap-6 h-full">
+          <Card class="h-full flex flex-col">
+            <CardHeader>
+              <CardTitle class="flex items-center gap-2">
+                <Eye class="w-5 h-5" />
+                Görünürlük Ayarları
+              </CardTitle>
+              <CardDescription
+                >Kategorinin müşteriler tarafından görünürlüğünü kontrol
+                edin</CardDescription
+              >
+            </CardHeader>
+            <CardContent class="flex-1">
+              <div class="flex items-start gap-3 p-4 border rounded-lg">
+                <Checkbox
+                  id="hide"
+                  v-model:checked="isHidden"
+                  :disabled="isLoading"
+                  class="mt-1"
+                />
+                <div class="flex flex-col gap-2 flex-1">
+                  <Label
+                    for="hide"
+                    class="flex items-center gap-2 cursor-pointer"
                   >
-                    Sınırsız Stok
-                  </Badge>
-                </Label>
-                <p class="text-sm text-muted-foreground">
-                  Bu kategorideki ürünler için stok takibi yapılmaz ve her zaman
-                  satışa hazır kabul edilir.
-                </p>
+                    <EyeOff class="w-4 h-4" />
+                    Kategoriyi Gizle
+                    <Badge v-if="isHidden" variant="secondary" class="text-xs">
+                      Gizli
+                    </Badge>
+                  </Label>
+                  <p class="text-sm text-muted-foreground">
+                    Kategori ve içerisindeki ürünler müşteri listelerinde
+                    görünmez. Bu seçenek kategoriyi geçici olarak devre dışı
+                    bırakmak için kullanılabilir.
+                  </p>
+                </div>
               </div>
-            </div>
+            </CardContent>
+          </Card>
 
-            <Alert v-if="isStockless" class="mt-4">
-              <Info class="h-4 w-4" />
-              <AlertDescription>
-                <strong>Stoksuz Kategori Nedir?</strong><br />
-                Bu kategorideki ürünler dijital ürünler, hizmetler veya sürekli
-                temin edilebilen ürünler için uygundur. Satış sırasında stok
-                kontrolü yapılmaz ve ürünler her zaman "stokta var" olarak
-                gösterilir.
-              </AlertDescription>
-            </Alert>
-          </CardContent>
-        </Card>
+          <Card class="h-full flex flex-col">
+            <CardHeader>
+              <CardTitle class="flex items-center gap-2">
+                <Package class="w-5 h-5" />
+                Stok Yönetimi
+              </CardTitle>
+              <CardDescription
+                >Bu kategorideki ürünlerin stok takibini
+                yapılandırın</CardDescription
+              >
+            </CardHeader>
+            <CardContent class="flex-1">
+              <div class="flex items-start gap-3 p-4 border rounded-lg">
+                <Checkbox
+                  id="stockless"
+                  v-model:checked="isStockless"
+                  :disabled="isLoading"
+                  class="mt-1"
+                />
+                <div class="flex flex-col gap-2 flex-1">
+                  <Label
+                    for="stockless"
+                    class="flex items-center gap-2 cursor-pointer"
+                  >
+                    <Icon name="mdi:infinity" class="w-4 h-4" />
+                    Stoksuz Kategori
+                    <Badge
+                      v-if="isStockless"
+                      variant="outline"
+                      class="text-xs bg-green-50 text-green-700 border-green-200"
+                    >
+                      Sınırsız Stok
+                    </Badge>
+                  </Label>
+                  <p class="text-sm text-muted-foreground">
+                    Bu kategorideki ürünler için stok takibi yapılmaz ve her zaman
+                    satışa hazır kabul edilir.
+                  </p>
+                </div>
+              </div>
+
+              <Alert v-if="isStockless" class="mt-4">
+                <Info class="h-4 w-4" />
+                <AlertDescription>
+                  <strong>Stoksuz Kategori Nedir?</strong><br />
+                  Bu kategorideki ürünler dijital ürünler, hizmetler veya sürekli
+                  temin edilebilen ürünler için uygundur. Satış sırasında stok
+                  kontrolü yapılmaz ve ürünler her zaman "stokta var" olarak
+                  gösterilir.
+                </AlertDescription>
+              </Alert>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
-  </Section>
+    </Section>
+  </div>
 </template>

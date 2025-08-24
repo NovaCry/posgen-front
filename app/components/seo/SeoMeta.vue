@@ -56,4 +56,7 @@ useSeoMeta({
 </script>
 
 <template>
+  <div style="display: none;">
+    <!-- SEO Meta component - no visual content -->
+  </div>
 </template>

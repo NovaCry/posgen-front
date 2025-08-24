@@ -52,29 +52,31 @@ const data: TableData[] = [
 </script>
 
 <template>
-  <SeoMeta title="Raporlar" description="Raporlar" />
-  <div
-    class="relative group-has-data-[collapsible=icon]/sidebar-wrapper:min-h-[calc(100vh-4rem)] min-h-[calc(100vh-6rem)] h-full"
-  >
+  <div>
+    <SeoMeta title="Raporlar" description="Raporlar" />
     <div
-      class="absolute w-full h-full top-0 backdrop-blur-md z-1 flex items-center flex-col justify-center"
+      class="relative group-has-data-[collapsible=icon]/sidebar-wrapper:min-h-[calc(100vh-4rem)] min-h-[calc(100vh-6rem)] h-full"
     >
-      <h1 class="text-3xl font-semibold">
-        Bu sayfa halen yapım aşamasında. 😭
-      </h1>
-      <p class="mt-1">Dilerseniz diğer sayfalara göz atabilirsiniz.</p>
-      <Button class="mt-4" @click="router.back()">
-        <ArrowLeft /> Geri Dön
-      </Button>
-    </div>
-    <div class="h-full relative p-6">
-      <h1 class="text-3xl font-semibold">Raporlar</h1>
-      <DataTable :data="data" class="mt-6" />
-      <PaginationSimplified
-        class="my-4 w-full flex justify-center"
-        :model-value="5"
-        :total-items="100"
-      />
+      <div
+        class="absolute w-full h-full top-0 backdrop-blur-md z-1 flex items-center flex-col justify-center"
+      >
+        <h1 class="text-3xl font-semibold">
+          Bu sayfa halen yapım aşamasında. 😭
+        </h1>
+        <p class="mt-1">Dilerseniz diğer sayfalara göz atabilirsiniz.</p>
+        <Button class="mt-4" @click="router.back()">
+          <ArrowLeft /> Geri Dön
+        </Button>
+      </div>
+      <div class="h-full relative p-6">
+        <h1 class="text-3xl font-semibold">Raporlar</h1>
+        <DataTable :data="data" class="mt-6" />
+        <PaginationSimplified
+          class="my-4 w-full flex justify-center"
+          :model-value="5"
+          :total-items="100"
+        />
+      </div>
     </div>
   </div>
 </template>

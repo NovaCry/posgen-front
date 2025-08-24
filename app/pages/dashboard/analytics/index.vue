@@ -215,7 +215,15 @@ const fetchTables = async (): Promise<void> => {
 
 const getProductName = (productId: string): string => {
   const product = products.value.find((p) => p.id === productId);
-  return product?.name || `Ürün ${productId.slice(-4)}`;
+  if (product?.name) {
+    return product.name;
+  }
+  return `Ürün ${productId.slice(-4)}`;
+};
+
+const getProductPrice = (productId: string): number => {
+  const product = products.value.find((p) => p.id === productId);
+  return product?.price || 0;
 };
 
 const getTableName = (tableId: string | null): string => {
@@ -520,7 +528,9 @@ const fetchOrderStats = async (showLoader = false): Promise<void> => {
         cancelledOrders: cancelledOrders.length,
       };
 
-      tableAnalytics.value = calculateTableAnalytics(ordersData);
+      if (tables.value.length > 0) {
+        tableAnalytics.value = calculateTableAnalytics(ordersData);
+      }
 
       const productCounts: Record<string, ProductCount> = {};
       ordersData.forEach((order: Order) => {
@@ -536,37 +546,41 @@ const fetchOrderStats = async (showLoader = false): Promise<void> => {
             }
             productCounts[productId].count += item.quantity;
             productCounts[productId].revenue +=
-              parseFloat(item.price?.toString() || '0') * item.quantity;
+              getProductPrice(item.productId) * item.quantity;
           });
         }
       });
 
-      topProducts.value = Object.values(productCounts)
-        .sort((a: ProductCount, b: ProductCount) => b.count - a.count)
-        .slice(0, 10)
-        .map((product: ProductCount) => ({
-          name: product.name,
-          alt: `${product.revenue.toLocaleString()} ₺ gelir`,
-          value: `${product.count} Satış`,
-          raw: product.count,
-        }));
+      if (products.value.length > 0) {
+        topProducts.value = Object.values(productCounts)
+          .sort((a: ProductCount, b: ProductCount) => b.count - a.count)
+          .slice(0, 10)
+          .map((product: ProductCount) => ({
+            name: product.name,
+            alt: `${product.revenue.toLocaleString()} ₺ gelir`,
+            value: `${product.count} Satış`,
+            raw: product.count,
+          }));
+      }
 
-      recentOrders.value = ordersData
-        .sort(
-          (a: Order, b: Order) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )
-        .slice(0, 8)
-        .map((order: Order) => ({
-          name: `Sipariş`,
-          alt: `${order.table?.name || getTableName(order.tableId)} - ${
-            statusTranslations[order.status] || order.status
-          }`,
-          value: `${parseFloat(
-            order.finalAmount?.toString() || '0'
-          ).toLocaleString()} ₺`,
-          raw: parseFloat(order.finalAmount?.toString() || '0'),
-        }));
+      if (tables.value.length > 0) {
+        recentOrders.value = ordersData
+          .sort(
+            (a: Order, b: Order) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
+          .slice(0, 8)
+          .map((order: Order) => ({
+            name: `Sipariş`,
+            alt: `${order.table?.name || getTableName(order.tableId)} - ${
+              statusTranslations[order.status] || order.status
+            }`,
+            value: `${parseFloat(
+              order.finalAmount?.toString() || '0'
+            ).toLocaleString()} ₺`,
+            raw: parseFloat(order.finalAmount?.toString() || '0'),
+          }));
+      }
 
       const monthlyData: Array<{
         name: string;
@@ -817,138 +831,140 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <SeoMeta title="Analizler" description="Analizler" />
-  <Section>
-    <div class="flex items-center justify-between mb-6">
-      <div>
-        <h1 class="text-3xl font-semibold">Analizler</h1>
-        <p class="text-muted-foreground mt-1">
-          Sipariş ve gelir istatistiklerinizi görüntüleyin
-        </p>
+  <div>
+    <SeoMeta title="Analizler" description="Analizler" />
+    <Section>
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="text-3xl font-semibold">Analizler</h1>
+          <p class="text-muted-foreground mt-1">
+            Sipariş ve gelir istatistiklerinizi görüntüleyin
+          </p>
+        </div>
       </div>
-    </div>
 
-    <div
-      v-if="isLoading && chartData.length === 0"
-      class="flex items-center justify-center py-24"
-    >
-      <div class="flex flex-col items-center space-y-4">
-        <div class="relative">
-          <div
-            class="w-12 h-12 border-3 border-muted border-t-primary rounded-full animate-spin"
-          />
-          <div class="absolute inset-0 flex items-center justify-center">
-            <ChartArea class="w-4 h-4 text-primary" />
-          </div>
-        </div>
-        <div class="text-center">
-          <div class="text-muted-foreground text-sm font-medium">
-            Grafik hazırlanıyor
-          </div>
-        </div>
-      </div>
-    </div>
-    <div v-else class="grid grid-cols-4 max-sm:grid-cols-1 gap-4">
       <div
-        v-for="(widget, index) of analytics"
-        :key="`widget-${widget.title}-${index}`"
-        :class="
-          cn(
-            `col-span-${widget.size} max-sm:col-span-1 flex flex-col border rounded-xl p-4 bg-card hover:shadow-md transition-shadow`
-          )
-        "
+        v-if="isLoading && chartData.length === 0"
+        class="flex items-center justify-center py-24"
       >
-        <div class="flex items-center text-muted-foreground gap-2 mb-4">
-          <div class="flex items-center gap-2 text-sm">
-            <div class="flex p-1.5 bg-muted rounded-lg">
-              <component :is="widget.icon" class="size-4" />
-            </div>
-            {{ widget.title }}
-          </div>
-          <div v-if="widget.alt" class="ml-auto text-xs">
-            {{ widget.alt }}
-          </div>
-        </div>
-
-        <template v-if="widget.type === 'chart'">
-          <div
-            v-if="!showChart"
-            class="flex-1 h-[300px] flex items-center justify-center"
-          >
-            <div class="flex flex-col items-center space-y-4">
-              <div class="relative">
-                <div
-                  class="w-12 h-12 border-3 border-muted border-t-primary rounded-full animate-spin"
-                />
-                <div class="absolute inset-0 flex items-center justify-center">
-                  <ChartArea class="w-4 h-4 text-primary" />
-                </div>
-              </div>
-              <div class="text-center">
-                <div class="text-muted-foreground text-sm font-medium">
-                  Grafik hazırlanıyor
-                </div>
-              </div>
-            </div>
-          </div>
-          <ClientOnly v-else>
-            <AreaChart
-              :key="chartKey"
-              :data="widget.data"
-              index="name"
-              :categories="widget.categories"
-              class="flex-1 h-[300px]"
+        <div class="flex flex-col items-center space-y-4">
+          <div class="relative">
+            <div
+              class="w-12 h-12 border-3 border-muted border-t-primary rounded-full animate-spin"
             />
-          </ClientOnly>
-        </template>
-
-        <div
-          v-else-if="widget.type === 'numeral'"
-          class="flex-1 flex items-center"
-        >
-          <span class="text-3xl font-bold text-foreground">
-            {{ widget.value.toLocaleString() }}
-            <span class="text-lg text-muted-foreground">{{
-              widget.valueSubfix
-            }}</span>
-          </span>
-        </div>
-
-        <ScrollArea
-          v-else-if="widget.type === 'itemlist'"
-          class="flex-1 max-h-[400px] pr-4"
-        >
-          <div
-            v-if="widget.items.length === 0"
-            class="text-center py-8 text-muted-foreground"
-          >
-            <Box class="size-8 mx-auto mb-2 opacity-50" />
-            <p class="text-sm">Henüz veri bulunmuyor</p>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <ChartArea class="w-4 h-4 text-primary" />
+            </div>
           </div>
+          <div class="text-center">
+            <div class="text-muted-foreground text-sm font-medium">
+              Grafik hazırlanıyor
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-else class="grid grid-cols-4 max-sm:grid-cols-1 gap-4">
+        <div
+          v-for="(widget, index) of analytics"
+          :key="`widget-${widget.title}-${index}`"
+          :class="
+            cn(
+              `col-span-${widget.size} max-sm:col-span-1 flex flex-col border rounded-xl p-4 bg-card hover:shadow-md transition-shadow`
+            )
+          "
+        >
+          <div class="flex items-center text-muted-foreground gap-2 mb-4">
+            <div class="flex items-center gap-2 text-sm">
+              <div class="flex p-1.5 bg-muted rounded-lg">
+                <component :is="widget.icon" class="size-4" />
+              </div>
+              {{ widget.title }}
+            </div>
+            <div v-if="widget.alt" class="ml-auto text-xs">
+              {{ widget.alt }}
+            </div>
+          </div>
+
+          <template v-if="widget.type === 'chart'">
+            <div
+              v-if="!showChart"
+              class="flex-1 h-[300px] flex items-center justify-center"
+            >
+              <div class="flex flex-col items-center space-y-4">
+                <div class="relative">
+                  <div
+                    class="w-12 h-12 border-3 border-muted border-t-primary rounded-full animate-spin"
+                  />
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <ChartArea class="w-4 h-4 text-primary" />
+                  </div>
+                </div>
+                <div class="text-center">
+                  <div class="text-muted-foreground text-sm font-medium">
+                    Grafik hazırlanıyor
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ClientOnly v-else>
+              <AreaChart
+                :key="chartKey"
+                :data="widget.data"
+                index="name"
+                :categories="widget.categories"
+                class="flex-1 h-[300px]"
+              />
+            </ClientOnly>
+          </template>
+
           <div
-            v-for="(item, itemIndex) of widget.items"
-            v-else
-            :key="`${widget.title}-item-${itemIndex}`"
-            class="p-3 flex items-center gap-3 max-w-full relative hover:bg-accent rounded-lg transition-colors mb-2"
+            v-else-if="widget.type === 'numeral'"
+            class="flex-1 flex items-center"
+          >
+            <span class="text-3xl font-bold text-foreground">
+              {{ widget.value.toLocaleString() }}
+              <span class="text-lg text-muted-foreground">{{
+                widget.valueSubfix
+              }}</span>
+            </span>
+          </div>
+
+          <ScrollArea
+            v-else-if="widget.type === 'itemlist'"
+            class="flex-1 max-h-[400px] pr-4"
           >
             <div
-              class="p-2 bg-primary/10 rounded-lg aspect-square w-fit h-fit flex items-center justify-center"
+              v-if="widget.items.length === 0"
+              class="text-center py-8 text-muted-foreground"
             >
-              <Box class="size-4 text-primary" />
+              <Box class="size-8 mx-auto mb-2 opacity-50" />
+              <p class="text-sm">Henüz veri bulunmuyor</p>
             </div>
-            <div class="flex flex-col flex-1 min-w-0">
-              <span
-                class="overflow-hidden text-ellipsis whitespace-nowrap font-medium text-sm"
-                >{{ item.name }}</span
+            <div
+              v-for="(item, itemIndex) of widget.items"
+              v-else
+              :key="`${widget.title}-item-${itemIndex}`"
+              class="p-3 flex items-center gap-3 max-w-full relative hover:bg-accent rounded-lg transition-colors mb-2"
+            >
+              <div
+                class="p-2 bg-primary/10 rounded-lg aspect-square w-fit h-fit flex items-center justify-center"
               >
-              <span class="text-muted-foreground text-xs">{{ item.alt }}</span>
+                <Box class="size-4 text-primary" />
+              </div>
+              <div class="flex flex-col flex-1 min-w-0">
+                <span
+                  class="overflow-hidden text-ellipsis whitespace-nowrap font-medium text-sm"
+                  >{{ item.name }}</span
+                >
+                <span class="text-muted-foreground text-xs">{{ item.alt }}</span>
+              </div>
+              <div class="shrink-0 font-semibold text-sm">
+                {{ item.value }}
+              </div>
             </div>
-            <div class="shrink-0 font-semibold text-sm">
-              {{ item.value }}
-            </div>
-          </div>
-        </ScrollArea>
+          </ScrollArea>
+        </div>
       </div>
-    </div>
-  </Section>
+    </Section>
+  </div>
 </template>

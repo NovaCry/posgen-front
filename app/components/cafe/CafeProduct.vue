@@ -52,12 +52,12 @@ watch([selectedModel, quantityModel], () => {
           ? 'bg-muted/50 border-muted-foreground/20 cursor-not-allowed opacity-60' 
           : 'bg-card border-border hover:bg-accent/50 hover:border-accent-foreground/20 hover:shadow-md'
       ]"
-             @click="(event) => {
+             :disabled="props.hasStock === false"
+      @click="(event) => {
          if (props.hasStock !== false) {
            handleCardClick(event);
          }
        }"
-      :disabled="props.hasStock === false"
     >
       
       <motion.div

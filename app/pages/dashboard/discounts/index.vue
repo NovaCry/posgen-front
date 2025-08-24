@@ -4,13 +4,14 @@ import Resource from '@/components/layout/Resource.vue';
 import Section from '@/components/layout/Section.vue';
 import { toLocaleDate } from '@/lib/toLocaleDate';
 import { useSelectedShopStore } from '@/store/shop';
-import { Badge } from '@/components/ui/badge';
 import type { Discount } from '@/types/api/Discount';
-import type { BadgeCell, MenuCell, TableData, TextCell } from '@/types/DataTable';
+import type { MenuCell, TableData } from '@/types/DataTable';
 import { Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
 import SeoMeta from '@/components/seo/SeoMeta.vue';
+import useErrorHandler from '@/composables/useErrorHandler';
+
 definePageMeta({
   name: 'İndirimler',
 });
@@ -98,14 +99,16 @@ function makeActionsForDiscount(discount: Discount): MenuCell {
 </script>
 
 <template>
-  <SeoMeta title="İndirimler" description="İndirimler" />
+  <div>
+    <SeoMeta title="İndirimler" description="İndirimler" />
     <Section>
-    <h1 class="text-3xl font-semibold">İndirimler</h1>
-    <Resource
-      :key="resourceVersion"
-      create="/dashboard/discounts/new"
-      :fetch="`shop/discounts/${selectedShop.id}/list`"
-      @populate="populateData"
-    />
-  </Section>
+      <h1 class="text-3xl font-semibold">İndirimler</h1>
+      <Resource
+        :key="resourceVersion"
+        create="/dashboard/discounts/new"
+        :fetch="`shop/discounts/${selectedShop.id}/list`"
+        @populate="populateData"
+      />
+    </Section>
+  </div>
 </template>

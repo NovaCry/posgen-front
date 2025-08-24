@@ -98,78 +98,80 @@ onMounted(async () => {
 </script>
 
 <template>
-  <SeoMeta title="Yeni Masa" description="Yeni masa" />
-  <Section>
-    <div class="flex items-center">
-      <div class="flex gap-4">
-        <Button variant="outline" size="icon" @click="router.back()">
-          <ArrowLeft />
+  <div>
+    <SeoMeta title="Yeni Masa" description="Yeni masa" />
+    <Section>
+      <div class="flex items-center">
+        <div class="flex gap-4">
+          <Button variant="outline" size="icon" @click="router.back()">
+            <ArrowLeft />
+          </Button>
+          <h1 class="text-3xl font-semibold">Yeni Masa</h1>
+        </div>
+        <Button
+          :disabled="isLoading || !isAcceptable"
+          class="ml-auto"
+          @click="isEditing ? EditTable() : CreateTable()"
+        >
+          <Loader2 v-if="isLoading" class="animate-spin" />
+          <template v-if="isEditing">Masayı Düzenle</template>
+          <template v-else>Masayı Oluştur</template>
+          <Plus />
         </Button>
-        <h1 class="text-3xl font-semibold">Yeni Masa</h1>
       </div>
-      <Button
-        :disabled="isLoading || !isAcceptable"
-        class="ml-auto"
-        @click="isEditing ? EditTable() : CreateTable()"
-      >
-        <Loader2 v-if="isLoading" class="animate-spin" />
-        <template v-if="isEditing">Masayı Düzenle</template>
-        <template v-else>Masayı Oluştur</template>
-        <Plus />
-      </Button>
-    </div>
-    <div class="grid grid-cols-2 mt-6 gap-6">
-      <div class="flex flex-col gap-4">
-        <ResourceCard
-          title="Masa Bilgisi"
-          description="Masa hakkındaki en basit belirtici bilgi."
-        >
-          <div class="flex flex-col gap-2">
-            <div>
-              <Label for="name">Masa Adı</Label>
-              <Input
-                id="name"
-                v-model="tableName"
-                :disabled="isLoading"
-                class="mt-2"
-                placeholder="Masa Adı"
-              />
-            </div>
-          </div>
-        </ResourceCard>
-        <ResourceCard
-          title="Kapasite"
-          description="Masanın alabileceği maksimum müşteri sayısı."
-          class="flex flex-col gap-4"
-        >
-          <SeatRenderer :seat-size="seatSize" class="mx-auto" />
-          <NumberFieldSimplified
-            v-model="seatSize"
-            :disabled="isLoading"
-            label="Kapasite"
-            :max="24"
-            :min="1"
-          />
-        </ResourceCard>
-      </div>
-      <div class="flex flex-col gap-4">
-        <ResourceCard
-          title="Masa Ayarları"
-          description="Masanın çalışma biçimiyle alakalı ayarlar."
-          class="grid grid-cols-2 gap-4"
-        >
-          <TooltipProvider>
-            <TooltipSimplified
-              content="Masayı listelerden gizler ama yine de entegrasyonlar görebilir."
-            >
-              <div class="flex items-center gap-2">
-                <Checkbox id="hide" :disabled="isLoading" />
-                <Label for="hide"> Masayı Gizle </Label>
+      <div class="grid grid-cols-2 mt-6 gap-6">
+        <div class="flex flex-col gap-4">
+          <ResourceCard
+            title="Masa Bilgisi"
+            description="Masa hakkındaki en basit belirtici bilgi."
+          >
+            <div class="flex flex-col gap-2">
+              <div>
+                <Label for="name">Masa Adı</Label>
+                <Input
+                  id="name"
+                  v-model="tableName"
+                  :disabled="isLoading"
+                  class="mt-2"
+                  placeholder="Masa Adı"
+                />
               </div>
-            </TooltipSimplified>
-          </TooltipProvider>
-        </ResourceCard>
+            </div>
+          </ResourceCard>
+          <ResourceCard
+            title="Kapasite"
+            description="Masanın alabileceği maksimum müşteri sayısı."
+            class="flex flex-col gap-4"
+          >
+            <SeatRenderer :seat-size="seatSize" class="mx-auto" />
+            <NumberFieldSimplified
+              v-model="seatSize"
+              :disabled="isLoading"
+              label="Kapasite"
+              :max="24"
+              :min="1"
+            />
+          </ResourceCard>
+        </div>
+        <div class="flex flex-col gap-4">
+          <ResourceCard
+            title="Masa Ayarları"
+            description="Masanın çalışma biçimiyle alakalı ayarlar."
+            class="grid grid-cols-2 gap-4"
+          >
+            <TooltipProvider>
+              <TooltipSimplified
+                content="Masayı listelerden gizler ama yine de entegrasyonlar görebilir."
+              >
+                <div class="flex items-center gap-2">
+                  <Checkbox id="hide" :disabled="isLoading" />
+                  <Label for="hide"> Masayı Gizle </Label>
+                </div>
+              </TooltipSimplified>
+            </TooltipProvider>
+          </ResourceCard>
+        </div>
       </div>
-    </div>
-  </Section>
+    </Section>
+  </div>
 </template>

@@ -98,14 +98,16 @@ function makeActionsForProduct(product: Product): MenuCell {
 </script>
 
 <template>
-  <SeoMeta title="Ürünler" description="Ürünler" />
-  <Section>
-    <h1 class="text-3xl font-semibold">Ürünler</h1>
-    <Resource
-      :key="resourceVersion"
-      create="/dashboard/product/new"
-      :fetch="`shop/products/${selectedShop.id}/list`"
-      @populate="populateData"
-    />
-  </Section>
+  <div>
+    <SeoMeta title="Ürünler" description="Ürünler" />
+    <Section>
+      <h1 class="text-3xl font-semibold">Ürünler</h1>
+      <Resource
+        :key="resourceVersion"
+        create="/dashboard/product/new"
+        :fetch="`shop/products/${selectedShop.id}/list`"
+        @populate="populateData"
+      />
+    </Section>
+  </div>
 </template>

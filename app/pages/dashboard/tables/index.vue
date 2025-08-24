@@ -84,14 +84,16 @@ function makeActionsForAdmission(table: Table): MenuCell {
 </script>
 
 <template>
-  <SeoMeta title="Masalar" description="Masalar" />
-  <Section>
-    <h1 class="text-3xl font-semibold">Masalar</h1>
-    <Resource
-      :key="resourceVersion"
-      create="/dashboard/tables/new"
-      :fetch="`shop/tables/${selectedShop.id}/list`"
-      @populate="MakeResourceColumn"
-    />
-  </Section>
+  <div>
+    <SeoMeta title="Masalar" description="Masalar" />
+    <Section>
+      <h1 class="text-3xl font-semibold">Masalar</h1>
+      <Resource
+        :key="resourceVersion"
+        create="/dashboard/tables/new"
+        :fetch="`shop/tables/${selectedShop.id}/list`"
+        @populate="MakeResourceColumn"
+      />
+    </Section>
+  </div>
 </template>

@@ -67,14 +67,16 @@ function makeActionsForCategory(category: Category): MenuCell {
 </script>
 
 <template>
-  <SeoMeta title="Kategoriler" description="Kategoriler" />
-  <Section>
-    <h1 class="text-3xl font-semibold">Kategoriler</h1>
-    <Resource
-      :key="resourceVersion"
-      create="/dashboard/categories/new"
-      :fetch="`shop/categories/${selectedShop.id}/list`"
-      @populate="populateData"
-    />
-  </Section>
+  <div>
+    <SeoMeta title="Kategoriler" description="Kategoriler" />
+    <Section>
+      <h1 class="text-3xl font-semibold">Kategoriler</h1>
+      <Resource
+        :key="resourceVersion"
+        create="/dashboard/categories/new"
+        :fetch="`shop/categories/${selectedShop.id}/list`"
+        @populate="populateData"
+      />
+    </Section>
+  </div>
 </template>

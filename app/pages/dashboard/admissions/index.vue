@@ -5,12 +5,13 @@ import { useSelectedShopStore } from '@/store/shop';
 import Section from '@/components/layout/Section.vue';
 
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { Button } from '@/components/ui/button';
 import PaginationSimplified from '@/components/PaginationSimplified.vue';
 import DataTable from '@/components/DataTable.vue';
 import { Input } from '@/components/ui/input';
 import type { Cell } from '@/types/DataTable';
-import { ListFilter, Eye, Receipt } from 'lucide-vue-next';
+import { ListFilter, Eye, Receipt, X } from 'lucide-vue-next';
 import AdmissionsHeader from '@/components/admissions/AdmissionsHeader.vue';
 import AdmissionsStats from '@/components/admissions/AdmissionsStats.vue';
 import AdmissionDetails from '@/components/admissions/AdmissionDetails.vue';
@@ -45,6 +46,7 @@ interface Order {
 
 const protectedApiInterface = createProtectedApiInterface();
 const selectedShop = useSelectedShopStore();
+const route = useRoute();
 const filter = ref<'all' | 'active'>('all');
 const isLoading = ref(false);
 const orders = ref<Order[]>([]);
@@ -60,6 +62,7 @@ const search = ref('');
 
 const statusTranslations: Record<string, string> = {
   OPEN: 'Bekliyor',
+  PENDING: 'Bekliyor',
   PREPARING: 'Hazırlanıyor',
   READY: 'Hazır',
   COMPLETED: 'Tamamlandı',
@@ -166,31 +169,61 @@ const getTableData = (): Record<string, string | Cell[]>[] => {
   return tableData;
 };
 
+const cancelOrder = async (orderId: string) => {
+  try {
+    const response = await protectedApiInterface({
+      url: `shop/orders/${selectedShop.id}/orders/${orderId}/cancel`,
+      method: 'PUT',
+    });
+    
+    if (response?.data?.success) {
+      await fetchOrders();
+    }
+  } catch (error) {
+    console.error('Sipariş iptal edilirken hata:', error);
+  }
+};
+
 function makeActionsForAdmission(order: Order): Cell {
+  const canCancel = ['PENDING', 'PREPARING', 'READY'].includes(order.status);
+  
+  const items = [
+    {
+      type: 'item' as const,
+      text: 'Detayları Görüntüle',
+      icon: Eye,
+      action() {
+        viewOrderDetails(order.id);
+      },
+    },
+    {
+      type: 'item' as const,
+      text: 'Yazdır',
+      icon: Receipt,
+      action() {
+        console.log('Yazdır', order.id);
+      },
+    },
+  ];
+
+  if (canCancel) {
+    items.push({
+      type: 'item' as const,
+      text: 'İptal Et',
+      icon: X,
+      action() {
+        cancelOrder(order.id);
+      },
+    });
+  }
+
   return {
     type: 'menu',
     data: [
       {
         type: 'group',
         title: 'İşlemler',
-        items: [
-          {
-            type: 'item',
-            text: 'Detayları Görüntüle',
-            icon: Eye,
-            action() {
-              viewOrderDetails(order.id);
-            },
-          },
-          {
-            type: 'item',
-            text: 'Yazdır',
-            icon: Receipt,
-            action() {
-              console.log('Yazdır', order.id);
-            },
-          },
-        ],
+        items,
       },
     ],
   };
@@ -243,7 +276,7 @@ function makeResourceColumn(tableData: Record<string, string | Cell[]>[], order:
     Durum: [
       {
         type: 'badge',
-        background: '#5456c0',
+        background: getStatusColor(order.status),
         color: 'white',
         data: getStatusTranslation(order.status),
       },
@@ -268,7 +301,10 @@ const getProductName = (productId: string): string => {
 };
 
 const formatOrderId = (orderId: string): string => {
-  return `#${String(orderId).slice(-6).toUpperCase()}PSGNTR`;
+  if (orderId.endsWith('PSGNTR')) {
+    return `#${String(orderId).slice(0, 6).toUpperCase()}PSGNTR`;
+  }
+  return `#${orderId}`;
 };
 
 const getTableName = (tableId: string | null, orderId?: string): string => {
@@ -322,11 +358,45 @@ const getStatusTranslation = (status: string): string => {
   return statusTranslations[status] || status;
 };
 
+const getStatusColor = (status: string): string => {
+  switch (status) {
+    case 'OPEN':
+      return '#5456c0';
+    case 'PENDING':
+      return 'var(--secondary)';
+    case 'PREPARING':
+      return 'var(--secondary)';
+    case 'READY':
+      return '#10b981';
+    case 'COMPLETED':
+      return '#10b981';
+    case 'CANCELLED':
+      return '#ef4444';
+    default:
+      return '#6b7280';
+  }
+};
+
 const viewOrderDetails = (orderId: string) => {
   const order = orders.value.find((o) => o.id === orderId);
   if (order) {
     selectedOrder.value = order;
     isDialogOpen.value = true;
+  }
+};
+
+const handleOrderCancelled = async (orderId: string) => {
+  try {
+    const response = await protectedApiInterface({
+      url: `shop/orders/${selectedShop.id}/orders/${orderId}/cancel`,
+      method: 'PUT',
+    });
+    
+    if (response?.data?.success) {
+      await fetchOrders();
+    }
+  } catch (error) {
+    console.error('Sipariş iptal edilirken hata:', error);
   }
 };
 
@@ -367,8 +437,18 @@ watch(search, () => {
   currentPage.value = 1;
 });
 
-onMounted(() => {
-  fetchOrders();
+onMounted(async () => {
+  await fetchOrders();
+  
+  const orderIdFromUrl = route.query.orderId as string;
+  if (orderIdFromUrl) {
+    const order = orders.value.find((o) => o.id === orderIdFromUrl);
+    if (order) {
+      selectedOrder.value = order;
+      isDialogOpen.value = true;
+    }
+  }
+  
   autoRefreshInterval.value = setInterval(() => {
     fetchOrders();
   }, 7000);
@@ -387,84 +467,88 @@ definePageMeta({
 </script>
 
 <template>
-  <SeoMeta title="Adisyonlar" description="Adisyonlar" />
-  <Section>
-    <AdmissionsHeader v-model:filter="filter" />
-    <AdmissionsStats :stats="stats" />
-
-    <div
-      v-if="isLoading && orders.length === 0"
-      class="text-center py-12 animate-in fade-in duration-500"
-    >
-      <div
-        class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"
-      />
-      <p class="text-muted-foreground animate-pulse">
-        Adisyonlar yükleniyor...
-      </p>
-    </div>
-
-    <template v-else>
-      <div class="flex items-center my-4">
-        <div class="flex items-center mr-auto gap-4">
-          <Input v-model="search" placeholder="Adisyonlarda Arama Yap..." />
-          <Button disabled variant="outline">
-            <ListFilter />
-            Sırala
-          </Button>
-        </div>
-      </div>
+  <div>
+    <SeoMeta title="Adisyonlar" description="Adisyonlar" />
+    <Section>
+      <AdmissionsHeader v-model:filter="filter" />
+      <AdmissionsStats :stats="stats" />
 
       <div
-        v-if="getFilteredOrders().length === 0"
+        v-if="isLoading && orders.length === 0"
         class="text-center py-12 animate-in fade-in duration-500"
       >
-        <Receipt
-          class="size-12 mx-auto mb-4 text-muted-foreground opacity-50 animate-bounce"
+        <div
+          class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"
         />
-        <h3 class="text-lg font-semibold mb-2">
-          {{
-            search.trim()
-              ? 'Arama sonucu bulunamadı'
-              : filter === 'active'
-                ? 'Aktif adisyon bulunmuyor'
-                : 'Henüz adisyon bulunmuyor'
-          }}
-        </h3>
-        <p class="text-muted-foreground">
-          {{
-            search.trim()
-              ? `"${search}" için sonuç bulunamadı. Farklı kelimeler deneyin.`
-              : filter === 'active'
-                ? 'Şu anda aktif olan bir adisyon yok.'
-                : 'Henüz hiç sipariş oluşturulmamış.'
-          }}
+        <p class="text-muted-foreground animate-pulse">
+          Adisyonlar yükleniyor...
         </p>
       </div>
 
       <template v-else>
-        <DataTable
-          :data="
-            getTableData().slice(
-              (currentPage - 1) * itemsPerPage,
-              currentPage * itemsPerPage
-            )
-          "
-        />
+        <div class="flex items-center my-4">
+          <div class="flex items-center mr-auto gap-4">
+            <Input v-model="search" placeholder="Adisyonlarda Arama Yap..." />
+            <Button disabled variant="outline">
+              <ListFilter />
+              Sırala
+            </Button>
+          </div>
+        </div>
 
-        <PaginationSimplified
-          v-model="currentPage"
-          class="my-4 w-full flex justify-center"
-          :items-per-page="itemsPerPage"
-          :total-items="getFilteredOrders().length"
-        />
+        <div
+          v-if="getFilteredOrders().length === 0"
+          class="text-center py-12 animate-in fade-in duration-500"
+        >
+          <Receipt
+            class="size-12 mx-auto mb-4 text-muted-foreground opacity-50 animate-bounce"
+          />
+          <h3 class="text-lg font-semibold mb-2">
+            {{
+              search.trim()
+                ? 'Arama sonucu bulunamadı'
+                : filter === 'active'
+                  ? 'Aktif adisyon bulunmuyor'
+                  : 'Henüz adisyon bulunmuyor'
+            }}
+          </h3>
+          <p class="text-muted-foreground">
+            {{
+              search.trim()
+                ? `"${search}" için sonuç bulunamadı. Farklı kelimeler deneyin.`
+                : filter === 'active'
+                  ? 'Şu anda aktif olan bir adisyon yok.'
+                  : 'Henüz hiç sipariş oluşturulmamış.'
+            }}
+          </p>
+        </div>
+
+        <template v-else>
+          <DataTable
+            :data="
+              getTableData().slice(
+                (currentPage - 1) * itemsPerPage,
+                currentPage * itemsPerPage
+              )
+            "
+          />
+
+          <PaginationSimplified
+            v-model="currentPage"
+            class="my-4 w-full flex justify-center"
+            :items-per-page="itemsPerPage"
+            :total-items="getFilteredOrders().length"
+          />
+        </template>
       </template>
-    </template>
 
-    <AdmissionDetails
-      :is-dialog-open="isDialogOpen"
-      :selected-order="selectedOrder"
-      @update:is-dialog-open="isDialogOpen = $event"
-    />
-  </Section>
+      <AdmissionDetails
+        :is-dialog-open="isDialogOpen"
+        :selected-order="selectedOrder"
+        :products="products"
+        @update:is-dialog-open="isDialogOpen = $event"
+        @order-cancelled="handleOrderCancelled"
+      />
+    </Section>
+  </div>
 </template>

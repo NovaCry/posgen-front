@@ -3,7 +3,6 @@ import { ref } from "vue"
 import {
     PinInput,
     PinInputGroup,
-    PinInputSeparator,
     PinInputSlot,
 } from "@/components/ui/pin-input"
 
