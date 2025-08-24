@@ -40,36 +40,38 @@ const paymentTerminals: PaymentTerminal[] = [
 </script>
 
 <template>
-  <SeoMeta title="Cihazlar" description="Cihazlar" />
-  <div class="grid grid-cols-9 w-full h-full max-h-[calc(100vh-3rem)]">
-    <div class="border-r col-span-5 max-h-full overflow-auto">
-      <div class="p-4 border-b">
-        <h2 class="font-semibold">Ödeme Terminalleri</h2>
-      </div>
-      <div class="flex flex-col border-b">
-        <div
-          v-for="terminal of paymentTerminals"
-          :key="terminal.name"
-          class="flex items-center gap-4 p-4 cursor:pointer hover:bg-secondary"
-        >
-          <LazyImage
-            :src="`/${terminal.type}.png`"
-            alt="beko"
-            class="size-14"
-          />
-          <div class="flex flex-col">
-            <span class="text-md">{{ terminal.name }}</span>
-            <span class="text-sm text-muted-foreground">{{
-              statusTextMap[terminal.status]
-            }}</span>
+  <div>
+    <SeoMeta title="Cihazlar" description="Cihazlar" />
+    <div class="grid grid-cols-9 w-full h-full max-h-[calc(100vh-3rem)]">
+      <div class="border-r col-span-5 max-h-full overflow-auto">
+        <div class="p-4 border-b">
+          <h2 class="font-semibold">Ödeme Terminalleri</h2>
+        </div>
+        <div class="flex flex-col border-b">
+          <div
+            v-for="terminal of paymentTerminals"
+            :key="terminal.name"
+            class="flex items-center gap-4 p-4 cursor:pointer hover:bg-secondary"
+          >
+            <LazyImage
+              :src="`/${terminal.type}.png`"
+              alt="beko"
+              class="size-14"
+            />
+            <div class="flex flex-col">
+              <span class="text-md">{{ terminal.name }}</span>
+              <span class="text-sm text-muted-foreground">{{
+                statusTextMap[terminal.status]
+              }}</span>
+            </div>
+            <ArrowRight class="size-4 ml-auto mr-4" />
           </div>
-          <ArrowRight class="size-4 ml-auto mr-4" />
         </div>
       </div>
-    </div>
-    <div class="col-span-4">
-      <div class="p-4 border-b">
-        <span class="font-semibold">Cihaz Ayarları</span>
+      <div class="col-span-4">
+        <div class="p-4 border-b">
+          <span class="font-semibold">Cihaz Ayarları</span>
+        </div>
       </div>
     </div>
   </div>

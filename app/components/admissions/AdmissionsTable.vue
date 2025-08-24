@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center my-4">
     <div class="flex items-center mr-auto gap-4">
-      <Input :model-value="props.search" @update:model-value="(value: string | number) => emit('update:search', String(value))" placeholder="Adisyonlarda Arama Yap..." />
+      <Input :model-value="props.search" placeholder="Adisyonlarda Arama Yap..." @update:model-value="(value: string | number) => emit('update:search', String(value))" />
       <Button disabled variant="outline">
         <ListFilter />
         Sırala
@@ -38,10 +38,10 @@
     
     <PaginationSimplified
       :model-value="props.currentPage"
-      @update:model-value="emit('update:currentPage', $event)"
       class="my-4 w-full flex justify-center"
       :items-per-page="props.itemsPerPage"
       :total-items="props.getFilteredOrders().length"
+      @update:model-value="emit('update:currentPage', $event)"
     />
   </template>
 </template>
@@ -52,6 +52,7 @@ import { Button } from '@/components/ui/button';
 import { ListFilter, Receipt } from 'lucide-vue-next';
 import DataTable from '@/components/DataTable.vue';
 import PaginationSimplified from '@/components/PaginationSimplified.vue';
+import type { TableData } from '@/types/DataTable';
 
 interface Order {
   id: string;
@@ -59,7 +60,13 @@ interface Order {
   status: string;
   createdAt: string;
   finalAmount: number;
-  items: any[];
+  items: OrderItem[];
+}
+
+interface OrderItem {
+  productId: string;
+  quantity: number;
+  price: number;
 }
 
 interface Props {
@@ -68,7 +75,7 @@ interface Props {
   currentPage: number;
   itemsPerPage: number;
   getFilteredOrders: () => Order[];
-  getTableData: () => any[];
+  getTableData: () => TableData[];
 }
 
 interface Emits {

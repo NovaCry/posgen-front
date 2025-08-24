@@ -55,7 +55,7 @@ const sidebarState = useSidebarStore();
         <SidebarGroupLabel v-if="group.name">{{
           group.name
         }}</SidebarGroupLabel>
-        <SidebarMenu v-for="item in group.data" :key="item.title">
+        <SidebarMenu v-for="item in group.data" :key="item.title" class="mb-1">
           <Collapsible
             v-if="item.type == 'collapsible'"
             class="group/collapsible"
@@ -139,7 +139,7 @@ const sidebarState = useSidebarStore();
     </ScrollArea>
   </SidebarContent>
   <SidebarFooter class="border-t">
-    <SidebarMenu>
+    <SidebarMenu class="mt-1">
       <SidebarMenuItem
         class="hover:bg-accent rounded-md transition duration-200"
       >

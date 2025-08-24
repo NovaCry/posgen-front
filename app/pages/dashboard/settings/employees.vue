@@ -236,105 +236,107 @@ const addEmployee = async () => {
 </script>
 
 <template>
-  <SeoMeta title="Çalışanlar" description="Çalışanlar" />
-  <Section>
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-semibold">Çalışanlar</h1>
+  <div>
+    <SeoMeta title="Çalışanlar" description="Çalışanlar" />
+    <Section>
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-semibold">Çalışanlar</h1>
 
-      <Dialog v-model:open="open">
-        <DialogTrigger as-child>
-          <Button class="flex items-center gap-2">
-            <Plus class="w-5 h-5" />
-            <span>Yeni Çalışan Ekle</span>
-          </Button>
-        </DialogTrigger>
-        <DialogContent class="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Yeni Çalışan Ekle</DialogTitle>
-            <DialogDescription>
-              Yeni çalışan bilgilerini doldurun ve kaydedin.
-            </DialogDescription>
-          </DialogHeader>
-
-          <form class="grid gap-4 py-4" @submit.prevent="addEmployee">
-            <div class="flex flex-col md:flex-row gap-3 md:gap-4">
-              <div class="flex flex-col gap-2 flex-1">
-                <Label for="firstname">Ad</Label>
-                <Input
-                  id="firstname"
-                  v-model="newEmployee.firstName"
-                  :disabled="Processing"
-                  type="text"
-                  placeholder="örn. Eren"
-                />
-              </div>
-              <div class="flex flex-col gap-2 flex-1">
-                <Label for="lastname">Soyad</Label>
-                <Input
-                  id="lastname"
-                  v-model="newEmployee.lastName"
-                  :disabled="Processing"
-                  type="text"
-                  placeholder="örn. Kaplan"
-                />
-              </div>
-            </div>
-            <div class="flex flex-col gap-2">
-              <Label for="email">E-Posta</Label>
-              <Input
-                id="email"
-                v-model="newEmployee.email"
-                :disabled="Processing"
-                type="email"
-                placeholder="örn. erenkaplan@sirket.org"
-              />
-            </div>
-            <div class="flex flex-col gap-2">
-              <Label for="pass">Şifre</Label>
-              <Input
-                id="pass"
-                v-model="newEmployee.password"
-                :disabled="Processing"
-                type="password"
-                placeholder="• • • • • • •"
-              />
-            </div>
-            <div class="flex flex-col gap-2">
-              <Label for="bornDate" class="flex w-full">Doğum Tarihi</Label>
-              <DatePicker
-                v-model="newEmployee.bornDate"
-                :disabled="Processing"
-                rule="birthday"
-              />
-            </div>
-            <span
-              v-if="ApiMessage != ''"
-              class="text-sm text-center text-red-600"
-              >{{ ApiMessage }}</span
-            >
-            <Button
-              class="w-fit ml-auto"
-              :disabled="Processing"
-              @click="addEmployee"
-            >
-              <Icon
-                v-if="Processing"
-                name="lucide:loader-circle"
-                class="animate-spin duration-1000"
-              />
-              Çalışan Ekle
-              <ArrowRight class="ml-auto" />
+        <Dialog v-model:open="open">
+          <DialogTrigger as-child>
+            <Button class="flex items-center gap-2">
+              <Plus class="w-5 h-5" />
+              <span>Yeni Çalışan Ekle</span>
             </Button>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </div>
+          </DialogTrigger>
+          <DialogContent class="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Yeni Çalışan Ekle</DialogTitle>
+              <DialogDescription>
+                Yeni çalışan bilgilerini doldurun ve kaydedin.
+              </DialogDescription>
+            </DialogHeader>
 
-    <DataTable :data="data" class="mt-6" />
-    <PaginationSimplified
-      class="my-4 w-full flex justify-center"
-      :model-value="5"
-      :total-items="100"
-    />
-  </Section>
+            <form class="grid gap-4 py-4" @submit.prevent="addEmployee">
+              <div class="flex flex-col md:flex-row gap-3 md:gap-4">
+                <div class="flex flex-col gap-2 flex-1">
+                  <Label for="firstname">Ad</Label>
+                  <Input
+                    id="firstname"
+                    v-model="newEmployee.firstName"
+                    :disabled="Processing"
+                    type="text"
+                    placeholder="örn. Eren"
+                  />
+                </div>
+                <div class="flex flex-col gap-2 flex-1">
+                  <Label for="lastname">Soyad</Label>
+                  <Input
+                    id="lastname"
+                    v-model="newEmployee.lastName"
+                    :disabled="Processing"
+                    type="text"
+                    placeholder="örn. Kaplan"
+                  />
+                </div>
+              </div>
+              <div class="flex flex-col gap-2">
+                <Label for="email">E-Posta</Label>
+                <Input
+                  id="email"
+                  v-model="newEmployee.email"
+                  :disabled="Processing"
+                  type="email"
+                  placeholder="örn. erenkaplan@sirket.org"
+                />
+              </div>
+              <div class="flex flex-col gap-2">
+                <Label for="pass">Şifre</Label>
+                <Input
+                  id="pass"
+                  v-model="newEmployee.password"
+                  :disabled="Processing"
+                  type="password"
+                  placeholder="• • • • • • •"
+                />
+              </div>
+              <div class="flex flex-col gap-2">
+                <Label for="bornDate" class="flex w-full">Doğum Tarihi</Label>
+                <DatePicker
+                  v-model="newEmployee.bornDate"
+                  :disabled="Processing"
+                  rule="birthday"
+                />
+              </div>
+              <span
+                v-if="ApiMessage != ''"
+                class="text-sm text-center text-red-600"
+                >{{ ApiMessage }}</span
+              >
+              <Button
+                class="w-fit ml-auto"
+                :disabled="Processing"
+                @click="addEmployee"
+              >
+                <Icon
+                  v-if="Processing"
+                  name="lucide:loader-circle"
+                  class="animate-spin duration-1000"
+                />
+                Çalışan Ekle
+                <ArrowRight class="ml-auto" />
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      <DataTable :data="data" class="mt-6" />
+      <PaginationSimplified
+        class="my-4 w-full flex justify-center"
+        :model-value="5"
+        :total-items="100"
+      />
+    </Section>
+  </div>
 </template>

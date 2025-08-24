@@ -10,7 +10,7 @@
     </div>
 
     <div>
-              <Select :model-value="props.filter" @update:model-value="(value: any) => value && emit('update:filter', value as 'all' | 'active')" default-value="all">
+              <Select :model-value="props.filter" default-value="all" @update:model-value="(value: any) => value && emit('update:filter', value as 'all' | 'active')">
         <SelectTrigger>
           <SelectValue as-child>
             <Filter />

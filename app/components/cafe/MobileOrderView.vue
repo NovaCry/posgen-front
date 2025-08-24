@@ -35,19 +35,13 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'update:showMobileOrders', value: boolean): void;
-  (e: 'changeTable'): void;
-  (e: 'update:splitPayment', value: boolean): void;
-  (e: 'update:numberOfPeople', value: number): void;
-  (e: 'update:splitPayment', value: boolean): void;
+  (e: 'update:showMobileOrders' | 'update:splitPayment', value: boolean): void;
+  (e: 'changeTable' | 'completeOrder' | 'itemDelete' | 'itemUpdate'): void;
   (e: 'update:numberOfPeople', value: number): void;
   (e: 'update:splitMode', value: 'equal' | 'custom'): void;
   (e: 'update:customSplitAmounts', value: number[]): void;
   (e: 'update:splitPaymentMethods', value: Array<'cash' | 'card'>): void;
   (e: 'update:paymentMethod', value: 'cash' | 'card'): void;
-  (e: 'completeOrder'): void;
-  (e: 'itemDelete'): void;
-  (e: 'itemUpdate'): void;
 }
 
 defineProps<Props>();
@@ -101,11 +95,11 @@ defineEmits<Emits>();
                 :key="`mobile-${tableId}-${item.title}`"
                 v-model:quantity="item.state.quantity"
                 v-model:selected="item.state.selected"
-                @update:quantity="$emit('itemUpdate')"
-                @update:selected="$emit('itemUpdate')"
                 :name="item.title"
                 :price="item.price"
                 :max-quantity="item.maxQuantity"
+                @update:quantity="$emit('itemUpdate')"
+                @update:selected="$emit('itemUpdate')"
                 @delete="$emit('itemUpdate')"
               />
             </div>

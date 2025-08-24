@@ -8,9 +8,11 @@ definePageMeta({
 </script>
 
 <template>
-  <SeoMeta title="App" description="App" />
-  <main>
-    <ApplicationHeader />
-    <RouterView />
-  </main>
+  <div>
+    <SeoMeta title="App" description="App" />
+    <main>
+      <ApplicationHeader />
+      <RouterView />
+    </main>
+  </div>
 </template>

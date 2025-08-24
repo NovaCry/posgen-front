@@ -162,114 +162,116 @@ onMounted(async () => {
 </script>
 
 <template>
-  <SeoMeta title="Sipariş Sayfası" description="Sipariş sayfası" />
-  <div class="grid grid-cols-1 lg:grid-cols-3 h-screen max-h-[calc(100vh-3rem)] overflow-hidden">
-    <ScrollArea class="col-span-1 lg:col-span-2 border-r-0 lg:border-r h-full max-h-[calc(100vh-3rem)]">
-      <Catalog v-model="productList" class="relative" />
-    </ScrollArea>
-
-    <div class="hidden lg:block relative max-h-[calc(100vh-3rem)] h-full">
-      <ScrollArea class="h-[calc(100%-4rem)]">
-        <SideCollapsible title="Siparişler">
-          <div class="mt-4 flex flex-col gap-3">
-            <div v-if="selectedItemsList.length === 0" class="text-center py-6 text-muted-foreground">
-              <UtensilsCrossed class="size-8 mx-auto mb-2 opacity-50" />
-              <p class="text-sm">Henüz sipariş alınmadı</p>
-            </div>
-            <SideCafeProduct
-              v-for="item of selectedItemsList"
-              :key="`self-${item.title}`"
-              v-model:quantity="item.state.quantity"
-              v-model:selected="item.state.selected"
-              :name="item.title"
-              :price="item.price"
-              :max-quantity="item.maxQuantity"
-              @delete="handleItemDelete"
-
-            />
-          </div>
-        </SideCollapsible>
-
-        <SideCollapsible title="Ödeme Yöntemi">
-          <div class="mt-4">
-            <PaymentSplitter
-              v-model:split-payment="splitPayment"
-              v-model:number-of-people="numberOfPeople"
-              v-model:split-mode="splitMode"
-              v-model:custom-split-amounts="customSplitAmounts"
-              v-model:split-payment-methods="splitPaymentMethods"
-              :final-price="finalPrice"
-            />
-            <div v-if="!splitPayment" class="mt-4">
-              <PaymentMethodSelector v-model:payment-method="paymentMethod" />
-            </div>
-          </div>
-        </SideCollapsible>
-
-        <SideCollapsible title="Fiyat Özeti">
-          <div class="mt-4">
-            <PriceSummary
-              :total-price="totalPrice"
-              :tax-amount="taxAmount"
-              :final-price="finalPrice"
-              :split-payment="splitPayment"
-              :split-amounts="splitAmounts"
-              :split-payment-methods="splitPaymentMethods"
-            />
-          </div>
-        </SideCollapsible>
+  <div>
+    <SeoMeta title="Sipariş Sayfası" description="Sipariş sayfası" />
+    <div class="grid grid-cols-1 lg:grid-cols-3 h-screen max-h-[calc(100vh-3rem)] overflow-hidden">
+      <ScrollArea class="col-span-1 lg:col-span-2 border-r-0 lg:border-r h-full max-h-[calc(100vh-3rem)]">
+        <Catalog v-model="productList" class="relative" />
       </ScrollArea>
 
-      <div class="border-t h-16 px-4 flex items-center">
-        <Button
-          class="w-full"
-          :disabled="selectedItemsList.length === 0 || isLoading || (splitPayment && Math.abs(splitDifference) > 0.01)"
-          @click="completeOrder"
-        >
-          <span v-if="isLoading">İşleniyor...</span>
-          <span v-else-if="splitPayment">{{ numberOfPeople }} Kişi Ödeme</span>
-          <span v-else>{{ paymentMethod === 'cash' ? 'Nakit Tahsilat' : 'Kart ile Ödeme' }}</span>
-          <component
-            :is="splitPayment ? Split : paymentMethod === 'cash' ? Banknote : CreditCard"
-            class="ml-2 h-4 w-4"
-          />
+      <div class="hidden lg:block relative max-h-[calc(100vh-3rem)] h-full">
+        <ScrollArea class="h-[calc(100%-4rem)]">
+          <SideCollapsible title="Siparişler">
+            <div class="mt-4 flex flex-col gap-3">
+              <div v-if="selectedItemsList.length === 0" class="text-center py-6 text-muted-foreground">
+                <UtensilsCrossed class="size-8 mx-auto mb-2 opacity-50" />
+                <p class="text-sm">Henüz sipariş alınmadı</p>
+              </div>
+              <SideCafeProduct
+                v-for="item of selectedItemsList"
+                :key="`self-${item.title}`"
+                v-model:quantity="item.state.quantity"
+                v-model:selected="item.state.selected"
+                :name="item.title"
+                :price="item.price"
+                :max-quantity="item.maxQuantity"
+                @delete="handleItemDelete"
+
+              />
+            </div>
+          </SideCollapsible>
+
+          <SideCollapsible title="Ödeme Yöntemi">
+            <div class="mt-4">
+              <PaymentSplitter
+                v-model:split-payment="splitPayment"
+                v-model:number-of-people="numberOfPeople"
+                v-model:split-mode="splitMode"
+                v-model:custom-split-amounts="customSplitAmounts"
+                v-model:split-payment-methods="splitPaymentMethods"
+                :final-price="finalPrice"
+              />
+              <div v-if="!splitPayment" class="mt-4">
+                <PaymentMethodSelector v-model:payment-method="paymentMethod" />
+              </div>
+            </div>
+          </SideCollapsible>
+
+          <SideCollapsible title="Fiyat Özeti">
+            <div class="mt-4">
+              <PriceSummary
+                :total-price="totalPrice"
+                :tax-amount="taxAmount"
+                :final-price="finalPrice"
+                :split-payment="splitPayment"
+                :split-amounts="splitAmounts"
+                :split-payment-methods="splitPaymentMethods"
+              />
+            </div>
+          </SideCollapsible>
+        </ScrollArea>
+
+        <div class="border-t h-16 px-4 flex items-center">
+          <Button
+            class="w-full"
+            :disabled="selectedItemsList.length === 0 || isLoading || (splitPayment && Math.abs(splitDifference) > 0.01)"
+            @click="completeOrder"
+          >
+            <span v-if="isLoading">İşleniyor...</span>
+            <span v-else-if="splitPayment">{{ numberOfPeople }} Kişi Ödeme</span>
+            <span v-else>{{ paymentMethod === 'cash' ? 'Nakit Tahsilat' : 'Kart ile Ödeme' }}</span>
+            <component
+              :is="splitPayment ? Split : paymentMethod === 'cash' ? Banknote : CreditCard"
+              class="ml-2 h-4 w-4"
+            />
+          </Button>
+        </div>
+      </div>
+
+      <div class="lg:hidden fixed bottom-4 right-4 z-50">
+        <Button size="lg" class="rounded-full shadow-lg" @click="showMobileOrders = true">
+          <UtensilsCrossed class="h-4 w-4 mr-2" />
+          <span class="text-sm">Sipariş ({{ selectedItemsList.length }})</span>
         </Button>
       </div>
+
+      <MobileOrderView
+        :show-mobile-orders="showMobileOrders"
+        :selected-table="null"
+        :has-active-order="false"
+        :is-loading="isLoading"
+        :selected-items-list="selectedItemsList"
+        :table-id="'self'"
+        :split-payment="splitPayment"
+        :number-of-people="numberOfPeople"
+        :split-mode="splitMode"
+        :custom-split-amounts="customSplitAmounts"
+        :split-payment-methods="splitPaymentMethods"
+        :payment-method="paymentMethod"
+        :total-price="totalPrice"
+        :tax-amount="taxAmount"
+        :final-price="finalPrice"
+        :split-difference="splitDifference"
+        @update:show-mobile-orders="showMobileOrders = $event"
+        @update:split-payment="splitPayment = $event"
+        @update:number-of-people="numberOfPeople = $event"
+        @update:split-mode="splitMode = $event"
+        @update:custom-split-amounts="customSplitAmounts = $event"
+        @update:split-payment-methods="splitPaymentMethods = $event"
+        @update:payment-method="paymentMethod = $event"
+        @complete-order="completeOrder"
+
+      />
     </div>
-
-    <div class="lg:hidden fixed bottom-4 right-4 z-50">
-      <Button size="lg" class="rounded-full shadow-lg" @click="showMobileOrders = true">
-        <UtensilsCrossed class="h-4 w-4 mr-2" />
-        <span class="text-sm">Sipariş ({{ selectedItemsList.length }})</span>
-      </Button>
-    </div>
-
-    <MobileOrderView
-      :show-mobile-orders="showMobileOrders"
-      :selected-table="null"
-      :has-active-order="false"
-      :is-loading="isLoading"
-      :selected-items-list="selectedItemsList"
-      :table-id="'self'"
-      :split-payment="splitPayment"
-      :number-of-people="numberOfPeople"
-      :split-mode="splitMode"
-      :custom-split-amounts="customSplitAmounts"
-      :split-payment-methods="splitPaymentMethods"
-      :payment-method="paymentMethod"
-      :total-price="totalPrice"
-      :tax-amount="taxAmount"
-      :final-price="finalPrice"
-      :split-difference="splitDifference"
-      @update:show-mobile-orders="showMobileOrders = $event"
-      @update:split-payment="splitPayment = $event"
-      @update:number-of-people="numberOfPeople = $event"
-      @update:split-mode="splitMode = $event"
-      @update:custom-split-amounts="customSplitAmounts = $event"
-      @update:split-payment-methods="splitPaymentMethods = $event"
-      @update:payment-method="paymentMethod = $event"
-      @complete-order="completeOrder"
-
-    />
   </div>
 </template>

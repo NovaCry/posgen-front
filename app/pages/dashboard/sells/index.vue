@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import SeoMeta from '@/components/seo/SeoMeta.vue';
-import { ref, onMounted, onUnmounted, watch } from 'vue';
-import Resource from '@/components/layout/Resource.vue';
-import { toLocaleDate } from '@/lib/toLocaleDate';
-import type { MenuCell, TableData } from '@/types/DataTable';
-import { Receipt, Filter, Eye } from 'lucide-vue-next';
+import { ref, onMounted, watch } from 'vue';
+import { navigateTo } from '#app';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import PaginationSimplified from '@/components/PaginationSimplified.vue';
+import DataTable from '@/components/DataTable.vue';
+import type { MenuCell, TableData } from '@/types/DataTable';
+import { ListFilter, Eye, Receipt, X, Filter } from 'lucide-vue-next';
 import Section from '@/components/layout/Section.vue';
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 import createProtectedApiInterface from '@/api/protected';
 import { useSelectedShopStore } from '@/store/shop';
-import { Input } from '@/components/ui/input';
-import { ListFilter } from 'lucide-vue-next';
-import DataTable from '@/components/DataTable.vue';
-import PaginationSimplified from '@/components/PaginationSimplified.vue';
+import { toLocaleDate } from '@/lib/toLocaleDate';
 
 definePageMeta({
   name: 'Satışlar',
@@ -62,45 +61,116 @@ const getProductName = (productId: string): string => {
   return product?.name || `Ürün ${productId.slice()}`;
 };
 
-const getTableName = (tableId: string | null): string => {
+const getTableName = (tableId: string | null, _orderId: string): string => {
   if (!tableId) return 'Self Servis';
   const table = tables.value.find((t: Table) => t.id === tableId);
   return table?.name || `${tableId.slice()}`;
 };
 
-const formatTime = (dateString: string): string => {
-  const date = new Date(dateString);
-  return date.toLocaleTimeString('tr-TR', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+const formatPrice = (price: number | string): string => {
+  return Math.round(parseFloat(price?.toString() || '0')).toLocaleString();
+};
+
+const formatOrderId = (orderId: string): string => {
+  if (orderId.endsWith('PSGNTR')) {
+    return `#${String(orderId).slice(0, 6).toUpperCase()}PSGNTR`;
+  }
+  return `#${orderId}`;
+};
+
+function getStatusColor(status: string): string {
+  switch (status) {
+    case 'OPEN':
+      return '#5456c0';
+    case 'PENDING':
+      return 'var(--secondary)';
+    case 'PREPARING':
+      return 'var(--secondary)';
+    case 'READY':
+      return '#10b981';
+    case 'COMPLETED':
+      return '#10b981';
+    case 'CANCELLED':
+      return '#ef4444';
+    default:
+      return '#6b7280';
+  }
+}
+
+function getStatusTranslation(status: string): string {
+  const statusTranslations: Record<string, string> = {
+    OPEN: 'Bekliyor',
+    PENDING: 'Bekliyor',
+    PREPARING: 'Hazırlanıyor',
+    READY: 'Hazır',
+    COMPLETED: 'Tamamlandı',
+    CANCELLED: 'İptal Edildi',
+  };
+  return statusTranslations[status] || status;
+}
+
+const cancelOrder = async (orderId: string) => {
+  try {
+    const response = await protectedApiInterface({
+      url: `shop/orders/${selectedShop.id}/orders/${orderId}/cancel`,
+      method: 'PUT',
+    });
+    
+    if (response?.data?.success) {
+      await fetchOrders();
+    }
+  } catch (error) {
+    console.error('Sipariş iptal edilirken hata:', error);
+  }
+};
+
+const viewOrderDetails = (orderId: string) => {
+  const order = orders.value.find((o) => o.id === orderId);
+  if (order) {
+    navigateTo(`/dashboard/admissions?orderId=${orderId}`);
+  }
 };
 
 const getActionsMenu = (order: Order): MenuCell => {
+  const canCancel = ['PENDING', 'PREPARING', 'READY'].includes(order.status);
+  
+  const items = [
+    {
+      type: 'item' as const,
+      text: 'Detayları Görüntüle',
+      icon: Eye,
+      action() {
+        viewOrderDetails(order.id);
+      },
+    },
+    {
+      type: 'item' as const,
+      text: 'Yazdır',
+      icon: Receipt,
+      action() {
+        console.log('Yazdır', order.id);
+      },
+    },
+  ];
+
+  if (canCancel) {
+    items.push({
+      type: 'item' as const,
+      text: 'İptal Et',
+      icon: X,
+      action() {
+        cancelOrder(order.id);
+      },
+    });
+  }
+
   return {
     type: 'menu',
     data: [
       {
         type: 'group',
         title: 'İşlemler',
-        items: [
-          {
-            type: 'item',
-            text: 'Detayları Görüntüle',
-            icon: Eye,
-            action() {
-              console.log('Detayları Görüntüle', order.id);
-            },
-          },
-          {
-            type: 'item',
-            text: 'Yazdır',
-            icon: Receipt,
-            action() {
-              console.log('Yazdır', order.id);
-            },
-          },
-        ],
+        items,
       },
     ],
   };
@@ -123,41 +193,39 @@ function makeResourceColumn(tableData: TableData[], order: Order) {
     'Sipariş No': [
       {
         type: 'text',
-        data: `#${String(order.id).slice(-6).toUpperCase() + 'PSGNTR'}`,
+        data: formatOrderId(order.id),
       },
     ],
-    Masa: [
+    'Masa/Adisyon': [
       {
         type: 'text',
-        data: getTableName(order.tableId),
+        data: getTableName(order.tableId, order.id),
       },
     ],
-    Tarih: [
+    'Oluşturma Tarihi': [
       {
         type: 'text',
         data: toLocaleDate(new Date(order.createdAt)),
       },
     ],
-    Ürünler: [
+    'Ürün Detayı': [
       {
         type: 'text',
         data: itemsText,
       },
     ],
-    Tutar: [
+    'Toplam Tutar': [
       {
         type: 'text',
-        data: `${parseFloat(
-          order.finalAmount?.toString() || '0'
-        ).toLocaleString()} ₺`,
+        data: `${formatPrice(order.finalAmount)} ₺`,
       },
     ],
     Durum: [
       {
         type: 'badge',
-        background: '#5456c0',
+        background: getStatusColor(order.status),
         color: 'white',
-        data: 'Tamamlandı',
+        data: getStatusTranslation(order.status),
       },
     ],
     İşlemler: [getActionsMenu(order)],
@@ -274,7 +342,7 @@ const getFilteredOrders = (): Order[] => {
     const searchTerm = search.value.toLowerCase().replace('#', '');
     filteredOrders = filteredOrders.filter(order => {
       const productNames = order.items.map(item => getProductName(item.productId)).join(' ').toLowerCase();
-      const tableName = getTableName(order.tableId).toLowerCase();
+      const tableName = getTableName(order.tableId, order.id).toLowerCase();
       const orderId = order.id.toLowerCase();
       
       return productNames.includes(searchTerm) || 
@@ -308,152 +376,110 @@ const getTableData = (): TableData[] => {
   return tableData;
 };
 
-const populateResourceData = (tableData: TableData[]) => {
+const _populateResourceData = (tableData: TableData[]) => {
   const filteredOrders = getFilteredOrders();
   for (const order of filteredOrders) {
     makeResourceColumn(tableData, order);
   }
 };
 
-
-const fetchSalesData = async (page: number, limit: number, search: string) => {
+const _fetchSalesData = async () => {
   try {
-    const [ordersResponse, admissionsResponse] = await Promise.all([
-      protectedApiInterface({
-        url: `shop/orders/${selectedShop.id}/orders?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`,
-        method: 'GET',
-      }),
-      protectedApiInterface({
-        url: `shop/admissions/${selectedShop.id}/list?limit=${limit}&page=${page}&search=${encodeURIComponent(search)}`,
-        method: 'GET',
-      }),
-    ]);
-
-    const baseOrders = (ordersResponse?.data?.data || []) as Order[];
-    const admissions = (admissionsResponse?.data?.data || []) as Admission[];
-    const mappedAdmissions = mapAdmissionsToOrders(admissions, products.value);
+    const response = await protectedApiInterface({
+      url: `shop/orders/${selectedShop.id}/orders`,
+      method: 'GET',
+    });
     
-    const allOrders = [...baseOrders, ...mappedAdmissions];
-    const completedOrders = allOrders.filter(
-      (order: Order) => order.status === 'COMPLETED'
-    );
-
-    let filteredOrders = completedOrders;
-    if (showOnlyToday.value) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      filteredOrders = completedOrders.filter(
-        (order: Order) => new Date(order.createdAt) >= today
-      );
+    if (response?.data?.data) {
+      orders.value = response.data.data as Order[];
     }
-
-    filteredOrders.sort((a: Order, b: Order) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-
-    return {
-      data: filteredOrders,
-      meta: {
-        page: page,
-        maxItems: limit,
-        totalCount: filteredOrders.length,
-        totalPages: Math.ceil(filteredOrders.length / limit)
-      }
-    };
   } catch (error) {
-    console.error('Veriler yüklenirken hata:', error);
-    return {
-      data: [],
-      meta: {
-        page: 0,
-        maxItems: 0,
-        totalCount: 0,
-        totalPages: 0
-      }
-    };
+    console.error('Satış verileri yüklenirken hata:', error);
   }
 };
 </script>
 
 <template>
-  <SeoMeta title="Satışlar" description="Satışlar" />
-  <Section>
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-semibold">Satışlar</h1>
+  <div>
+    <SeoMeta title="Satışlar" description="Satışlar" />
+    <Section>
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-semibold">Satışlar</h1>
 
-      <div class="flex items-center gap-3">
-        <Button
-          variant="outline"
-          size="sm"
-          class="flex items-center gap-2"
-          @click="toggleFilter"
-        >
-          <Filter class="size-4" />
-          {{ showOnlyToday ? 'Bugün' : 'Tümü' }}
-        </Button>
-      </div>
-    </div>
-
-    <div v-if="showOnlyToday" class="mb-4">
-      <Badge
-        variant="secondary"
-        class="bg-blue-50 text-blue-700 border-blue-200"
-      >
-        <div class="w-2 h-2 bg-blue-500 rounded-full mr-2" />
-        Sadece bugünkü satışlar gösteriliyor
-      </Badge>
-    </div>
-
-    <div v-if="isLoading && orders.length === 0" class="text-center py-12">
-      <div
-        class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"
-      />
-      <p class="text-muted-foreground">Satışlar yükleniyor...</p>
-    </div>
-
-    <template v-else>
-      <div class="flex items-center my-4">
-        <div class="flex items-center mr-auto gap-4">
-          <Input v-model="search" placeholder="Satışlarda Arama Yap..." />
-          <Button disabled variant="outline">
-            <ListFilter />
-            Sırala
+        <div class="flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            class="flex items-center gap-2"
+            @click="toggleFilter"
+          >
+            <Filter class="size-4" />
+            {{ showOnlyToday ? 'Bugün' : 'Tümü' }}
           </Button>
         </div>
       </div>
-      
-      <div v-if="getFilteredOrders().length === 0" class="text-center py-12">
-        <Receipt class="size-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-        <h3 class="text-lg font-semibold mb-2">
-          {{
-            search.trim() 
-              ? 'Arama sonucu bulunamadı' 
-              : showOnlyToday 
-                ? 'Bugün satış bulunmuyor' 
-                : 'Henüz satış bulunmuyor'
-          }}
-        </h3>
-        <p class="text-muted-foreground">
-          {{
-            search.trim()
-              ? `"${search}" için sonuç bulunamadı. Farklı kelimeler deneyin.`
-              : showOnlyToday
-                ? 'Bugün henüz hiç satış yapılmamış.'
-                : 'Henüz hiç satış tamamlanmamış.'
-          }}
-        </p>
+
+      <div v-if="showOnlyToday" class="mb-4">
+        <Badge
+          variant="secondary"
+          class="bg-blue-50 text-blue-700 border-blue-200"
+        >
+          <div class="w-2 h-2 bg-blue-500 rounded-full mr-2" />
+          Sadece bugünkü satışlar gösteriliyor
+        </Badge>
+      </div>
+
+      <div v-if="isLoading && orders.length === 0" class="text-center py-12">
+        <div
+          class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"
+        />
+        <p class="text-muted-foreground">Satışlar yükleniyor...</p>
       </div>
 
       <template v-else>
-        <DataTable :data="getTableData().slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)" />
+        <div class="flex items-center my-4">
+          <div class="flex items-center mr-auto gap-4">
+            <Input v-model="search" placeholder="Satışlarda Arama Yap..." />
+            <Button disabled variant="outline">
+              <ListFilter />
+              Sırala
+            </Button>
+          </div>
+        </div>
         
-        <PaginationSimplified
-          v-model="currentPage"
-          class="my-4 w-full flex justify-center"
-          :items-per-page="itemsPerPage"
-          :total-items="getFilteredOrders().length"
-        />
+        <div v-if="getFilteredOrders().length === 0" class="text-center py-12">
+          <Receipt class="size-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+          <h3 class="text-lg font-semibold mb-2">
+            {{
+              search.trim() 
+                ? 'Arama sonucu bulunamadı' 
+                : showOnlyToday 
+                  ? 'Bugün satış bulunmuyor' 
+                  : 'Henüz satış bulunmuyor'
+            }}
+          </h3>
+          <p class="text-muted-foreground">
+            {{
+              search.trim()
+                ? `"${search}" için sonuç bulunamadı. Farklı kelimeler deneyin.`
+                : showOnlyToday
+                  ? 'Bugün henüz hiç satış yapılmamış.'
+                  : 'Henüz hiç satış tamamlanmamış.'
+            }}
+          </p>
+        </div>
+
+        <template v-else>
+          <DataTable :data="getTableData().slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)" />
+          
+          <PaginationSimplified
+            v-model="currentPage"
+            class="my-4 w-full flex justify-center"
+            :items-per-page="itemsPerPage"
+            :total-items="getFilteredOrders().length"
+          />
+        </template>
       </template>
-    </template>
-  </Section>
+    </Section>
+  </div>
 </template>

@@ -18,7 +18,7 @@ const productList = defineModel({
   default: [],
 });
 
-const emit = defineEmits<{
+const _emit = defineEmits<{
   productUpdate: [];
 }>();
 

@@ -52,87 +52,89 @@ const applications = [
 </script>
 
 <template>
-  <SeoMeta title="Posgen Portal" description="Posgen Portal" />
-  <main
-    class="h-[calc(100vh-3rem)] grid grid-cols-1 md:grid-cols-5 xl:w-[1000px] mx-auto px-2 md:px-0"
-  >
-    <ClientOnly>
-      <HealthCheck />
-    </ClientOnly>
-    <div
-      class="col-span-1 md:col-span-2 min-w-[200px] md:min-w-[300px] mx-auto flex my-auto h-fit flex-col min-h-[240px] md:min-h-[340px] w-full"
+  <div>
+    <SeoMeta title="Posgen Portal" description="Posgen Portal" />
+    <main
+      class="h-[calc(100vh-3rem)] grid grid-cols-1 md:grid-cols-5 xl:w-[1000px] mx-auto px-2 md:px-0"
     >
       <ClientOnly>
-        <MotionConfig
-          :transition="{ type: 'tween', duration: 0.3, ease: 'anticipate' }"
-        >
-          <motion.span
-            :initial="{ filter: 'blur(10px)', scale: 0.8 }"
-            :animate="{ filter: 'blur(0px)', scale: 1 }"
-            class="font-header"
-            >{{ toLocaleDate(new Date(), true) }}</motion.span
-          >
-          <motion.h1
-            :initial="{ filter: 'blur(10px)', scale: 0.8 }"
-            :animate="{ filter: 'blur(0px)', scale: 1 }"
-            :transition="{ delay: 0.1 }"
-            class="text-5xl"
-          >
-            {{ localTime }}
-          </motion.h1>
-          <motion.div
-            v-if="user.data.value"
-            :initial="{ filter: 'blur(10px)', scale: 0.8 }"
-            :animate="{ filter: 'blur(0px)', scale: 1 }"
-            :transition="{ delay: 0.2 }"
-            class="py-6 flex items-center gap-2"
-          >
-            <Avatar class="size-10">
-              <AvatarImage src="" />
-              <AvatarFallback>
-                {{ shortenName(user.data.value.name) }}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <span>Günaydın, {{ user.data.value.name }}.</span>
-            </div>
-          </motion.div>
-        </MotionConfig>
+        <HealthCheck />
       </ClientOnly>
-    </div>
-    <div
-      class="col-span-1 md:col-span-3 w-full md:w-fit min-w-[200px] md:min-w-[400px] mx-auto flex flex-col min-h-[240px] md:min-h-[340px] my-auto items-center"
-    >
-      <motion.div
-        v-for="(app, index) of applications"
-        :key="app.name"
-        :initial="{ filter: 'blur(10px)', scale: 0.8 }"
-        :animate="{ filter: 'blur(0px)', scale: 1 }"
-        :transition="{
-          type: 'tween',
-          delay: 0.1 * index,
-          duration: 0.3,
-          ease: 'anticipate',
-        }"
-        class="w-full"
+      <div
+        class="col-span-1 md:col-span-2 min-w-[200px] md:min-w-[300px] mx-auto flex my-auto h-fit flex-col min-h-[240px] md:min-h-[340px] w-full"
       >
-        <NuxtLink
-          :to="app.disabled ? '' : app.path"
-          :class="
-            cn(
-              'flex gap-2.5 items-center py-3 px-3.5 my-2 rounded-xl bg-gradient-to-r cursor-pointer to-transparent transition duration-100 delay-100',
-              app.disabled
-                ? 'from-zinc-600/40 opacity-50 cursor-not-allowed'
-                : app.color
-            )
-          "
+        <ClientOnly>
+          <MotionConfig
+            :transition="{ type: 'tween', duration: 0.3, ease: 'anticipate' }"
+          >
+            <motion.span
+              :initial="{ filter: 'blur(10px)', scale: 0.8 }"
+              :animate="{ filter: 'blur(0px)', scale: 1 }"
+              class="font-header"
+              >{{ toLocaleDate(new Date(), true) }}</motion.span
+            >
+            <motion.h1
+              :initial="{ filter: 'blur(10px)', scale: 0.8 }"
+              :animate="{ filter: 'blur(0px)', scale: 1 }"
+              :transition="{ delay: 0.1 }"
+              class="text-5xl"
+            >
+              {{ localTime }}
+            </motion.h1>
+            <motion.div
+              v-if="user.data.value"
+              :initial="{ filter: 'blur(10px)', scale: 0.8 }"
+              :animate="{ filter: 'blur(0px)', scale: 1 }"
+              :transition="{ delay: 0.2 }"
+              class="py-6 flex items-center gap-2"
+            >
+              <Avatar class="size-10">
+                <AvatarImage src="" />
+                <AvatarFallback>
+                  {{ shortenName(user.data.value.name) }}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <span>Günaydın, {{ user.data.value.name }}.</span>
+              </div>
+            </motion.div>
+          </MotionConfig>
+        </ClientOnly>
+      </div>
+      <div
+        class="col-span-1 md:col-span-3 w-full md:w-fit min-w-[200px] md:min-w-[400px] mx-auto flex flex-col min-h-[240px] md:min-h-[340px] my-auto items-center"
+      >
+        <motion.div
+          v-for="(app, index) of applications"
+          :key="app.name"
+          :initial="{ filter: 'blur(10px)', scale: 0.8 }"
+          :animate="{ filter: 'blur(0px)', scale: 1 }"
+          :transition="{
+            type: 'tween',
+            delay: 0.1 * index,
+            duration: 0.3,
+            ease: 'anticipate',
+          }"
+          class="w-full"
         >
-          <component :is="app.icon" class="size-8" />
-          <div>
-            <span class="text-lg">{{ app.name }}</span>
-          </div>
-        </NuxtLink>
-      </motion.div>
-    </div>
-  </main>
+          <NuxtLink
+            :to="app.disabled ? '' : app.path"
+            :class="
+              cn(
+                'flex gap-2.5 items-center py-3 px-3.5 my-2 rounded-xl bg-gradient-to-r cursor-pointer to-transparent transition duration-100 delay-100',
+                app.disabled
+                  ? 'from-zinc-600/40 opacity-50 cursor-not-allowed'
+                  : app.color
+              )
+            "
+          >
+            <component :is="app.icon" class="size-8" />
+            <div>
+              <span class="text-lg">{{ app.name }}</span>
+            </div>
+          </NuxtLink>
+        </motion.div>
+      </div>
+    </main>
+  </div>
 </template>

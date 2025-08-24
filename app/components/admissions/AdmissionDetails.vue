@@ -1,5 +1,5 @@
 <template>
-  <Dialog :open="isDialogOpen" @update:open="$emit('update:isDialogOpen', $event)">
+  <Dialog :open="isDialogOpen" @update:open="$emit('update:is-dialog-open', $event)">
     <DialogContent class="max-w-2xl max-h-[90vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>Adisyon Detayları</DialogTitle>
@@ -16,13 +16,18 @@
             </h4>
             <Badge
               :variant="
-                ['PENDING', 'PREPARING', 'READY'].includes(
-                  selectedOrder.status
-                )
-                  ? 'default'
-                  : 'secondary'
+                selectedOrder.status === 'PENDING' ? 'secondary' :
+                selectedOrder.status === 'PREPARING' ? 'default' :
+                selectedOrder.status === 'READY' ? 'default' :
+                selectedOrder.status === 'COMPLETED' ? 'default' :
+                selectedOrder.status === 'CANCELLED' ? 'destructive' :
+                'secondary'
               "
-              class="bg-[#5456c0] text-white transition-all duration-300 hover:scale-105"
+              :style="{
+                backgroundColor: getStatusColor(selectedOrder.status),
+                color: 'white'
+              }"
+              class="transition-all duration-300 hover:scale-105 text-sm"
             >
               {{ getStatusTranslation(selectedOrder.status) }}
             </Badge>
@@ -39,9 +44,9 @@
             <h4 class="font-semibold text-sm text-muted-foreground mb-1">
               Sipariş ID
             </h4>
-            <p class="text-sm font-mono">
-              #{{ String(selectedOrder.id).slice(-6).toUpperCase() + 'PSGNTR' }}
-            </p>
+                         <p class="text-sm font-mono">
+               {{ formatOrderId(selectedOrder.id) }}
+             </p>
           </div>
         </div>
 
@@ -64,15 +69,14 @@
                 </p>
               </div>
               <div class="text-right">
-                <p class="font-semibold">
-                  {{
-                    formatPrice(
-                      parseFloat(item.price?.toString() || '0') *
-                        item.quantity
-                    )
-                  }}
-                  ₺
-                </p>
+                                 <p class="font-semibold">
+                   {{
+                     formatPrice(
+                       getProductPrice(item.productId) * item.quantity
+                     )
+                   }}
+                   ₺
+                 </p>
               </div>
             </div>
           </div>
@@ -106,10 +110,20 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </DialogContent>
-  </Dialog>
+                 </div>
+
+         <div v-if="['PENDING', 'PREPARING', 'READY'].includes(selectedOrder.status)" class="flex justify-end">
+           <Button 
+             variant="destructive" 
+             size="sm"
+             @click="cancelOrder"
+           >
+             İptal Et
+           </Button>
+         </div>
+       </div>
+     </DialogContent>
+   </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -121,6 +135,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { toLocaleDate } from '@/lib/toLocaleDate';
 
@@ -143,30 +158,81 @@ interface Order {
 interface Product {
   id: string;
   name: string;
+  price: number;
 }
 
 const statusTranslations: Record<string, string> = {
   OPEN: 'Bekliyor',
+  PENDING: 'Bekliyor',
   PREPARING: 'Hazırlanıyor',
   READY: 'Hazır',
   COMPLETED: 'Tamamlandı',
   CANCELLED: 'İptal Edildi',
 };
 
-const formatPrice = (price: number | string): string => {
-  return Math.round(parseFloat(price?.toString() || '0')).toLocaleString();
+const getStatusColor = (status: string): string => {
+  switch (status) {
+    case 'OPEN':
+      return '#5456c0';
+    case 'PENDING':
+      return 'var(--secondary)';
+    case 'PREPARING':
+      return '#f59e0b';
+    case 'READY':
+      return '#10b981';
+    case 'COMPLETED':
+      return '#10b981';
+    case 'CANCELLED':
+      return '#ef4444';
+    default:
+      return '#6b7280';
+  }
 };
 
 const getStatusTranslation = (status: string): string => {
   return statusTranslations[status] || status;
 };
 
-const getProductName = (productId: string): string => {
-  return `Ürün ${productId.slice(-4)}`;
+const formatPrice = (price: number | string): string => {
+  return Math.round(parseFloat(price?.toString() || '0')).toLocaleString();
 };
 
-defineProps<{
+const formatOrderId = (orderId: string): string => {
+  if (orderId.endsWith('PSGNTR')) {
+    return `#${String(orderId).slice(0, 6).toUpperCase()}PSGNTR`;
+  }
+  return `#${orderId}`;
+};
+
+const getProductName = (productId: string): string => {
+  const product = props.products.find((p: Product) => p.id === productId);
+  return product?.name || `Ürün ${productId.slice(-4)}`;
+};
+
+const getProductPrice = (productId: string): number => {
+  const product = props.products.find((p: Product) => p.id === productId);
+  return product?.price || 0;
+};
+
+const props = defineProps<{
   isDialogOpen: boolean;
   selectedOrder: Order | null;
+  products: Product[];
 }>();
+
+const emit = defineEmits<{
+  'update:is-dialog-open': [value: boolean];
+  'order-cancelled': [orderId: string];
+}>();
+
+const cancelOrder = async () => {
+  if (!props.selectedOrder) return;
+  
+  try {
+    emit('order-cancelled', props.selectedOrder.id);
+    emit('update:is-dialog-open', false);
+  } catch (error) {
+    console.error('Sipariş iptal edilirken hata:', error);
+  }
+};
 </script>

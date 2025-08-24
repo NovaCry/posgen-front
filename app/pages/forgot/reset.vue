@@ -1,51 +1,53 @@
 <template>
-  <SeoMeta title="Şifreyi Sıfırla" description="Şifreyi sıfırla" />
-  <div class="container flex flex-col items-center justify-center min-h-screen">
-    <Header />
-    <Card class="w-[400px]">
-      <CardHeader>
-        <CardTitle class="text-3xl"> Şifreyi Sıfırla </CardTitle>
-        <CardDescription
-          >Akılda kalıcı ve tahmin edilemez bir parola seçiniz.</CardDescription
-        >
-      </CardHeader>
-      <CardContent class="flex flex-col gap-6">
-        <div class="flex flex-col gap-2">
-          <Label for="password">Şifre</Label>
-          <Input
-            id="password"
-            v-model="Password"
-            :disabled="Processing"
-            type="password"
-            placeholder="Şifreniz..."
-          />
-        </div>
-        <div class="flex flex-col gap-2">
-          <Label for="password2">Şifre (Tekrar)</Label>
-          <Input
-            id="password2"
-            v-model="PasswordAgain"
-            :disabled="Processing"
-            type="password"
-            placeholder="Şifreniz... (Tekrar)"
-          />
-        </div>
+  <div>
+    <SeoMeta title="Şifreyi Sıfırla" description="Şifreyi sıfırla" />
+    <div class="container flex flex-col items-center justify-center min-h-screen">
+      <Header />
+      <Card class="w-[400px]">
+        <CardHeader>
+          <CardTitle class="text-3xl"> Şifreyi Sıfırla </CardTitle>
+          <CardDescription
+            >Akılda kalıcı ve tahmin edilemez bir parola seçiniz.</CardDescription
+          >
+        </CardHeader>
+        <CardContent class="flex flex-col gap-6">
+          <div class="flex flex-col gap-2">
+            <Label for="password">Şifre</Label>
+            <Input
+              id="password"
+              v-model="Password"
+              :disabled="Processing"
+              type="password"
+              placeholder="Şifreniz..."
+            />
+          </div>
+          <div class="flex flex-col gap-2">
+            <Label for="password2">Şifre (Tekrar)</Label>
+            <Input
+              id="password2"
+              v-model="PasswordAgain"
+              :disabled="Processing"
+              type="password"
+              placeholder="Şifreniz... (Tekrar)"
+            />
+          </div>
 
-        <Button :disabled="Processing" @click="Login()">
-          <Icon
-            v-if="Processing"
-            name="lucide:loader-circle"
-            class="animate-spin duration-1000"
-          />
-          Sıfırla
-        </Button>
-        <span
-          v-if="ApiMessage != ''"
-          class="text-sm text-center text-red-600"
-          >{{ ApiMessage }}</span
-        >
-      </CardContent>
-    </Card>
+          <Button :disabled="Processing" @click="Login()">
+            <Icon
+              v-if="Processing"
+              name="lucide:loader-circle"
+              class="animate-spin duration-1000"
+            />
+            Sıfırla
+          </Button>
+          <span
+            v-if="ApiMessage != ''"
+            class="text-sm text-center text-red-600"
+            >{{ ApiMessage }}</span
+          >
+        </CardContent>
+      </Card>
+    </div>
   </div>
 </template>
 
