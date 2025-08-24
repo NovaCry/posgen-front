@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: {
-    enabled: false,
+    enabled: true,
 
     timeline: {
       enabled: true,
@@ -17,6 +17,49 @@ export default defineNuxtConfig({
 
   devServer: {
     port: 8080,
+  },
+
+  app: {
+    head: {
+      link: [
+        {
+          rel: 'alternate icon',
+          href: '/resources/infill/16x16-infill.png',
+          type: 'image/png',
+          sizes: '16x16',
+        },
+        {
+          rel: 'alternate icon',
+          href: '/resources/infill/32x32-infill.png',
+          type: 'image/png',
+          sizes: '32x32',
+        },
+        {
+          rel: 'alternate icon',
+          href: '/resources/infill/64x64-infill.png',
+          type: 'image/png',
+          sizes: '64x64',
+        },
+        {
+          rel: 'alternate icon',
+          href: '/resources/infill/128x128-infill.png',
+          type: 'image/png',
+          sizes: '128x128',
+        },
+        {
+          rel: 'alternate icon',
+          href: '/resources/infill/256x256-infill.png',
+          type: 'image/png',
+          sizes: '256x256',
+        },
+        {
+          rel: 'icon',
+          href: '/resources/infill/512x512-infill.svg',
+          type: 'image/svg+xml',
+          sizes: 'any',
+        },
+      ],
+    },
   },
 
   css: ['~/assets/css/tailwind.css'],
@@ -35,7 +78,7 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@pinia/nuxt',
     'motion-v/nuxt',
-    '@nuxtjs/sitemap'
+    '@nuxtjs/sitemap',
   ],
 
   sitemap: {
@@ -49,7 +92,7 @@ export default defineNuxtConfig({
       'https://posgen.tr/contact',
       'https://posgen.tr/pricing',
       'https://posgen.tr/blog',
-    ]
+    ],
   },
 
   shadcn: {
