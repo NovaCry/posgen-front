@@ -18,15 +18,19 @@ const productList = defineModel({
   default: [],
 });
 
+const emit = defineEmits<{
+  productUpdate: [];
+}>();
+
 const selectedCategoryId = ref<string | null>(null);
 const searchQuery = ref('');
 const sortBy = ref<'name' | 'price-asc' | 'price-desc'>('name');
-// const showFilters = ref(false);
+ 
 
 const filteredCategories = computed(() => {
   let filtered = [...productList.value];
 
-  // Apply search filter
+  
   if (searchQuery.value) {
     filtered = filtered
       .map((category) => ({
@@ -38,14 +42,14 @@ const filteredCategories = computed(() => {
       .filter((category) => category.items.length > 0);
   }
 
-  // Apply category filter
+  
   if (selectedCategoryId.value) {
     filtered = filtered.filter(
       (category) => category.id === selectedCategoryId.value
     );
   }
 
-  // Apply sorting
+  
   filtered = filtered.map((category) => {
     const sortedItems = [...category.items].sort((a, b) => {
       if (sortBy.value === 'name') {
@@ -167,6 +171,9 @@ function setSort(sort: 'name' | 'price-asc' | 'price-desc') {
               :price="item.price"
               :image="item.image"
               :max-quantity="item.maxQuantity"
+              :has-stock="item.hasStock"
+              @update:quantity="$emit('productUpdate')"
+              @update:selected="$emit('productUpdate')"
             />
           </div>
         </div>

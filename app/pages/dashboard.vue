@@ -1,4 +1,5 @@
 <template>
+  <SeoMeta title="Dashboard" description="Dashboard" />
   <SidebarProvider v-model:open="sidebarOpenState">
     <Sidebar collapsible="icon" class="z-[5] ease-in-out">
       <SidebarContent />
@@ -33,7 +34,7 @@ import {
 import SidebarInsetHeader from '@/components/header/sidebar/SidebarInsetHeader.vue';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import SidebarContent from '~/components/template/SidebarContent.vue';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 definePageMeta({
   meta: {
     hideInBreadcrumb: true,

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -238,6 +239,7 @@ definePageMeta({
 </script>
 
 <template>
+  <SeoMeta title="Ayarlar" description="Ayarlar" />
   <div class="min-h-screen bg-background">
     <div class="relative">
       <Skeleton class="w-full h-64 rounded-none" />

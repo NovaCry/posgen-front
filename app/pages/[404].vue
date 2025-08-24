@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import Header from '@/components/header/index/IndexHeader.vue';
 import Button from '@/components/ui/button/Button.vue';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 const router = useRouter();
 const isLoaded = ref(false);
 
@@ -22,7 +22,8 @@ function goHome() {
 </script>
 
 <template>
-  <div class="min-h-screen text-white overflow-hidden">
+  <div class="min-h-screen text-sm overflow-hidden">
+    <SeoMeta title="404 - Sayfa Bulunamadı" description="404 - Sayfa Bulunamadı" />
     <Header />
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
       <div
@@ -51,22 +52,22 @@ function goHome() {
       >
         <div class="relative mb-12">
           <div class="flex items-center justify-center gap-4">
-            <span
-              class="text-8xl md:text-9xl font-black text-white leading-none drop-shadow-2xl relative"
-            >
-              4
-              <div
-                class="absolute inset-0 text-8xl md:text-9xl font-black text-blue-400/20 blur-sm"
-              >
-                4
-              </div>
-            </span>
+                         <span
+               class="text-8xl md:text-9xl font-black leading-none drop-shadow-2xl relative"
+             >
+               4
+               <div
+                 class="absolute inset-0 text-8xl md:text-9xl font-black text-blue-400/20 blur-sm"
+               >
+                 4
+               </div>
+             </span>
             <div class="flex items-center justify-center relative">
               <div
                 class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full blur-xl scale-150"
               />
               <div
-                class="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 shadow-2xl"
+                class="relative bg-white/10 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-gray-600/40 rounded-2xl p-4 shadow-lg"
               >
                 <img
                   src="/resources/infill/512x512-infill.svg"
@@ -75,22 +76,22 @@ function goHome() {
                 />
               </div>
             </div>
-            <span
-              class="text-8xl md:text-9xl font-black text-white leading-none drop-shadow-2xl relative"
-            >
-              4
-              <div
-                class="absolute inset-0 text-8xl md:text-9xl font-black text-purple-400/20 blur-sm"
-              >
-                4
-              </div>
-            </span>
+                         <span
+               class="text-8xl md:text-9xl font-black leading-none drop-shadow-2xl relative"
+             >
+               4
+               <div
+                 class="absolute inset-0 text-8xl md:text-9xl font-black text-purple-400/20 blur-sm"
+               >
+                 4
+               </div>
+             </span>
           </div>
         </div>
-        <h1 class="text-4xl md:text-5xl font-bold mb-6 drop-shadow-lg">
+        <h1 class="text-sm md:text-5xl font-bold mb-6 drop-shadow-lg">
           Burada Bir Şey Yok
         </h1>
-        <p class="text-gray-400 mb-5 text-lg-4 opacity-75">
+        <p class="text-sm mb-5 text-lg-4 opacity-75">
           Bu sayfa belki bir zamanlar vardı, belki de hiç olmadı. Belki silindi,
           belki de görmemen gerekiyordu.<br />
           Ama endişe etme — Posgen arka planda hâlâ sessizce çalışıyor. Her

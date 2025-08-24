@@ -17,7 +17,7 @@ import {
   Calendar,
   Ellipsis,
 } from 'lucide-vue-next';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 definePageMeta({
   name: 'Abonelik Yönetimi',
 });
@@ -59,6 +59,7 @@ const limits = [
 </script>
 
 <template>
+  <SeoMeta title="Abonelik Yönetimi" description="Abonelik yönetimi" />
   <Section>
     <h1 class="text-2xl sm:text-3xl font-semibold">Abonelik</h1>
     <div class="gap-6 mt-4">

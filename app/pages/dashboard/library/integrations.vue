@@ -4,13 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BadgeCheck, Search } from 'lucide-vue-next';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 definePageMeta({
   name: 'Entegrasyonlar',
 });
 </script>
 
 <template>
+  <SeoMeta title="Entegrasyonlar" description="Entegrasyonlar" />
   <Section>
     <div class="flex items-center">
       <h1 class="text-3xl font-semibold">Entegrasyonlar</h1>

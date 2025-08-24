@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { TableData } from '@/types/DataTable';
 import { ArrowLeft } from 'lucide-vue-next';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 const router = useRouter();
 
 definePageMeta({
@@ -34,6 +34,7 @@ const permissions: TableData[] = [
 </script>
 
 <template>
+  <SeoMeta title="Roller" description="Roller" />
   <div class="grid grid-cols-3 w-full h-full relative">
     <div
       class="absolute w-full h-full top-0 backdrop-blur-md z-1 flex items-center flex-col justify-center"

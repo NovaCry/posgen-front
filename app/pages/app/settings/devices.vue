@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/select';
 import { ChevronRight } from 'lucide-vue-next';
 import { ref } from 'vue';
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 
 type deviceStatus = 'connected' | 'pending' | 'failed';
 
@@ -57,10 +58,11 @@ const devices: Device[] = [
   },
 ];
 
-const selectedDevice = ref<Device>(devices[0]);
+const selectedDevice = ref<Device>(devices[0]!);
 </script>
 
 <template>
+  <SeoMeta title="Cihazlar" description="Cihazlar" />
   <div class="container py-6 max-h-[calc(100dvh-3rem)] h-full relative">
     <h1 class="text-3xl font-semibold">Cihazlar</h1>
     <div class="grid grid-cols-2 h-full mt-4 gap-4">

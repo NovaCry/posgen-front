@@ -1,4 +1,5 @@
 <template>
+  <SeoMeta title="Şifreyi Sıfırla" description="Şifreyi sıfırla" />
   <div class="container flex flex-col items-center justify-center min-h-screen">
     <Header />
     <Card class="w-[400px]">
@@ -49,6 +50,7 @@
 </template>
 
 <script setup lang="ts">
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 import defaultApiInterface from '@/api/default';
 import Button from '@/components/ui/button/Button.vue';
 import Card from '@/components/ui/card/Card.vue';

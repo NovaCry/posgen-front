@@ -1,4 +1,5 @@
 <template>
+  <SeoMeta title="Erişim İzni" description="Erişim izni" />
   <div
     class="min-h-screen flex items-center justify-center bg-background px-2 py-6"
   >
@@ -140,6 +141,7 @@ import {
 import { useSelectedShopStore } from '@/store/shop';
 import createProtectedApiInterface from '@/api/protected';
 import type { RefreshTokenResponse } from '@/types/api/User';
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 
 const router = useRouter();
 

@@ -9,6 +9,7 @@ export interface ProductRaw {
   image: string;
   maxQuantity: number;
   productId: string;
+  hasStock?: boolean; 
 }
 
 export interface CartItem extends ProductRaw {

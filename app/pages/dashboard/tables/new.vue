@@ -3,7 +3,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 import Label from '@/components/ui/label/Label.vue';
 
 import { ArrowLeft, Loader2, Plus } from 'lucide-vue-next';
@@ -98,6 +98,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <SeoMeta title="Yeni Masa" description="Yeni masa" />
   <Section>
     <div class="flex items-center">
       <div class="flex gap-4">

@@ -35,7 +35,22 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@pinia/nuxt',
     'motion-v/nuxt',
+    '@nuxtjs/sitemap'
   ],
+
+  sitemap: {
+    urls: [
+      'https://posgen.tr/',
+      'https://posgen.tr/login',
+      'https://posgen.tr/register',
+      'https://posgen.tr/terms',
+      'https://posgen.tr/privacy',
+      'https://posgen.tr/about',
+      'https://posgen.tr/contact',
+      'https://posgen.tr/pricing',
+      'https://posgen.tr/blog',
+    ]
+  },
 
   shadcn: {
     /**

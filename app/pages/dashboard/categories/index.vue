@@ -9,7 +9,7 @@ import { Trash } from 'lucide-vue-next';
 import { h, ref } from 'vue';
 import { toast } from 'vue-sonner';
 import { Icon } from '@iconify/vue';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 definePageMeta({
   name: 'Kategoriler',
 });
@@ -67,6 +67,7 @@ function makeActionsForCategory(category: Category): MenuCell {
 </script>
 
 <template>
+  <SeoMeta title="Kategoriler" description="Kategoriler" />
   <Section>
     <h1 class="text-3xl font-semibold">Kategoriler</h1>
     <Resource

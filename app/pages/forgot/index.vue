@@ -1,4 +1,5 @@
-<template>
+<template>  
+  <SeoMeta title="Şifremi Unuttum" description="Şifremi unuttum" />
   <div class="container flex flex-col items-center justify-center min-h-screen">
     <Header />
     <Card class="w-[400px]">
@@ -53,7 +54,7 @@ import type User from '@/types/api/User';
 import type { AxiosError } from 'axios';
 import { ref } from 'vue';
 import Header from '@/components/header/index/IndexHeader.vue';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 const router = useRouter();
 
 definePageMeta({

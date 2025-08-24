@@ -26,7 +26,7 @@ import { useSelectedShopStore } from '@/store/shop';
 import { toast } from 'vue-sonner';
 import createProtectedApiInterface from '@/api/protected';
 import Section from '@/components/layout/Section.vue';
-
+import SeoMeta from '@/components/seo/SeoMeta.vue';
 const router = useRouter();
 
 const discountCode = ref('');
@@ -145,6 +145,7 @@ definePageMeta({
 </script>
 
 <template>
+  <SeoMeta title="Yeni İndirim" description="Yeni İndirim" />
   <Section>
     <div
       class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8"
