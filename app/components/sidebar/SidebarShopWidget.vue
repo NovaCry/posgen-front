@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { ChevronsUpDown, GalleryVerticalEnd, Plus } from 'lucide-vue-next';
+import {
+  ChevronDown,
+  GalleryVerticalEnd,
+  Plus,
+  ShoppingBag,
+} from 'lucide-vue-next';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,35 +52,18 @@ function setActiveTeam(shop: Shop) {
     v-if="user.data.value"
     class="hover:bg-accent rounded-md transition duration-200"
   >
-    <NuxtLink v-if="user.data.value.shops.length == 0" to="/create">
-      <SidebarMenuButton
-        size="lg"
-        class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-      >
-        <div
-          class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
-        >
-          <Plus class="size-4" />
-        </div>
-        <div class="font-medium text-muted-foreground">Yeni Mağaza</div>
-      </SidebarMenuButton>
-    </NuxtLink>
-    <DropdownMenu v-else>
+    <DropdownMenu>
       <DropdownMenuTrigger as-child>
         <SidebarMenuButton
-          size="lg"
-          class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+          class="w-fit h-9 group-data-[collapsible=icon]:px-1.5!"
         >
           <div
-            class="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-sidebar-primary-foreground"
+            class="flex aspect-square size-6 items-center justify-center rounded-md bg-primary text-sidebar-primary-foreground"
           >
-            <GalleryVerticalEnd class="size-4 text-primary-foreground" />
+            <ShoppingBag class="size-4" />
           </div>
-          <div class="grid flex-1 text-left text-sm leading-tight">
-            <span class="truncate font-semibold">{{ selectedShop.name }}</span>
-            <span class="truncate text-xs">Enterprise</span>
-          </div>
-          <ChevronsUpDown class="ml-auto" />
+          <span class="truncate font-semibold">{{ selectedShop.name }}</span>
+          <ChevronDown class="opacity-50" />
         </SidebarMenuButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent

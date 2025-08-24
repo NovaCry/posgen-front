@@ -36,20 +36,25 @@ const sidebarState = useSidebarStore();
 </script>
 
 <template>
-  <SidebarHeader
-    class="border-b h-16 group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 transition-[width,height]"
-  >
-    <SidebarMenu>
-      <div class="flex items-center w-full gap-2">
-        <SidebarShopWidget class="w-full" />
-        <SidebarTrigger v-if="sidebarUtil.isMobile.value"></SidebarTrigger>
+  <SidebarHeader class="h-14 transition-[width,height]">
+    <SidebarMenu class="my-auto">
+      <div class="flex items-center my-auto w-full gap-2">
+        <SidebarShopWidget />
+        <SidebarTrigger v-if="sidebarUtil.isMobile.value" class="ml-auto" />
       </div>
     </SidebarMenu>
   </SidebarHeader>
   <SidebarContent>
     <ScrollArea>
-      <SidebarGroup v-for="group of sidebarState.data" :key="group.name">
-        <SidebarGroupLabel>{{ group.name }}</SidebarGroupLabel>
+      <SidebarGroup
+        v-for="group of sidebarState.data"
+        :key="group.name"
+        :data-hide="group.hideInCollapsed"
+        class="group-data-[collapsible=icon]:data-[hide=true]:opacity-0 transition-opacity duration-100 pt-0"
+      >
+        <SidebarGroupLabel v-if="group.name">{{
+          group.name
+        }}</SidebarGroupLabel>
         <SidebarMenu v-for="item in group.data" :key="item.title">
           <Collapsible
             v-if="item.type == 'collapsible'"

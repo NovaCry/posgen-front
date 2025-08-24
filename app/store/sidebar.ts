@@ -10,7 +10,6 @@ export const useSidebarStore = defineStore('sidebar', {
     open: true,
     data: [
       {
-        name: 'Uygulama',
         data: [
           {
             type: 'direct',
@@ -27,7 +26,6 @@ export const useSidebarStore = defineStore('sidebar', {
         ],
       },
       {
-        name: 'İşlemler',
         data: [
           {
             type: 'collapsible',
@@ -84,7 +82,6 @@ export const useSidebarStore = defineStore('sidebar', {
         ],
       },
       {
-        name: 'Kaynaklar',
         data: [
           {
             type: 'direct',
@@ -126,6 +123,7 @@ export const useSidebarStore = defineStore('sidebar', {
       },
       {
         name: 'Modüller',
+        hideInCollapsed: true,
         data: [
           {
             type: 'direct',

@@ -1,7 +1,8 @@
 import type { RouteLocationRaw } from 'vue-router';
 
 export interface SidebarDataGroup {
-  name: string;
+  name?: string;
+  hideInCollapsed?: boolean;
   data: (SidebarDataCollapsible | SidebarDataDirect | SidebarDataAction)[];
 }
 

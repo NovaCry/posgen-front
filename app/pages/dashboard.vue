@@ -1,6 +1,6 @@
 <template>
   <SidebarProvider v-model:open="sidebarOpenState">
-    <Sidebar collapsible="icon" class="z-[5]">
+    <Sidebar collapsible="icon" class="z-[5] ease-in-out">
       <SidebarContent />
     </Sidebar>
     <SidebarInset>
