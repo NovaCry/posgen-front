@@ -20,23 +20,27 @@ function goHome() {
 </script>
 
 <template>
-  <div class="h-screen text-sm overflow-hidden">
+  <div
+    class="h-screen flex items-center justify-center text-sm overflow-hidden"
+  >
     <Header />
     <div class="absolute inset-0 mt-auto overflow-hidden pointer-events-none">
       <div
         class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMwLTkuOTQtOC4wNi0xOC0xOC0xOFMwIDguMDYgMCAxOHM4LjA2IDE4IDE4IDE4IDE4LTguMDYgMTgtMTh6IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9Ii4wMiIvPjwvZz48L3N2Zz4=')] opacity-20"
       />
-      <div
-        v-for="i in 20"
-        :key="i"
-        class="absolute w-1 h-1 bg-white/20 rounded-full animate-pulse"
-        :style="{
-          left: Math.random() * 100 + '%',
-          top: Math.random() * 100 + '%',
-          animationDelay: Math.random() * 3 + 's',
-          animationDuration: Math.random() * 2 + 2 + 's',
-        }"
-      />
+      <ClientOnly>
+        <div
+          v-for="i in 20"
+          :key="i"
+          class="absolute w-1 h-1 bg-white/20 rounded-full animate-pulse"
+          :style="{
+            left: Math.random() * 100 + '%',
+            top: Math.random() * 100 + '%',
+            animationDelay: Math.random() * 3 + 's',
+            animationDuration: Math.random() * 2 + 2 + 's',
+          }"
+        />
+      </ClientOnly>
     </div>
     <div class="relative z-10 flex items-center justify-center px-4">
       <div class="text-center max-w-3xl mx-auto">
