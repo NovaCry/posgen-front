@@ -25,7 +25,7 @@ router.afterEach(() => {
         <span>Menü</span>
       </Button>
     </SheetTrigger>
-    <SheetContent side="left" class="w-full sm:w-[570px]">
+    <SheetContent side="left" class="w-full xs:w-[570px]">
       <div class="sm:px-10 py-12 px-6">
         <UserSidebarContent class="max-w-none" />
       </div>

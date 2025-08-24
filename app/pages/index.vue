@@ -15,11 +15,10 @@ definePageMeta({
     dontAuthorize: true,
   },
 });
-
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+  <div class="min-h-screen">
     <SeoMeta />
     <Header />
     <div

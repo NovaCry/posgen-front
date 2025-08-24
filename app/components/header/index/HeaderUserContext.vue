@@ -16,7 +16,7 @@ const user = useUser();
               {{ shortenName(user.data.value.name) }}
             </AvatarFallback>
           </Avatar>
-          <span>{{ user.data.value.name }}</span>
+          <span class="hidden sm:block">{{ user.data.value.name }}</span>
           <ChevronDown />
         </Button>
       </DropdownMenuTrigger>

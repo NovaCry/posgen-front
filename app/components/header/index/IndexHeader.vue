@@ -18,7 +18,9 @@ const session = useSession();
             class="size-8"
           />
           <NuxtLink to="/"
-            ><span class="font-bold text-xl font-header">POSGEN</span></NuxtLink
+            ><span class="font-bold text-xl font-header hidden xs:block"
+              >POSGEN</span
+            ></NuxtLink
           >
         </div>
         <div class="hidden gap-2.5 md:flex">

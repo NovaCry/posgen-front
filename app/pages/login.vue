@@ -1,11 +1,14 @@
 <template>
   <div class="w-screen h-screen flex items-center justify-center p-4">
-    <SeoMeta title="Giriş Yap - Posgen" description="Posgen hesabınıza giriş yapın ve işletme yönetim sisteminizi kullanmaya başlayın." />
+    <SeoMeta
+      title="Giriş Yap - Posgen"
+      description="Posgen hesabınıza giriş yapın ve işletme yönetim sisteminizi kullanmaya başlayın."
+    />
     <Header />
     <div
-      class="grid grid-cols-1 md:grid-cols-2 w-full max-w-sm max-h-auto md:max-w-[720px] border md:min-h-[520px] rounded-lg overflow-hidden"
+      class="grid grid-cols-1 md:grid-cols-2 w-full max-w-sm max-h-auto md:max-w-[720px] xs:border md:min-h-[520px] rounded-lg overflow-hidden"
     >
-      <div class="border-r-0 md:border-r p-4 md:p-6 relative flex flex-col">
+      <div class="border-r-0 md:border-r xs:p-4 md:p-6 relative flex flex-col">
         <h1 class="text-xl md:text-2xl font-semibold">Tekrar Hoşgeldin</h1>
         <span class="text-pretty text-muted-foreground text-sm md:text-base"
           >Posgen Yönetim Paneline devam et.</span

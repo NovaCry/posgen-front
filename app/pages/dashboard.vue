@@ -1,6 +1,6 @@
 <template>
-  <SeoMeta title="Dashboard" description="Dashboard" />
   <SidebarProvider v-model:open="sidebarOpenState">
+    <SeoMeta title="Dashboard" description="Dashboard" />
     <Sidebar collapsible="icon" class="z-[5] ease-in-out">
       <SidebarContent />
     </Sidebar>

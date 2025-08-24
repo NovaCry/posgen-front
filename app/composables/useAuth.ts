@@ -123,12 +123,14 @@ export default function useAuth() {
       this.save();
     },
     save() {
+      if (!import.meta.client) return;
       localStorage.setItem(SAVED_SESSIONS_KEY, JSON.stringify(_sessions.value));
       localStorage.setItem(ACTIVE_SESSION_KEY, JSON.stringify(_session.value));
       localStorage.setItem(SAVED_USERS_KEY, JSON.stringify(_users.value));
       localStorage.setItem(ACTIVE_USER_KEY, JSON.stringify(_user.value));
     },
     load() {
+      if (!import.meta.client) return;
       let __sessions = localStorage.getItem(SAVED_SESSIONS_KEY);
       let __session = localStorage.getItem(ACTIVE_SESSION_KEY);
       let __users = localStorage.getItem(SAVED_USERS_KEY);
