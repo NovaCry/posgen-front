@@ -1,10 +1,11 @@
 <template>
   <div>
-    <SeoMeta title="Erişim İzni" description="Erişim izni" />
     <div
       class="min-h-screen flex items-center justify-center bg-background px-2 py-6"
     >
-      <Card class="w-full max-w-2xl sm:max-w-3xl md:max-w-4xl mx-auto shadow-lg">
+      <Card
+        class="w-full max-w-2xl sm:max-w-3xl md:max-w-4xl mx-auto shadow-lg"
+      >
         <CardHeader>
           <div class="flex flex-col items-center gap-2 mb-2">
             <div class="flex flex-row items-center gap-6 justify-center">
@@ -143,12 +144,16 @@ import {
 import { useSelectedShopStore } from '@/store/shop';
 import createProtectedApiInterface from '@/api/protected';
 import type { RefreshTokenResponse } from '@/types/api/User';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
 
 const router = useRouter();
 
 definePageMeta({
   name: 'Erişim İzni',
+});
+
+useSeo({
+  title: 'Erişim İzni',
+  description: '3. Parti uygulama senden erişim izni istiyor.',
 });
 
 const session = useSession();

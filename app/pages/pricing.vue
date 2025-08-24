@@ -1,7 +1,6 @@
 <template>
   <main>
     <Header />
-    <SeoMeta title="Abonelikler" description="Abonelikler" />
     <div class="mt-10 p-8 md:p-16 bg-background">
       <div class="text-center mb-12">
         <h1 class="text-4xl font-bold mb-4">Size Uygun Planı Seçin</h1>
@@ -272,8 +271,8 @@
               selectedPlanName === 'Kurumsal'
                 ? 'Teklif Al'
                 : selectedPlanName === 'Ücretsiz'
-                ? 'Ücretsiz Başla'
-                : 'Bu Paketi Seç'
+                  ? 'Ücretsiz Başla'
+                  : 'Bu Paketi Seç'
             }}
           </button>
         </div>
@@ -309,10 +308,14 @@
 </template>
 
 <script setup lang="ts">
-import SeoMeta from '@/components/seo/SeoMeta.vue';
 import { Check } from 'lucide-vue-next';
 import Header from '@/components/header/index/IndexHeader.vue';
 import { ref } from 'vue';
+
+useSeo({
+  title: 'Abonelikler',
+  description: 'Abonelikler',
+});
 
 interface Subscription {
   popular: boolean;

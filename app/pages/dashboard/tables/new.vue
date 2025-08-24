@@ -3,7 +3,6 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
 import Label from '@/components/ui/label/Label.vue';
 
 import { ArrowLeft, Loader2, Plus } from 'lucide-vue-next';
@@ -17,12 +16,18 @@ import ResourceCard from '@/components/card/ResourceCard.vue';
 import SeatRenderer from '@/components/SeatRenderer.vue';
 import createProtectedApiInterface from '@/api/protected';
 import type Table from '~/types/api/Table';
-const router = useRouter();
-const route = useRoute();
+
+useSeo({
+  title: 'Yeni Masa',
+  description: 'Yeni masa',
+});
 
 definePageMeta({
   name: 'Yeni Masa',
 });
+
+const router = useRouter();
+const route = useRoute();
 
 const protectedApiInterface = createProtectedApiInterface();
 const selectedShop = useSelectedShopStore();
@@ -99,7 +104,6 @@ onMounted(async () => {
 
 <template>
   <div>
-    <SeoMeta title="Yeni Masa" description="Yeni masa" />
     <Section>
       <div class="flex items-center">
         <div class="flex gap-4">

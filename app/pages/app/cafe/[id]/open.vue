@@ -23,10 +23,15 @@ import { computed, ref, onMounted, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import createProtectedApiInterface from '@/api/protected';
 import { useSelectedShopStore } from '@/store/shop';
-import  useErrorHandler from '@/composables/useErrorHandler';
+import useErrorHandler from '@/composables/useErrorHandler';
 import type Table from '@/types/api/Table';
 import type { Product } from '@/types/api/Product';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
+
+useSeo({
+  title: 'Sipariş Sayfası',
+  description: 'Sipariş sayfası',
+});
+
 const route = useRoute();
 const router = useRouter();
 
@@ -137,10 +142,10 @@ const nextReservation = computed(() => {
 
 async function fetchTables() {
   try {
-          const res = await protectedApiInterface({
-        url: `shop/tables/${selectedShop.id}/list?page=0`,
-        method: 'GET',
-      }).catch(useErrorHandler);
+    const res = await protectedApiInterface({
+      url: `shop/tables/${selectedShop.id}/list?page=0`,
+      method: 'GET',
+    }).catch(useErrorHandler);
 
     if (!res) return;
 
@@ -181,13 +186,17 @@ async function fetchProducts() {
       const category = categories.get(categoryId);
 
       // Stok kontrolü - stoksuz ürünler için her zaman stok var kabul edilir
-      const totalStock = product.stocks?.reduce((sum, stock) => {
-        const quantity = Number(stock.quantity) || 0;
-        return sum + quantity;
-      }, 0) || 0;
-      
+      const totalStock =
+        product.stocks?.reduce((sum, stock) => {
+          const quantity = Number(stock.quantity) || 0;
+          return sum + quantity;
+        }, 0) || 0;
+
       // Eğer stok yoksa ama ürün stoksuz olarak işaretlenmişse veya stok alanı yoksa, stok var kabul et
-      const hasStock = totalStock > 0 || (product.isLimitless === true) || (product.stocks && product.stocks.length === 0);
+      const hasStock =
+        totalStock > 0 ||
+        product.isLimitless === true ||
+        (product.stocks && product.stocks.length === 0);
       const maxQuantity = hasStock ? (totalStock > 0 ? totalStock : 999) : 0;
 
       category?.items.push({
@@ -226,7 +235,7 @@ async function completeOrder() {
   console.log('🚀 Sipariş tamamlanıyor...', {
     tableId: tableId.value,
     items: selectedItemsList.value,
-    currentOrder: currentOrder.value
+    currentOrder: currentOrder.value,
   });
 
   try {
@@ -365,7 +374,7 @@ function scheduleAutoSave() {
   if (autoSaveTimeout.value) {
     clearTimeout(autoSaveTimeout.value);
   }
-  
+
   autoSaveTimeout.value = setTimeout(() => {
     autoSaveOrder();
   }, 1000); // 1 saniye bekle
@@ -404,8 +413,6 @@ async function checkExistingOrder() {
           }
         }
       }
-
-
     }
   } catch (error) {
     console.error('Mevcut sipariş kontrol hatası:', error);
@@ -422,7 +429,6 @@ onMounted(async () => {
 
 <template>
   <div>
-    <SeoMeta title="Sipariş Sayfası" description="Sipariş sayfası" />
     <div
       class="grid grid-cols-1 lg:grid-cols-3 h-screen max-h-[calc(100vh-3rem)] overflow-hidden"
     >
@@ -449,7 +455,11 @@ onMounted(async () => {
           </div>
         </motion.div>
 
-        <Catalog v-model="productList" class="relative" @product-update="scheduleAutoSave" />
+        <Catalog
+          v-model="productList"
+          class="relative"
+          @product-update="scheduleAutoSave"
+        />
       </ScrollArea>
 
       <div class="hidden lg:block relative max-h-[calc(100vh-3rem)] h-full">
@@ -488,18 +498,18 @@ onMounted(async () => {
                 <UtensilsCrossed class="size-8 mx-auto mb-2 opacity-50" />
                 <p class="text-sm">Henüz sipariş alınmadı</p>
               </div>
-                           <SideCafeProduct
-                 v-for="item of selectedItemsList"
-                 :key="`${tableId}-${item.title}`"
-                 v-model:quantity="item.state.quantity"
-                 v-model:selected="item.state.selected"
-                 :name="item.title"
-                 :price="item.price"
-                 :max-quantity="item.maxQuantity"
-                 @delete="handleItemDelete"
-                 @update:quantity="scheduleAutoSave"
-                 @update:selected="scheduleAutoSave"
-               />
+              <SideCafeProduct
+                v-for="item of selectedItemsList"
+                :key="`${tableId}-${item.title}`"
+                v-model:quantity="item.state.quantity"
+                v-model:selected="item.state.selected"
+                :name="item.title"
+                :price="item.price"
+                :max-quantity="item.maxQuantity"
+                @delete="handleItemDelete"
+                @update:quantity="scheduleAutoSave"
+                @update:selected="scheduleAutoSave"
+              />
             </div>
           </SideCollapsible>
 
@@ -548,7 +558,9 @@ onMounted(async () => {
             @click="completeOrder"
           >
             <span v-if="isLoading">İşleniyor...</span>
-            <span v-else-if="splitPayment">{{ numberOfPeople }} Kişi Ödeme</span>
+            <span v-else-if="splitPayment"
+              >{{ numberOfPeople }} Kişi Ödeme</span
+            >
             <span v-else>{{
               paymentMethod === 'cash' ? 'Nakit Tahsilat' : 'Kart ile Ödeme'
             }}</span>
@@ -614,18 +626,18 @@ onMounted(async () => {
               <UtensilsCrossed class="size-8 mx-auto mb-2 opacity-50" />
               <p class="text-sm">Henüz sipariş alınmadı</p>
             </div>
-                         <SideCafeProduct
-               v-for="item of selectedItemsList"
-               :key="`mobile-${tableId}-${item.title}`"
-               v-model:quantity="item.state.quantity"
-               v-model:selected="item.state.selected"
-               :name="item.title"
-               :price="item.price"
-               :max-quantity="item.maxQuantity"
-               @delete="handleItemDelete"
-               @update:quantity="scheduleAutoSave"
-               @update:selected="scheduleAutoSave"
-             />
+            <SideCafeProduct
+              v-for="item of selectedItemsList"
+              :key="`mobile-${tableId}-${item.title}`"
+              v-model:quantity="item.state.quantity"
+              v-model:selected="item.state.selected"
+              :name="item.title"
+              :price="item.price"
+              :max-quantity="item.maxQuantity"
+              @delete="handleItemDelete"
+              @update:quantity="scheduleAutoSave"
+              @update:selected="scheduleAutoSave"
+            />
           </div>
         </template>
       </MobileOrderView>

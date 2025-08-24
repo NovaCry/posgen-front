@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import SeoMeta from '@/components/seo/SeoMeta.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -58,6 +57,11 @@ interface TaxType {
   rate: number;
   isDefault: boolean;
 }
+
+useSeo({
+  title: 'Ayarlar',
+  description: 'Ayarlar',
+});
 
 const shopStore = useSelectedShopStore();
 const { name } = storeToRefs(shopStore);
@@ -240,7 +244,6 @@ definePageMeta({
 
 <template>
   <div>
-    <SeoMeta title="Ayarlar" description="Ayarlar" />
     <div class="min-h-screen bg-background">
       <div class="relative">
         <Skeleton class="w-full h-64 rounded-none" />
@@ -295,7 +298,9 @@ definePageMeta({
                               <h4 class="text-base font-medium">
                                 Satış İstatistikleri
                               </h4>
-                              <TrendingUp class="size-4 text-muted-foreground" />
+                              <TrendingUp
+                                class="size-4 text-muted-foreground"
+                              />
                             </div>
                           </CardHeader>
                           <CardContent class="space-y-4">
@@ -308,7 +313,9 @@ definePageMeta({
                               />
                             </div>
                             <div v-else>
-                              <div class="flex justify-between items-center mb-2">
+                              <div
+                                class="flex justify-between items-center mb-2"
+                              >
                                 <div class="flex items-center gap-2">
                                   <Calendar
                                     class="size-4 text-muted-foreground"
@@ -319,7 +326,9 @@ definePageMeta({
                                   >{{ stats.dailyOrders }} Sipariş</span
                                 >
                               </div>
-                              <div class="flex justify-between items-center mb-2">
+                              <div
+                                class="flex justify-between items-center mb-2"
+                              >
                                 <div class="flex items-center gap-2">
                                   <Calendar
                                     class="size-4 text-muted-foreground"
@@ -330,7 +339,9 @@ definePageMeta({
                                   >{{ stats.weeklyOrders }} Sipariş</span
                                 >
                               </div>
-                              <div class="flex justify-between items-center mb-2">
+                              <div
+                                class="flex justify-between items-center mb-2"
+                              >
                                 <div class="flex items-center gap-2">
                                   <Calendar
                                     class="size-4 text-muted-foreground"
@@ -351,7 +362,9 @@ definePageMeta({
                               <h4 class="text-base font-medium">
                                 Gelir Bilgileri
                               </h4>
-                              <CreditCard class="size-4 text-muted-foreground" />
+                              <CreditCard
+                                class="size-4 text-muted-foreground"
+                              />
                             </div>
                           </CardHeader>
                           <CardContent class="space-y-4">
@@ -364,7 +377,9 @@ definePageMeta({
                               />
                             </div>
                             <div v-else>
-                              <div class="flex justify-between items-center mb-2">
+                              <div
+                                class="flex justify-between items-center mb-2"
+                              >
                                 <div class="flex items-center gap-2">
                                   <ShoppingBag
                                     class="size-4 text-muted-foreground"
@@ -375,9 +390,13 @@ definePageMeta({
                                   formatCurrency(stats.totalRevenue)
                                 }}</span>
                               </div>
-                              <div class="flex justify-between items-center mb-2">
+                              <div
+                                class="flex justify-between items-center mb-2"
+                              >
                                 <div class="flex items-center gap-2">
-                                  <Receipt class="size-4 text-muted-foreground" />
+                                  <Receipt
+                                    class="size-4 text-muted-foreground"
+                                  />
                                   <span class="text-sm"
                                     >Ortalama Sipariş Değeri</span
                                   >
@@ -386,7 +405,9 @@ definePageMeta({
                                   formatCurrency(stats.averageOrderValue)
                                 }}</span>
                               </div>
-                              <div class="flex justify-between items-center mb-2">
+                              <div
+                                class="flex justify-between items-center mb-2"
+                              >
                                 <div class="flex items-center gap-2">
                                   <CheckCircle
                                     class="size-4 text-muted-foreground"
@@ -469,8 +490,8 @@ definePageMeta({
                               Toplam 0 Çalışan
                             </h3>
                             <p class="text-muted-foreground max-w-md">
-                              Çalışanlarınızı yönetmek, bilgilerini güncellemek ve
-                              yeni çalışamlar eklemek için çalışam yönetimi
+                              Çalışanlarınızı yönetmek, bilgilerini güncellemek
+                              ve yeni çalışamlar eklemek için çalışam yönetimi
                               sayfasını ziyaret edin.
                             </p>
                             <NuxtLink to="/dashboard/settings/employees">
@@ -504,7 +525,9 @@ definePageMeta({
                                 </DialogDescription>
                               </DialogHeader>
                               <div class="grid gap-4 py-4">
-                                <div class="grid grid-cols-4 items-center gap-4">
+                                <div
+                                  class="grid grid-cols-4 items-center gap-4"
+                                >
                                   <Label for="tax-name" class="text-right">
                                     İsim
                                   </Label>
@@ -515,7 +538,9 @@ definePageMeta({
                                     class="col-span-3"
                                   />
                                 </div>
-                                <div class="grid grid-cols-4 items-center gap-4">
+                                <div
+                                  class="grid grid-cols-4 items-center gap-4"
+                                >
                                   <Label for="tax-rate" class="text-right">
                                     Vergi Oranı (%)
                                   </Label>

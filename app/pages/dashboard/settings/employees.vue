@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import SeoMeta from '@/components/seo/SeoMeta.vue';
 import { ref, reactive, onMounted } from 'vue';
 import DataTable from '@/components/DataTable.vue';
 import PaginationSimplified from '@/components/PaginationSimplified.vue';
@@ -23,12 +22,16 @@ import createProtectedApiInterface from '@/api/protected';
 import { toast } from 'vue-sonner';
 import { useSelectedShopStore } from '@/store/shop';
 
-const router = useRouter();
+useSeo({
+  title: 'Çalışanlar',
+  description: 'Çalışanlar',
+});
 
 definePageMeta({
   name: 'Çalışanlar',
 });
 
+const router = useRouter();
 const selectedShop = useSelectedShopStore();
 const user = useUser();
 const protectedApiInterface = createProtectedApiInterface();
@@ -237,7 +240,6 @@ const addEmployee = async () => {
 
 <template>
   <div>
-    <SeoMeta title="Çalışanlar" description="Çalışanlar" />
     <Section>
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-semibold">Çalışanlar</h1>

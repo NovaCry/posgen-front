@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import Header from '@/components/header/index/IndexHeader.vue';
 import Button from '@/components/ui/button/Button.vue';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
 import { motion } from 'motion-v';
+
+useSeo({
+  title: '404 - Sayfa Bulunamadı',
+  description: 'Sayfa Bulunamadı',
+});
+
 const router = useRouter();
 
 function goHome() {
@@ -16,10 +21,6 @@ function goHome() {
 
 <template>
   <div class="h-screen text-sm overflow-hidden">
-    <SeoMeta
-      title="404 - Sayfa Bulunamadı"
-      description="404 - Sayfa Bulunamadı"
-    />
     <Header />
     <div class="absolute inset-0 mt-auto overflow-hidden pointer-events-none">
       <div

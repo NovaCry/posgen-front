@@ -32,7 +32,12 @@ import { Input } from '@/components/ui/input';
 import ChangeDomainDialog from '@/components/dialogs/ChangeDomainDialog.vue';
 import { toLocaleDate } from '@/lib/toLocaleDate';
 import Section from '@/components/layout/Section.vue';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
+
+useSeo({
+  title: 'QR Menü Yönetimi',
+  description: 'QR Menü Yönetimi',
+});
+
 definePageMeta({
   name: 'QR Menü Yönetimi',
 });
@@ -146,7 +151,6 @@ onUnmounted(() => {
 
 <template>
   <div>
-    <SeoMeta title="QR Menü Yönetimi" description="QR Menü Yönetimi" />
     <Section>
       <h1 class="text-3xl font-semibold">QR Menü Yönetimi</h1>
 
@@ -246,7 +250,10 @@ onUnmounted(() => {
                 </div>
               </div>
               <div class="flex items-start gap-2">
-                <div class="flex flex-col gap-1 group" :data-loading="isLoading">
+                <div
+                  class="flex flex-col gap-1 group"
+                  :data-loading="isLoading"
+                >
                   <Label class="text-muted-foreground flex items-center gap-2">
                     <div class="size-4 flex items-center justify-center">
                       <div

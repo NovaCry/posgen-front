@@ -9,10 +9,14 @@ import DataTable from '@/components/DataTable.vue';
 import type { MenuCell, TableData } from '@/types/DataTable';
 import { ListFilter, Eye, Receipt, X, Filter } from 'lucide-vue-next';
 import Section from '@/components/layout/Section.vue';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
 import createProtectedApiInterface from '@/api/protected';
 import { useSelectedShopStore } from '@/store/shop';
 import { toLocaleDate } from '@/lib/toLocaleDate';
+
+useSeo({
+  title: 'Satışlar',
+  description: 'Satışlar',
+});
 
 definePageMeta({
   name: 'Satışlar',
@@ -115,7 +119,7 @@ const cancelOrder = async (orderId: string) => {
       url: `shop/orders/${selectedShop.id}/orders/${orderId}/cancel`,
       method: 'PUT',
     });
-    
+
     if (response?.data?.success) {
       await fetchOrders();
     }
@@ -133,7 +137,7 @@ const viewOrderDetails = (orderId: string) => {
 
 const getActionsMenu = (order: Order): MenuCell => {
   const canCancel = ['PENDING', 'PREPARING', 'READY'].includes(order.status);
-  
+
   const items = [
     {
       type: 'item' as const,
@@ -242,7 +246,10 @@ type Admission = {
   createdAt: string;
 };
 
-function mapAdmissionsToOrders(admissions: Admission[], productList: Product[]): Order[] {
+function mapAdmissionsToOrders(
+  admissions: Admission[],
+  productList: Product[]
+): Order[] {
   return admissions.map((adm) => {
     const items: OrderItem[] = (adm.products || []).map((p) => {
       const [productId, qtyStr] = (p || '').split(':');
@@ -252,7 +259,7 @@ function mapAdmissionsToOrders(admissions: Admission[], productList: Product[]):
       return { productId, quantity, price } as OrderItem;
     });
     const finalAmount = Number(adm.totalPrice || '0');
-    
+
     return {
       id: adm.id,
       tableId: adm.tableId ?? 'Paket Sipariş',
@@ -298,12 +305,13 @@ const fetchOrders = async (): Promise<void> => {
     const baseOrders = (ordersResponse?.data?.data || []) as Order[];
     const admissions = (admissionsResponse?.data?.data || []) as Admission[];
     const mappedAdmissions = mapAdmissionsToOrders(admissions, products.value);
-    
+
     const allOrders = [...baseOrders, ...mappedAdmissions];
-    allOrders.sort((a: Order, b: Order) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    allOrders.sort(
+      (a: Order, b: Order) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
-    
+
     orders.value = allOrders;
   } catch (error) {
     console.error('Veriler yüklenirken hata:', error);
@@ -321,11 +329,9 @@ onMounted(() => {
   fetchOrders();
 });
 
-
 watch(search, () => {
   currentPage.value = 1;
 });
-
 
 watch(showOnlyToday, () => {
   currentPage.value = 1;
@@ -337,21 +343,26 @@ const getFilteredOrders = (): Order[] => {
   );
 
   let filteredOrders = completedOrders;
-  
+
   if (search.value.trim()) {
     const searchTerm = search.value.toLowerCase().replace('#', '');
-    filteredOrders = filteredOrders.filter(order => {
-      const productNames = order.items.map(item => getProductName(item.productId)).join(' ').toLowerCase();
+    filteredOrders = filteredOrders.filter((order) => {
+      const productNames = order.items
+        .map((item) => getProductName(item.productId))
+        .join(' ')
+        .toLowerCase();
       const tableName = getTableName(order.tableId, order.id).toLowerCase();
       const orderId = order.id.toLowerCase();
-      
-      return productNames.includes(searchTerm) || 
-             tableName.includes(searchTerm) || 
-             orderId.includes(searchTerm) ||
-             orderId.replace('#', '').includes(searchTerm);
+
+      return (
+        productNames.includes(searchTerm) ||
+        tableName.includes(searchTerm) ||
+        orderId.includes(searchTerm) ||
+        orderId.replace('#', '').includes(searchTerm)
+      );
     });
   }
-  
+
   if (showOnlyToday.value) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -360,19 +371,20 @@ const getFilteredOrders = (): Order[] => {
     );
   }
 
-  return filteredOrders.sort((a: Order, b: Order) => 
-    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  return filteredOrders.sort(
+    (a: Order, b: Order) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 };
 
 const getTableData = (): TableData[] => {
   const filteredOrders = getFilteredOrders();
   const tableData: TableData[] = [];
-  
+
   for (const order of filteredOrders) {
     makeResourceColumn(tableData, order);
   }
-  
+
   return tableData;
 };
 
@@ -389,7 +401,7 @@ const _fetchSalesData = async () => {
       url: `shop/orders/${selectedShop.id}/orders`,
       method: 'GET',
     });
-    
+
     if (response?.data?.data) {
       orders.value = response.data.data as Order[];
     }
@@ -401,7 +413,6 @@ const _fetchSalesData = async () => {
 
 <template>
   <div>
-    <SeoMeta title="Satışlar" description="Satışlar" />
     <Section>
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-semibold">Satışlar</h1>
@@ -446,15 +457,17 @@ const _fetchSalesData = async () => {
             </Button>
           </div>
         </div>
-        
+
         <div v-if="getFilteredOrders().length === 0" class="text-center py-12">
-          <Receipt class="size-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+          <Receipt
+            class="size-12 mx-auto mb-4 text-muted-foreground opacity-50"
+          />
           <h3 class="text-lg font-semibold mb-2">
             {{
-              search.trim() 
-                ? 'Arama sonucu bulunamadı' 
-                : showOnlyToday 
-                  ? 'Bugün satış bulunmuyor' 
+              search.trim()
+                ? 'Arama sonucu bulunamadı'
+                : showOnlyToday
+                  ? 'Bugün satış bulunmuyor'
                   : 'Henüz satış bulunmuyor'
             }}
           </h3>
@@ -470,8 +483,15 @@ const _fetchSalesData = async () => {
         </div>
 
         <template v-else>
-          <DataTable :data="getTableData().slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)" />
-          
+          <DataTable
+            :data="
+              getTableData().slice(
+                (currentPage - 1) * itemsPerPage,
+                currentPage * itemsPerPage
+              )
+            "
+          />
+
           <PaginationSimplified
             v-model="currentPage"
             class="my-4 w-full flex justify-center"

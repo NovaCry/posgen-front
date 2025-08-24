@@ -5,7 +5,12 @@ import { RadioGroupItem } from '@/components/ui/radio-group';
 import RadioGroup from '@/components/ui/radio-group/RadioGroup.vue';
 import { useColorMode } from '@vueuse/core';
 import { ref, watch } from 'vue';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
+
+useSeo({
+  title: 'Tercihler',
+  description: 'Tercihler',
+});
+
 definePageMeta({
   name: 'Tercihler',
 });
@@ -22,7 +27,6 @@ const systemTheme = theme.system;
 
 <template>
   <div>
-    <SeoMeta title="Tercihler" description="Tercihler" />
     <Section>
       <h1 class="text-2xl md:text-3xl font-semibold">Tercihler</h1>
       <h2 class="text-xl md:text-2xl font-semibold mt-4 mb-2">Görünüm</h2>

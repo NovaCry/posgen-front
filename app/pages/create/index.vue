@@ -1,6 +1,5 @@
 <template>
   <div>
-    <SeoMeta title="Mağaza Oluştur" description="Mağaza oluştur" />
     <div class="flex items-center justify-center w-screen h-screen p-4">
       <div
         class="grid grid-cols-1 lg:grid-cols-9 max-w-[95%] lg:max-w-[80%] border max-h-[90%] w-full min-h-[60%] h-auto rounded-xl overflow-hidden"
@@ -127,8 +126,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowRight, Loader2 } from 'lucide-vue-next';
 import createProtectedApiInterface from '@/api/protected';
 import { toast } from 'vue-sonner';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
 const router = useRouter();
+
+useSeo({
+  title: 'Mağaza Oluştur',
+  description: 'Mağaza oluştur',
+});
 
 definePageMeta({
   name: 'Mağaza Oluştur',

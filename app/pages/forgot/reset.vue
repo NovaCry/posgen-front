@@ -1,13 +1,15 @@
 <template>
   <div>
-    <SeoMeta title="Şifreyi Sıfırla" description="Şifreyi sıfırla" />
-    <div class="container flex flex-col items-center justify-center min-h-screen">
+    <div
+      class="container flex flex-col items-center justify-center min-h-screen"
+    >
       <Header />
       <Card class="w-[400px]">
         <CardHeader>
           <CardTitle class="text-3xl"> Şifreyi Sıfırla </CardTitle>
           <CardDescription
-            >Akılda kalıcı ve tahmin edilemez bir parola seçiniz.</CardDescription
+            >Akılda kalıcı ve tahmin edilemez bir parola
+            seçiniz.</CardDescription
           >
         </CardHeader>
         <CardContent class="flex flex-col gap-6">
@@ -52,7 +54,6 @@
 </template>
 
 <script setup lang="ts">
-import SeoMeta from '@/components/seo/SeoMeta.vue';
 import defaultApiInterface from '@/api/default';
 import Button from '@/components/ui/button/Button.vue';
 import Card from '@/components/ui/card/Card.vue';
@@ -68,11 +69,16 @@ import type { AxiosError } from 'axios';
 import { ref } from 'vue';
 import Header from '@/components/header/index/IndexHeader.vue';
 
-const router = useRouter();
+useSeo({
+  title: 'Şifreyi Sıfırla',
+  description: 'Şifreyi sıfırla',
+});
 
 definePageMeta({
   name: 'Şifreyi Sıfırla',
 });
+
+const router = useRouter();
 
 const Processing = ref(false);
 

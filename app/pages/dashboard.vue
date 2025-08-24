@@ -1,6 +1,5 @@
 <template>
   <SidebarProvider v-model:open="sidebarOpenState">
-    <SeoMeta title="Dashboard" description="Dashboard" />
     <Sidebar collapsible="icon" class="z-[5] ease-in-out">
       <SidebarContent />
     </Sidebar>
@@ -34,12 +33,17 @@ import {
 import SidebarInsetHeader from '@/components/header/sidebar/SidebarInsetHeader.vue';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import SidebarContent from '~/components/template/SidebarContent.vue';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
+
 definePageMeta({
   meta: {
     hideInBreadcrumb: true,
   },
   middleware: ['auth'],
+});
+
+useSeo({
+  title: 'Yönetim Paneli',
+  description: 'Posgen mağaza yönetim paneli.',
 });
 
 const sidebarState = useSidebarStore();

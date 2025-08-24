@@ -16,7 +16,12 @@ import {
 } from 'lucide-vue-next';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import type { DefineComponent, FunctionalComponent, VNode } from 'vue';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
+
+useSeo({
+  title: 'Market',
+  description: 'Market',
+});
+
 const productList = ref<CartCategory[]>([
   {
     id: 'laptops',
@@ -77,7 +82,7 @@ const numPad: Array<Array<NumItem | string | number>> = [
   [1, 2, 3, ','],
   ['00', '0', { id: 'Enter', size: 2, data: ArrowBigRightIcon }],
 ];
-  
+
 const numPadKeysMap = numPad
   .map((row) => {
     return row.map((key) => {
@@ -104,7 +109,6 @@ onUnmounted(() => {
 
 <template>
   <div>
-    <SeoMeta title="Market" description="Market" />
     <div class="w-full max-h-[calc(100vh-3rem)] h-screen grid grid-cols-10">
       <Tabs
         v-if="true"

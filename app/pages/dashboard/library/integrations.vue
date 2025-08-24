@@ -4,7 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BadgeCheck, Search } from 'lucide-vue-next';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
+
+useSeo({
+  title: 'Entegrasyonlar',
+  description: 'Entegrasyonlar',
+});
+
 definePageMeta({
   name: 'Entegrasyonlar',
 });
@@ -12,7 +17,6 @@ definePageMeta({
 
 <template>
   <div>
-    <SeoMeta title="Entegrasyonlar" description="Entegrasyonlar" />
     <Section>
       <div class="flex items-center">
         <h1 class="text-3xl font-semibold">Entegrasyonlar</h1>
@@ -54,7 +58,8 @@ definePageMeta({
             </div>
             <div>
               <span class="text-md font-semibold">Yemeksepeti</span>
-              <span class="text-sm text-muted-foreground flex gap-1 items-center"
+              <span
+                class="text-sm text-muted-foreground flex gap-1 items-center"
                 >Posgen
                 <BadgeCheck class="size-4" />
               </span>

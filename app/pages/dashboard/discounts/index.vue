@@ -9,8 +9,12 @@ import type { MenuCell, TableData } from '@/types/DataTable';
 import { Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
 import useErrorHandler from '@/composables/useErrorHandler';
+
+useSeo({
+  title: 'İndirimler',
+  description: 'İndirimler',
+});
 
 definePageMeta({
   name: 'İndirimler',
@@ -62,7 +66,6 @@ async function populateData(tableData: TableData[], discount: Discount) {
   });
 }
 
-
 function makeActionsForDiscount(discount: Discount): MenuCell {
   const res: MenuCell = {
     type: 'menu',
@@ -100,7 +103,6 @@ function makeActionsForDiscount(discount: Discount): MenuCell {
 
 <template>
   <div>
-    <SeoMeta title="İndirimler" description="İndirimler" />
     <Section>
       <h1 class="text-3xl font-semibold">İndirimler</h1>
       <Resource

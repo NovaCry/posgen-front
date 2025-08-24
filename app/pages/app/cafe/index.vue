@@ -15,8 +15,11 @@ import type {
   TimelineGroup,
   TimelineReservation,
 } from '@/types/Cafe';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
 
+useSeo({
+  title: 'Kafe',
+  description: 'Kafe',
+});
 
 const selectedShop = useSelectedShopStore();
 const protectedApiInterface = createProtectedApiInterface();
@@ -51,7 +54,9 @@ const timeline = computed<TimelineGroup[]>(() => {
 
     const tableName = reservation.table?.name || `Masa ${reservation.tableId}`;
     const tableNumberMatch = tableName.match(/(\d+)/);
-    const tableNumber = tableNumberMatch?.[1] ? parseInt(tableNumberMatch[1]) : 0;
+    const tableNumber = tableNumberMatch?.[1]
+      ? parseInt(tableNumberMatch[1])
+      : 0;
 
     groups[groupName]!.push({
       name: reservation.customerName,
@@ -134,7 +139,6 @@ onMounted(async () => {
 
 <template>
   <div>
-    <SeoMeta title="Kafe" description="Kafe" />
     <div
       class="grid grid-cols-1 lg:grid-cols-10 px-2.5 sm:container gap-4 lg:gap-8 h-screen max-h-[calc(100vh-3rem)] overflow-hidden"
     >
@@ -173,7 +177,10 @@ onMounted(async () => {
           class="text-2xl lg:text-3xl font-semibold flex flex-wrap items-center gap-2 lg:gap-3"
         >
           <span>Rezervasyonlar</span>
-          <NewReservation v-model:reservations="reservations" :tables="tables" />
+          <NewReservation
+            v-model:reservations="reservations"
+            :tables="tables"
+          />
         </h1>
 
         <div

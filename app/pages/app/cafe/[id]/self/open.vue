@@ -14,7 +14,12 @@ import { ref, computed, onMounted, nextTick } from 'vue';
 import { useSelectedShopStore } from '@/store/shop';
 import createProtectedApiInterface from '@/api/protected';
 import type { Product } from '@/types/api/Product';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
+
+useSeo({
+  title: 'Sipariş Sayfası',
+  description: 'Sipariş sayfası',
+});
+
 const selectedShop = useSelectedShopStore();
 const protectedApiInterface = createProtectedApiInterface();
 
@@ -23,16 +28,17 @@ const showMobileOrders = ref(false);
 const paymentMethod = ref<'cash' | 'card'>('cash');
 const isLoading = ref(false);
 
- 
-
 const splitPayment = ref(false);
 const numberOfPeople = ref(1);
 const splitPaymentMethods = ref<Array<'cash' | 'card'>>(['cash']);
 const customSplitAmounts = ref<number[]>([]);
 const splitMode = ref<'equal' | 'custom'>('equal');
 
-const currentOrder = ref<{ id?: string; status?: string; paymentStatus?: string } | null>(null);
-
+const currentOrder = ref<{
+  id?: string;
+  status?: string;
+  paymentStatus?: string;
+} | null>(null);
 
 const selectedItemsList = computed(() => {
   const res: CartItem[] = [];
@@ -46,30 +52,40 @@ const selectedItemsList = computed(() => {
 
 const totalPrice = computed(() =>
   selectedItemsList.value.reduce(
-    (sum, item) => sum + (Number(item.price) || 0) * (Number(item.state.quantity) || 1),
+    (sum, item) =>
+      sum + (Number(item.price) || 0) * (Number(item.state.quantity) || 1),
     0
   )
 );
 
-const taxAmount = computed(() => Math.round(totalPrice.value * (0.2 / 1.2) * 100) / 100);
+const taxAmount = computed(
+  () => Math.round(totalPrice.value * (0.2 / 1.2) * 100) / 100
+);
 const finalPrice = computed(() => totalPrice.value);
 
 const splitAmounts = computed(() => {
   if (!splitPayment.value || numberOfPeople.value < 1) return [];
   if (splitMode.value === 'equal') {
-    const equalAmount = Math.round((finalPrice.value / numberOfPeople.value) * 100) / 100;
+    const equalAmount =
+      Math.round((finalPrice.value / numberOfPeople.value) * 100) / 100;
     const amounts = Array(numberOfPeople.value).fill(equalAmount);
     const totalSplit = amounts.reduce((sum, a) => sum + a, 0);
     const diff = Math.round((finalPrice.value - totalSplit) * 100) / 100;
     if (diff !== 0) amounts[amounts.length - 1] += diff;
     return amounts;
   } else {
-    return customSplitAmounts.value.slice(0, numberOfPeople.value).map((v) => Number(v) || 0);
+    return customSplitAmounts.value
+      .slice(0, numberOfPeople.value)
+      .map((v) => Number(v) || 0);
   }
 });
 
-const totalSplitAmount = computed(() => splitAmounts.value.reduce((sum, a) => sum + a, 0));
-const splitDifference = computed(() => Math.round((finalPrice.value - totalSplitAmount.value) * 100) / 100);
+const totalSplitAmount = computed(() =>
+  splitAmounts.value.reduce((sum, a) => sum + a, 0)
+);
+const splitDifference = computed(
+  () => Math.round((finalPrice.value - totalSplitAmount.value) * 100) / 100
+);
 
 async function fetchProducts() {
   try {
@@ -86,7 +102,11 @@ async function fetchProducts() {
       const categoryId = product.categoryId || 'uncategorized';
       const categoryName = product.category?.name || 'Diğer';
       if (!categories.has(categoryId)) {
-        categories.set(categoryId, { id: categoryId, title: categoryName, items: [] });
+        categories.set(categoryId, {
+          id: categoryId,
+          title: categoryName,
+          items: [],
+        });
       }
     });
 
@@ -94,16 +114,20 @@ async function fetchProducts() {
       const categoryId = product.categoryId || 'uncategorized';
       const category = categories.get(categoryId);
       if (!category) return;
-      
+
       // Stok kontrolü - stoksuz ürünler için her zaman stok var kabul edilir
-      const totalStock = product.stocks?.reduce((sum, stock) => {
-        const quantity = Number(stock.quantity) || 0;
-        return sum + quantity;
-      }, 0) || 0;
-      
+      const totalStock =
+        product.stocks?.reduce((sum, stock) => {
+          const quantity = Number(stock.quantity) || 0;
+          return sum + quantity;
+        }, 0) || 0;
+
       // Eğer stok yoksa ama ürün stoksuz olarak işaretlenmişse veya stok alanı yoksa, stok var kabul et
-      const hasStock = totalStock > 0 || (product.isLimitless === true) || (product.stocks && product.stocks.length === 0);
-      
+      const hasStock =
+        totalStock > 0 ||
+        product.isLimitless === true ||
+        (product.stocks && product.stocks.length === 0);
+
       category.items.push({
         title: product.name,
         price: Number(product.price) || 0,
@@ -115,7 +139,9 @@ async function fetchProducts() {
       } as CartItem);
     });
 
-    productList.value = Array.from(categories.values()).sort((a, b) => a.title.localeCompare(b.title));
+    productList.value = Array.from(categories.values()).sort((a, b) =>
+      a.title.localeCompare(b.title)
+    );
     await nextTick();
   } catch (e) {
     console.error(e);
@@ -150,10 +176,7 @@ async function completeOrder() {
   }
 }
 
-
 async function handleItemDelete() {}
-
-
 
 onMounted(async () => {
   selectedShop.load();
@@ -163,9 +186,12 @@ onMounted(async () => {
 
 <template>
   <div>
-    <SeoMeta title="Sipariş Sayfası" description="Sipariş sayfası" />
-    <div class="grid grid-cols-1 lg:grid-cols-3 h-screen max-h-[calc(100vh-3rem)] overflow-hidden">
-      <ScrollArea class="col-span-1 lg:col-span-2 border-r-0 lg:border-r h-full max-h-[calc(100vh-3rem)]">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-3 h-screen max-h-[calc(100vh-3rem)] overflow-hidden"
+    >
+      <ScrollArea
+        class="col-span-1 lg:col-span-2 border-r-0 lg:border-r h-full max-h-[calc(100vh-3rem)]"
+      >
         <Catalog v-model="productList" class="relative" />
       </ScrollArea>
 
@@ -173,7 +199,10 @@ onMounted(async () => {
         <ScrollArea class="h-[calc(100%-4rem)]">
           <SideCollapsible title="Siparişler">
             <div class="mt-4 flex flex-col gap-3">
-              <div v-if="selectedItemsList.length === 0" class="text-center py-6 text-muted-foreground">
+              <div
+                v-if="selectedItemsList.length === 0"
+                class="text-center py-6 text-muted-foreground"
+              >
                 <UtensilsCrossed class="size-8 mx-auto mb-2 opacity-50" />
                 <p class="text-sm">Henüz sipariş alınmadı</p>
               </div>
@@ -186,7 +215,6 @@ onMounted(async () => {
                 :price="item.price"
                 :max-quantity="item.maxQuantity"
                 @delete="handleItemDelete"
-
               />
             </div>
           </SideCollapsible>
@@ -224,14 +252,28 @@ onMounted(async () => {
         <div class="border-t h-16 px-4 flex items-center">
           <Button
             class="w-full"
-            :disabled="selectedItemsList.length === 0 || isLoading || (splitPayment && Math.abs(splitDifference) > 0.01)"
+            :disabled="
+              selectedItemsList.length === 0 ||
+              isLoading ||
+              (splitPayment && Math.abs(splitDifference) > 0.01)
+            "
             @click="completeOrder"
           >
             <span v-if="isLoading">İşleniyor...</span>
-            <span v-else-if="splitPayment">{{ numberOfPeople }} Kişi Ödeme</span>
-            <span v-else>{{ paymentMethod === 'cash' ? 'Nakit Tahsilat' : 'Kart ile Ödeme' }}</span>
+            <span v-else-if="splitPayment"
+              >{{ numberOfPeople }} Kişi Ödeme</span
+            >
+            <span v-else>{{
+              paymentMethod === 'cash' ? 'Nakit Tahsilat' : 'Kart ile Ödeme'
+            }}</span>
             <component
-              :is="splitPayment ? Split : paymentMethod === 'cash' ? Banknote : CreditCard"
+              :is="
+                splitPayment
+                  ? Split
+                  : paymentMethod === 'cash'
+                    ? Banknote
+                    : CreditCard
+              "
               class="ml-2 h-4 w-4"
             />
           </Button>
@@ -239,7 +281,11 @@ onMounted(async () => {
       </div>
 
       <div class="lg:hidden fixed bottom-4 right-4 z-50">
-        <Button size="lg" class="rounded-full shadow-lg" @click="showMobileOrders = true">
+        <Button
+          size="lg"
+          class="rounded-full shadow-lg"
+          @click="showMobileOrders = true"
+        >
           <UtensilsCrossed class="h-4 w-4 mr-2" />
           <span class="text-sm">Sipariş ({{ selectedItemsList.length }})</span>
         </Button>
@@ -270,7 +316,6 @@ onMounted(async () => {
         @update:split-payment-methods="splitPaymentMethods = $event"
         @update:payment-method="paymentMethod = $event"
         @complete-order="completeOrder"
-
       />
     </div>
   </div>

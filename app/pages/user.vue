@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import Footer from '~/components/template/Footer.vue';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
+
+useSeo({
+  title: 'Hesap Yönetimi',
+  description: 'Hesap yönetimi',
+});
 </script>
 
 <template>
   <div>
-    <SeoMeta title="Hesap Yönetimi" description="Hesap yönetimi" />
     <main>
       <HeaderIndexHeader />
       <div

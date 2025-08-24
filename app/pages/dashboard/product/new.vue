@@ -49,9 +49,11 @@ import createProtectedApiInterface from '@/api/protected';
 import Section from '@/components/layout/Section.vue';
 import { Separator } from '@/components/ui/separator';
 import type { Product } from '~/types/api/Product';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
-const router = useRouter();
-const route = useRoute();
+
+useSeo({
+  title: 'Ürün Oluştur',
+  description: 'Ürün oluştur',
+});
 
 definePageMeta({
   name: 'Ürün Oluştur',
@@ -63,6 +65,9 @@ interface TaxType {
   rate: number;
   label: string;
 }
+
+const router = useRouter();
+const route = useRoute();
 
 const taxTypes: TaxType[] = [
   { id: 'kdv', name: 'KDV', rate: 20, label: 'KDV (%20)' },
@@ -135,10 +140,12 @@ async function EditProduct() {
       name: productName.value,
       price: price.value,
       isLimitless: isLimitless.value,
-      stocks: isLimitless.value ? [] : stock.value.map((stockItem) => ({
-        ...stockItem,
-        quantity: stockItem.quantity,
-      })),
+      stocks: isLimitless.value
+        ? []
+        : stock.value.map((stockItem) => ({
+            ...stockItem,
+            quantity: stockItem.quantity,
+          })),
     },
   }).catch(useErrorHandler);
 
@@ -168,11 +175,13 @@ async function CreateProduct(): Promise<void> {
       pricePerUnit: PricePerUnit.value ? String(price.value) : undefined,
       unitType: PricePerUnit.value ? 'kg' : undefined,
       isLimitless: isLimitless.value,
-      stocks: isLimitless.value ? [] : stock.value.map((stockItem) => ({
-        ...stockItem,
-        quantity: String(stockItem.quantity),
-        maxQuantity: String(stockItem.maxQuantity),
-      })),
+      stocks: isLimitless.value
+        ? []
+        : stock.value.map((stockItem) => ({
+            ...stockItem,
+            quantity: String(stockItem.quantity),
+            maxQuantity: String(stockItem.maxQuantity),
+          })),
     },
   }).catch(useErrorHandler);
 
@@ -217,8 +226,12 @@ onMounted(async () => {
     }
     selectedCategoryId.value = product.data.data.categoryId;
     isLimitless.value = product.data.data.isLimitless || false;
-    
-    if (!isLimitless.value && product.data.data.stocks && product.data.data.stocks.length > 0) {
+
+    if (
+      !isLimitless.value &&
+      product.data.data.stocks &&
+      product.data.data.stocks.length > 0
+    ) {
       stock.value = []; // Clear default stock
       product.data.data.stocks.forEach((stockItem) => {
         stock.value.push({
@@ -237,14 +250,15 @@ onMounted(async () => {
 
 <template>
   <div>
-    <SeoMeta title="Ürün Oluştur" description="Ürün oluştur" />
     <Section>
       <div class="flex flex-col space-y-4 mb-6 sm:mb-8 lg:mb-10">
         <div
           class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
         >
           <div class="space-y-1 flex-1">
-            <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight">
+            <h1
+              class="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight"
+            >
               Yeni Ürün Oluştur
             </h1>
             <p class="text-sm sm:text-base text-muted-foreground">
@@ -298,7 +312,9 @@ onMounted(async () => {
                   class="h-10 sm:h-11 text-sm sm:text-base"
                   placeholder="Marka Adı"
                 />
-                <p class="text-xs text-muted-foreground">Ürünün marka bilgisi</p>
+                <p class="text-xs text-muted-foreground">
+                  Ürünün marka bilgisi
+                </p>
               </div>
               <div class="space-y-2">
                 <Label for="name" class="text-sm font-medium"> Ürün Adı </Label>
@@ -309,7 +325,9 @@ onMounted(async () => {
                   class="h-10 sm:h-11 text-sm sm:text-base"
                   placeholder="Ürün Adı"
                 />
-                <p class="text-xs text-muted-foreground">Ürünün görünecek adı</p>
+                <p class="text-xs text-muted-foreground">
+                  Ürünün görünecek adı
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -323,20 +341,27 @@ onMounted(async () => {
                     {{ isLimitless ? 'Stok Kontrolü Yok' : 'Ürün Stoğu' }}
                   </CardTitle>
                   <CardDescription class="text-xs sm:text-sm">
-                    {{ isLimitless ? 'Bu ürün için stok kontrolü yapılmaz' : 'Stok ve barkod bilgileri' }}
+                    {{
+                      isLimitless
+                        ? 'Bu ürün için stok kontrolü yapılmaz'
+                        : 'Stok ve barkod bilgileri'
+                    }}
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent class="space-y-4 sm:space-y-6 px-4 sm:px-6">
               <div v-if="isLimitless" class="text-center py-8">
-                <Package class="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                <Package
+                  class="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50"
+                />
                 <h3 class="text-lg font-semibold mb-2">Stok Kontrolü Yok</h3>
                 <p class="text-muted-foreground">
-                  Bu ürün için stok kontrolü yapılmaz. Ürün her zaman satışa açıktır.
+                  Bu ürün için stok kontrolü yapılmaz. Ürün her zaman satışa
+                  açıktır.
                 </p>
               </div>
-              
+
               <div
                 v-for="(stockField, i) in stock"
                 v-else

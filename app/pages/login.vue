@@ -1,9 +1,5 @@
 <template>
   <div class="w-screen h-screen flex items-center justify-center p-4">
-    <SeoMeta
-      title="Giriş Yap - Posgen"
-      description="Posgen hesabınıza giriş yapın ve işletme yönetim sisteminizi kullanmaya başlayın."
-    />
     <Header />
     <div
       class="grid grid-cols-1 md:grid-cols-2 w-full max-w-sm max-h-auto md:max-w-[720px] xs:border md:min-h-[520px] rounded-lg overflow-hidden"
@@ -129,7 +125,12 @@ import createProtectedApiInterface from '@/api/protected';
 import { toast } from 'vue-sonner';
 import Header from '@/components/header/index/IndexHeader.vue';
 import { useRouter } from 'vue-router';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
+
+useSeo({
+  title: 'Giriş Yap - Posgen',
+  description:
+    'Posgen hesabınıza giriş yapın ve işletme yönetim sisteminizi kullanmaya başlayın.',
+});
 
 definePageMeta({
   name: 'Giriş Yap',

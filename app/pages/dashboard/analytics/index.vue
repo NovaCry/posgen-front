@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import SeoMeta from '@/components/seo/SeoMeta.vue';
 import Section from '@/components/layout/Section.vue';
 import { AreaChart } from '@/components/ui/chart-area';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -28,6 +27,11 @@ import { useSelectedShopStore } from '@/store/shop';
 
 const selectedShop = useSelectedShopStore();
 const protectedApiInterface = createProtectedApiInterface();
+
+useSeo({
+  title: 'Analizler',
+  description: 'Analizler',
+});
 
 interface Product {
   id: string;
@@ -136,8 +140,6 @@ definePageMeta({
   name: 'Analizler',
 });
 
- 
-
 const orderStats = ref({
   dailyOrders: 0,
   weeklyOrders: 0,
@@ -172,8 +174,6 @@ const showChart = ref(true);
 const chartKey = ref(0);
 const isSidebarTransitioning = ref(false);
 const cachedAnalytics = shallowRef<AnalyticsWidget[]>([]);
-
-
 
 const statusTranslations: Record<string, string> = {
   PENDING: 'Bekliyor',
@@ -397,7 +397,10 @@ type Admission = {
   createdAt: string;
 };
 
-function mapAdmissionsToOrders(admissions: Admission[], productList: Product[]): Order[] {
+function mapAdmissionsToOrders(
+  admissions: Admission[],
+  productList: Product[]
+): Order[] {
   return admissions.map((adm) => {
     const items: OrderItem[] = (adm.products || []).map((p) => {
       const [productId, qtyStr] = (p || '').split(':');
@@ -407,15 +410,17 @@ function mapAdmissionsToOrders(admissions: Admission[], productList: Product[]):
       return { productId, quantity, price } as OrderItem;
     });
     const finalAmount = Number(adm.totalPrice || '0');
-    
-    const table = adm.tableId ? undefined : {
-      id: 'self',
-      name: 'Self Servis',
-      seatSize: 0,
-      status: 'AVAILABLE',
-      shopId: adm.shopId
-    };
-    
+
+    const table = adm.tableId
+      ? undefined
+      : {
+          id: 'self',
+          name: 'Self Servis',
+          seatSize: 0,
+          status: 'AVAILABLE',
+          shopId: adm.shopId,
+        };
+
     return {
       id: adm.id,
       tableId: adm.tableId ?? 'self',
@@ -448,13 +453,17 @@ const fetchOrderStats = async (showLoader = false): Promise<void> => {
     if (ordersRes?.data?.data) {
       const orderDataFromOrders: Order[] = ordersRes.data.data;
       const admissions: Admission[] = admissionsRes?.data?.data || [];
-      const orderDataFromAdmissions = mapAdmissionsToOrders(admissions, products.value);
-      
-      const allOrders = [...orderDataFromOrders, ...orderDataFromAdmissions];
-      allOrders.sort((a: Order, b: Order) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      const orderDataFromAdmissions = mapAdmissionsToOrders(
+        admissions,
+        products.value
       );
-      
+
+      const allOrders = [...orderDataFromOrders, ...orderDataFromAdmissions];
+      allOrders.sort(
+        (a: Order, b: Order) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
       orders.value = allOrders;
       const ordersData: Order[] = orders.value;
 
@@ -682,7 +691,7 @@ const numeralWidgets = computed((): NumeralWidget[] => [
     size: 1,
     icon: markRaw(ShoppingBasket),
     title: 'Haftalık Siparişler',
-    
+
     value: orderStats.value.weeklyOrders || 0,
     valueSubfix: 'Sipariş',
   },
@@ -691,7 +700,7 @@ const numeralWidgets = computed((): NumeralWidget[] => [
     size: 1,
     icon: markRaw(DollarSign),
     title: 'Aylık Gelir',
-    
+
     value: orderStats.value.totalRevenue || 0,
     valueSubfix: '₺',
   },
@@ -700,7 +709,7 @@ const numeralWidgets = computed((): NumeralWidget[] => [
     size: 1,
     icon: markRaw(TrendingUp),
     title: 'Tamamlanma Oranı',
-    
+
     value: orderStats.value.completionRate || 0,
     valueSubfix: '%',
   },
@@ -827,12 +836,10 @@ onUnmounted(() => {
     autoRefreshInterval.value = null;
   }
 });
-
 </script>
 
 <template>
   <div>
-    <SeoMeta title="Analizler" description="Analizler" />
     <Section>
       <div class="flex items-center justify-between mb-6">
         <div>
@@ -895,7 +902,9 @@ onUnmounted(() => {
                   <div
                     class="w-12 h-12 border-3 border-muted border-t-primary rounded-full animate-spin"
                   />
-                  <div class="absolute inset-0 flex items-center justify-center">
+                  <div
+                    class="absolute inset-0 flex items-center justify-center"
+                  >
                     <ChartArea class="w-4 h-4 text-primary" />
                   </div>
                 </div>
@@ -956,7 +965,9 @@ onUnmounted(() => {
                   class="overflow-hidden text-ellipsis whitespace-nowrap font-medium text-sm"
                   >{{ item.name }}</span
                 >
-                <span class="text-muted-foreground text-xs">{{ item.alt }}</span>
+                <span class="text-muted-foreground text-xs">{{
+                  item.alt
+                }}</span>
               </div>
               <div class="shrink-0 font-semibold text-sm">
                 {{ item.value }}

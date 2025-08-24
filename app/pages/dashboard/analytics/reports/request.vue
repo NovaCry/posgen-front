@@ -4,7 +4,12 @@ import PaginationSimplified from '@/components/PaginationSimplified.vue';
 import { toLocaleDate } from '@/lib/toLocaleDate';
 import type { TableData } from '@/types/DataTable';
 import { Ban, Edit, History } from 'lucide-vue-next';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
+
+useSeo({
+  title: 'Rapor İste',
+  description: 'Rapor iste',
+});
+
 definePageMeta({
   name: 'Rapor İste',
 });
@@ -50,7 +55,6 @@ const data: TableData[] = [
 
 <template>
   <div>
-    <SeoMeta title="Rapor İste" description="Rapor iste" />
     <div
       class="relative group-has-data-[collapsible=icon]/sidebar-wrapper:min-h-[calc(100vh-4rem)] min-h-[calc(100vh-6rem)] h-full"
     >

@@ -30,12 +30,18 @@ import { useSelectedShopStore } from '@/store/shop';
 import { toast } from 'vue-sonner';
 import createProtectedApiInterface from '@/api/protected';
 import Section from '@/components/layout/Section.vue';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
-const router = useRouter();
-const selectedShop = useSelectedShopStore(); // Move hook call to top level
+
+useSeo({
+  title: 'Yeni Kategori',
+  description: 'Yeni Kategori',
+});
+
 definePageMeta({
   name: 'Yeni Kategori',
 });
+
+const router = useRouter();
+const selectedShop = useSelectedShopStore(); // Move hook call to top level
 
 const categoryName = ref('');
 const categoryIcon = ref('');
@@ -81,7 +87,6 @@ async function CreateCategory() {
 
 <template>
   <div>
-    <SeoMeta title="Yeni Kategori" description="Yeni Kategori" />
     <Section>
       <div
         class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
@@ -278,8 +283,8 @@ async function CreateCategory() {
                     </Badge>
                   </Label>
                   <p class="text-sm text-muted-foreground">
-                    Bu kategorideki ürünler için stok takibi yapılmaz ve her zaman
-                    satışa hazır kabul edilir.
+                    Bu kategorideki ürünler için stok takibi yapılmaz ve her
+                    zaman satışa hazır kabul edilir.
                   </p>
                 </div>
               </div>
@@ -288,10 +293,10 @@ async function CreateCategory() {
                 <Info class="h-4 w-4" />
                 <AlertDescription>
                   <strong>Stoksuz Kategori Nedir?</strong><br />
-                  Bu kategorideki ürünler dijital ürünler, hizmetler veya sürekli
-                  temin edilebilen ürünler için uygundur. Satış sırasında stok
-                  kontrolü yapılmaz ve ürünler her zaman "stokta var" olarak
-                  gösterilir.
+                  Bu kategorideki ürünler dijital ürünler, hizmetler veya
+                  sürekli temin edilebilen ürünler için uygundur. Satış
+                  sırasında stok kontrolü yapılmaz ve ürünler her zaman "stokta
+                  var" olarak gösterilir.
                 </AlertDescription>
               </Alert>
             </CardContent>

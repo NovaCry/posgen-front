@@ -26,7 +26,12 @@ import { useSelectedShopStore } from '@/store/shop';
 import { toast } from 'vue-sonner';
 import createProtectedApiInterface from '@/api/protected';
 import Section from '@/components/layout/Section.vue';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
+
+useSeo({
+  title: 'Yeni İndirim',
+  description: 'Yeni İndirim',
+});
+
 const router = useRouter();
 
 const discountCode = ref('');
@@ -146,13 +151,14 @@ definePageMeta({
 
 <template>
   <div>
-    <SeoMeta title="Yeni İndirim" description="Yeni İndirim" />
     <Section>
       <div
         class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8"
       >
         <div class="space-y-1">
-          <h1 class="text-3xl font-bold tracking-tight">Yeni İndirim Oluştur</h1>
+          <h1 class="text-3xl font-bold tracking-tight">
+            Yeni İndirim Oluştur
+          </h1>
           <p class="text-muted-foreground">
             Müşterileriniz için özel indirim kampanyası oluşturun
           </p>
@@ -212,7 +218,9 @@ definePageMeta({
                       }}
                     </p>
                   </div>
-                  <div class="flex items-center gap-3 bg-muted/50 rounded-lg p-1">
+                  <div
+                    class="flex items-center gap-3 bg-muted/50 rounded-lg p-1"
+                  >
                     <span
                       class="text-sm px-3 py-1 rounded-md transition-colors"
                       :class="
@@ -260,7 +268,9 @@ definePageMeta({
                     <div
                       class="absolute inset-y-0 right-0 flex items-center pr-4"
                     >
-                      <div class="flex items-center gap-1 text-muted-foreground">
+                      <div
+                        class="flex items-center gap-1 text-muted-foreground"
+                      >
                         <span class="text-sm font-medium">
                           {{ isPercentageDiscount ? '%' : '₺' }}
                         </span>
@@ -319,7 +329,9 @@ definePageMeta({
                   <div class="flex items-center gap-3">
                     <Layers class="h-5 w-5" />
                     <div>
-                      <CardTitle class="text-lg"> Kategori Hedefleme </CardTitle>
+                      <CardTitle class="text-lg">
+                        Kategori Hedefleme
+                      </CardTitle>
                       <CardDescription class="text-xs">
                         Belirli kategorilere uygula
                       </CardDescription>
@@ -479,7 +491,9 @@ definePageMeta({
                   <span class="text-muted-foreground">Hedefleme:</span>
                   <span class="text-xs">
                     {{
-                      isRelatedProducts || isRelatedCategories ? 'Özel' : 'Genel'
+                      isRelatedProducts || isRelatedCategories
+                        ? 'Özel'
+                        : 'Genel'
                     }}
                   </span>
                 </div>

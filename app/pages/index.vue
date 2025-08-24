@@ -15,11 +15,12 @@ definePageMeta({
     dontAuthorize: true,
   },
 });
+
+useSeo();
 </script>
 
 <template>
   <div class="min-h-screen">
-    <SeoMeta />
     <Header />
     <div
       class="flex flex-col items-center [background-image:var(--background-grid)] bg-size-[17px_17px]"

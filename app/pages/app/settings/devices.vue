@@ -20,7 +20,11 @@ import {
 } from '@/components/ui/select';
 import { ChevronRight } from 'lucide-vue-next';
 import { ref } from 'vue';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
+
+useSeo({
+  title: 'Cihazlar',
+  description: 'Cihazlar',
+});
 
 type deviceStatus = 'connected' | 'pending' | 'failed';
 
@@ -63,7 +67,6 @@ const selectedDevice = ref<Device>(devices[0]!);
 
 <template>
   <div>
-    <SeoMeta title="Cihazlar" description="Cihazlar" />
     <div class="container py-6 max-h-[calc(100dvh-3rem)] h-full relative">
       <h1 class="text-3xl font-semibold">Cihazlar</h1>
       <div class="grid grid-cols-2 h-full mt-4 gap-4">
@@ -92,7 +95,9 @@ const selectedDevice = ref<Device>(devices[0]!);
               {{ selectedDevice.name }} cihazının ayarları
             </CardDescription>
           </CardHeader>
-          <CardContent class="h-full overflow-auto flex flex-col gap-4 relative">
+          <CardContent
+            class="h-full overflow-auto flex flex-col gap-4 relative"
+          >
             <InputSimplified label="Adress" placeholder="192.168.2.23" />
             <NumberFieldSimplified label="Port" :model-value="2240" />
             <InputSimplified label="Net Mask" placeholder="255.255.255.0" />

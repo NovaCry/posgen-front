@@ -15,7 +15,12 @@ import { ListFilter, Eye, Receipt, X } from 'lucide-vue-next';
 import AdmissionsHeader from '@/components/admissions/AdmissionsHeader.vue';
 import AdmissionsStats from '@/components/admissions/AdmissionsStats.vue';
 import AdmissionDetails from '@/components/admissions/AdmissionDetails.vue';
-import SeoMeta from '@/components/seo/SeoMeta.vue';
+
+useSeo({
+  title: 'Adisyonlar',
+  description: 'Adisyonlar',
+});
+
 interface Product {
   id: string;
   name: string;
@@ -175,7 +180,7 @@ const cancelOrder = async (orderId: string) => {
       url: `shop/orders/${selectedShop.id}/orders/${orderId}/cancel`,
       method: 'PUT',
     });
-    
+
     if (response?.data?.success) {
       await fetchOrders();
     }
@@ -186,7 +191,7 @@ const cancelOrder = async (orderId: string) => {
 
 function makeActionsForAdmission(order: Order): Cell {
   const canCancel = ['PENDING', 'PREPARING', 'READY'].includes(order.status);
-  
+
   const items = [
     {
       type: 'item' as const,
@@ -229,7 +234,10 @@ function makeActionsForAdmission(order: Order): Cell {
   };
 }
 
-function makeResourceColumn(tableData: Record<string, string | Cell[]>[], order: Order) {
+function makeResourceColumn(
+  tableData: Record<string, string | Cell[]>[],
+  order: Order
+) {
   const itemsText =
     order.items
       ?.slice(0, 2)
@@ -391,7 +399,7 @@ const handleOrderCancelled = async (orderId: string) => {
       url: `shop/orders/${selectedShop.id}/orders/${orderId}/cancel`,
       method: 'PUT',
     });
-    
+
     if (response?.data?.success) {
       await fetchOrders();
     }
@@ -439,7 +447,7 @@ watch(search, () => {
 
 onMounted(async () => {
   await fetchOrders();
-  
+
   const orderIdFromUrl = route.query.orderId as string;
   if (orderIdFromUrl) {
     const order = orders.value.find((o) => o.id === orderIdFromUrl);
@@ -448,7 +456,7 @@ onMounted(async () => {
       isDialogOpen.value = true;
     }
   }
-  
+
   autoRefreshInterval.value = setInterval(() => {
     fetchOrders();
   }, 7000);
@@ -468,7 +476,6 @@ definePageMeta({
 
 <template>
   <div>
-    <SeoMeta title="Adisyonlar" description="Adisyonlar" />
     <Section>
       <AdmissionsHeader v-model:filter="filter" />
       <AdmissionsStats :stats="stats" />
